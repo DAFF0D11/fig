@@ -1,0 +1,14 @@
+#!/bin/sh
+bookmarks=~/org/agenda/bookmarks.org
+case $1 in
+	term) emacsclient -e '(daf/evil-insert-vterm)';;
+	capture) emacsclient --alternate-editor='' --no-wait --eval "(make-capture-frame)" ;;
+    emacs) emacsclient -c -a "" ;;
+	daemon) emacs --daemon;;
+	gui) emacsclient -c;;
+	solo) emacs;;
+	book)
+        notify-send "Bookmarked: $2\n$3"
+        printf "* [[%s][%s]]\n" "$2" "$3" >> "$bookmarks";;
+	*) emacsclient "$@";;
+esac

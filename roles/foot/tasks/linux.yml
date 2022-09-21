@@ -1,0 +1,13 @@
+- name: Install foot package
+  become: true
+  dnf:
+    name:
+      - foot
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: Symlink foot config
+  file:
+    src: "{{ config_dir }}/roles/foot/files/foot"
+    path: "{{ user_home }}/.config/foot"
+    state: link

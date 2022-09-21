@@ -1,0 +1,13 @@
+- name: Install imv package
+  become: true
+  dnf:
+    name:
+      - imv
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: Symlink imv
+  file:
+    src: "{{ config_dir }}/roles/imv/files/imv"
+    path: "{{ user_home }}/.config/imv"
+    state: link

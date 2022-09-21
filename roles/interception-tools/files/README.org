@@ -1,0 +1,67 @@
+* Keyboard
+
+Make keys gud
+
+Capslock -> Tap = Escape, Hold = Control
+Spacebar -> Tap = Space, Hold = Super/Meta/Windows
+Enter -> Tap = Enter, Hold = Control
+Right Alt -> Tap = F6, Hold = Right Alt
+
+One might assume you could use dual-function-keys for both caps2esc and
+space2meta, however I have found the dedicated programs lead to less user
+timing errors (maybe I didn't play with it enough).
+
+*** Install build dependencies
+#+begin_src shell
+  dnf install cmake libevdev-devel systemd-devel yaml-cpp-devel boost-devel
+#+end_src
+*** Build Interception tool
+#+begin_src shell
+  # Source: https://gitlab.com/interception/linux/tools.git interception-tools
+  cd $HOME/fig/keyboard/interception-tools
+  cmake -B build -DCMAKE_BUILD_TYPE=Release
+  cmake --build build
+  sudo cmake --install build
+#+end_src
+*** Build Dual-Function-Keys
+#+begin_src shell
+  # Source: https://gitlab.com/interception/linux/plugins/dual-function-keys.git
+  cd $HOME/fig/keyboard/dual-function-keys
+  make && sudo make install
+#+end_src
+*** Build Space2Meta
+#+begin_src shell
+  # Source: https://gitlab.com/interception/linux/plugins/space2meta.git
+  cd $HOME/fig/keyboard/space2meta
+  cd space2meta
+  cmake -Bbuild
+  cmake --build build
+  sudo cmake --install build
+#+end_src
+*** Build Caps2Esc
+#+begin_src shell
+  cd $HOME/fig/keyboard/caps2esc
+  cmake -B build -DCMAKE_BUILD_TYPE=Release
+  cmake --build build
+  sudo cmake --install build
+#+end_src
+*** Install udevmon settings
+#+begin_src shell
+  sudo cp $HOME/fig/keyboard/udevmon.yaml /etc/udevmon.yaml
+#+end_src
+*** Install Service
+#+begin_src shell
+  sudo cp $HOME/fig/keyboard/udevmon.service /etc/systemd/system/udevmon.service
+#+end_src
+*** Start Service
+#+begin_src shell
+  sudo systemctl enable --now udevmon
+#+end_src
+*** Restart Service
+#+begin_src shell
+  # When updating udevmon.yaml, make sure to restart the service.
+  sudo systemctl restart udevmon
+  # Restarting udevmon breaks any xset.
+  # Restart it with
+  xset r rate 300 28
+#+end_src

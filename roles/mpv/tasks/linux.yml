@@ -1,0 +1,15 @@
+- name: Install mpv package and dependencies
+  become: true
+  dnf:
+    name:
+      - mpv
+      - mpv-mpris
+      - playerctl
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: Symlink mpv directory
+  file:
+    src: "{{ config_dir }}/roles/mpv/files/mpv"
+    path: "{{ user_home }}/.config/mpv"
+    state: link

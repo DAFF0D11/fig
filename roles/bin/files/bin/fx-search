@@ -1,0 +1,212 @@
+#!/usr/bin/env bash
+
+set -o pipefail
+
+# set -o errexit # cant have this because im relying on it... lol
+# set -o nounset # how to optionally accept flags?
+
+# --history="$HISTORY_FILE" \
+
+fzfcmd() {
+    fzf --expect=ctrl-o,ctrl-t,ctrl-h,ctrl-y \
+        --exact \
+        --prompt="$prompt " \
+        --history="$HISTORY_FILE" \
+        --layout=reverse \
+        --bind=enter:replace-query+print-query \
+        --bind=alt-enter:print-query \
+        --bind=ctrl-p:previous-history \
+        --bind=ctrl-n:next-history \
+        --bind=alt-p:previous-history \
+        --bind=alt-n:next-history \
+        --bind=ctrl-j:down \
+        --bind=ctrl-k:up \
+        --bind=alt-j:page-down \
+        --bind=alt-k:page-up \
+        --bind=ctrl-q:toggle-all \
+        --bind=ctrl-space:toggle \
+        --bind=tab:replace-query
+
+    # we cant use:
+    # --delimiter="	" (tab character)
+    # --with-nth=1
+    # with
+    # --bind=enter:replace-query+print-query
+    # because replace-query only adds the visible part
+    # of the current item to the query, not the full item.
+    # if only there was a replace-full-query option...
+}
+
+focus_browser(){
+  swaymsg [app_id="org.qutebrowser.qutebrowser"] focus
+}
+
+get_url(){
+    echo "$1" | rev | cut -f1 | rev
+}
+
+search() {
+  focus_browser
+  ENGINE="$1"
+  SEARCH_QUERY="$2"
+  HEX_QUERY=$(echo "$SEARCH_QUERY" | hexdump -v -e '/1 " %02x"')
+  ENGINE_SEARCH=$(echo "$ENGINE" | sed "s/%s/${HEX_QUERY% 0a}/;s/[[:space:]]/%/g")
+  if [ -z "$new_tab" ]; then
+    launch 2>/dev/null 1>&2 "$BROWSER" "$ENGINE_SEARCH"
+  else
+    launch 2>/dev/null 1>&2 "$BROWSER" "$new_tab" "$ENGINE_SEARCH"
+  fi
+}
+
+search_bang() {
+  focus_browser
+  BANG="$1"
+  ENGINE="$2"
+  SEARCH_QUERY=$(echo "$3" | sed "s/${BANG}//")
+  HEX_QUERY=$(echo "$SEARCH_QUERY" | hexdump -v -e '/1 " %02x"')
+  ENGINE_SEARCH=$(echo "$ENGINE" | sed "s/%s/${HEX_QUERY% 0a}/;s/[[:space:]]/%/g")
+  if [ -z "$new_tab" ]; then
+    launch 2>/dev/null 1>&2 "$BROWSER" "$ENGINE_SEARCH"
+  else
+    launch 2>/dev/null 1>&2 "$BROWSER" "$new_tab" "$ENGINE_SEARCH"
+  fi
+}
+
+search_url(){
+  focus_browser
+  if [ -z "$new_tab" ]; then
+    launch 2>/dev/null 1>&2 "$BROWSER" "$1"
+  else
+    launch 2>/dev/null 1>&2 "$BROWSER" "$new_tab" "$1"
+  fi
+}
+
+search_query_list(){
+  case $1 in
+    "dd "*)  search "https://duckduckgo.com/?q=%s" "${1#* }";;
+    "ddi "*) search "https://duckduckgo.com/?q=%s&iar=images&iax=images&ia=images" "${1#* }";;
+    "ddl "*) search "https://lite.duckduckgo.com/lite/?q=%s" "${1#* }";;
+    *"!di"*) search_bang "!di" "https://duckduckgo.com/?q=%s&iar=images&iax=images&ia=images" "$1";;
+    *"!dl"*) search_bang "!dl" "https://lite.duckduckgo.com/lite/?q=%s" "$1";;
+    *"!d"*)  search_bang "!d" "https://duckduckgo.com/?q=%s" "$1";;
+    *"!i"*)  search_bang "!i" "https://search.brave.com/images?q=%s" "$1";;
+    *"!az"*) search_bang "!az" "https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=%s" "$1";;
+    *"!eb"*) search_bang "!eb" "https://www.ebay.com/sch/i.html?_nkw=%s" "$1";;
+    *"!g"*)  search_bang "!g" "https://www.google.com/search?q=%s" "$1";;
+    *"!b"*)  search_bang "!b" "https://search.brave.com/search?q=%s" "$1";;
+    *"!r"*)  search_bang "!r" "https://search.brave.com/search?q=%s" "$1 site:reddit.com";;
+    *"!nx"*) search_bang "!nx" "https://search.nixos.org/packages?query=%s" "$1";;
+    *"!s"*)  search_bang "!s" "https://www.startpage.com/do/metasearch.pl?query=%s" "$1";;
+    *"!wd"*) search_bang "!wd" "https://www.merriam-webster.com/dictionary/%s" "$1";;
+    *"!m"*)  search_bang "!m" "https://developer.mozilla.org/en-US/search?q=%s" "$1";;
+    *"!wf"*) search_bang "!wf" "https://www.wolframalpha.com/input/?i=%s" "$1";;
+    *"!y"*)  search_bang "!y" "https://www.youtube.com/results?search_query=%s" "$1";;
+    '// '*)  search_url "${1#* }";;
+    *)       search "https://search.brave.com/search?q=%s&source=desktop" "$1" ;;
+  esac
+}
+
+get_history(){
+    # Firefox dev edition
+    HIST=/tmp/history
+    cat "$HISTORY_PATH" > $HIST
+    SEP='{$$$}'
+    sqlite3 -separator $SEP  $HIST "select title, url from moz_places order by last_visit_date desc" \
+        | head -n 200 \
+        | grep -v ^$SEP \
+        |  tr $SEP '\t' \
+        | grep -v "$BLACKLIST_HIST_SEARCH_ENGINES" \
+        | uniq
+}
+
+get_bookmarks(){
+    raw=$(tac ~/org/agenda/bookmarks.org | grep "^* ")
+    urls=$(echo "$raw" | cut -d "[" -f3- | cut -d "]" -f1)
+    titles=$(echo "$raw" | cut -d "[" -f4- | cut -d "]" -f1)
+    paste <(echo "$titles") <(echo "$urls") --delimiters '\t'
+}
+
+get_blank(){
+    printf ""
+}
+
+main(){
+    local flag="$1"
+    local prompt
+    local mode_major
+    local mode_minor
+    local mode_list
+    local new_tab
+
+    case $flag in
+        -b) mode_major=BOOKMARKS;;
+        -h) mode_major=HISTORY;;
+        -n) new_tab="--new-tab"
+            mode_major=SEARCH;;
+        *) mode_major=SEARCH;;
+    esac
+
+    while true; do
+        case $mode_major in
+            SEARCH) prompt="$new_tab search:"
+                    mode_list=get_history;;
+            BOOKMARKS) prompt="bookmarks:"
+                       mode_list=get_bookmarks ;;
+            HISTORY) prompt="history:"
+                     mode_list=get_history ;;
+        esac
+
+        choice=$("$mode_list" | "$COMMAND")
+
+        [ -z "$choice" ] && exit 1
+
+        case $choice in
+            ctrl-o*) mode_major=BOOKMARKS;;
+            ctrl-t*) mode_major=SEARCH;;
+            ctrl-h*) mode_major=HISTORY;;
+            ctrl-y*) mode_minor=YANK; break;;
+            *"	"*) # the trick here is assuming selections have a tab character and searches do not.
+                case $mode_major in
+                    SEARCH) mode_minor=HISTORY;;
+                    BOOKMARKS) mode_minor=BOOKMARKS;;
+                    HISTORY) mode_minor=HISTORY;;
+                esac; break;;
+            *) mode_minor=SEARCH;break;;
+        esac
+    done
+
+    case $mode_minor in
+        SEARCH) search_query_list "$choice";;
+        YANK)
+            case $mode_major in
+                BOOKMARKS) echo "mode BOOKMARKS: yank";;
+                *) echo "mode  NOT BOOKMARK yank" ;;
+            esac;;
+        BOOKMARKS)
+            focus_browser
+            bookmark_url=$(get_url "$choice")
+          if [ -z "$new_tab" ]; then
+            2>/dev/null 1>&2 launch "$BROWSER" "$bookmark_url"
+          else
+            2>/dev/null 1>&2 launch "$BROWSER" "$new_tab" "$bookmark_url"
+          fi ;;
+        HISTORY)
+          focus_browser
+          history_url=$(get_url "$choice")
+          if [ -z "$new_tab" ]; then
+            2>/dev/null 1>&2 launch "$BROWSER" "$history_url"
+          else
+            2>/dev/null 1>&2 launch "$BROWSER" "$new_tab" "$history_url"
+          fi ;;
+    esac
+}
+
+# HISTORY_FILE=$HOME/.cache/fzf-history
+
+HISTORY_PATH=$HOME/.mozilla/firefox/zh6tdesq.dev-edition-default/places.sqlite
+HISTORY_FILE=$HOME/.cache/fzf-history
+BLACKLIST_HIST_SEARCH_ENGINES='duckduckgo\|google\|amazon\|ebay\|brave'
+# BOOKMARK_PATH=$HOME/.config/chromium/Default/Bookmarks
+
+COMMAND=fzfcmd
+main "$@"

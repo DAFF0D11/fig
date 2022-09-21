@@ -1,0 +1,27 @@
+#!/bin/sh
+
+main(){
+  clipman pick --print0 --tool=CUSTOM --tool-args="$command"
+}
+
+fzf_cmd="fzf \
+      --prompt='$prompt' \
+      --layout=reverse \
+      --bind=ctrl-p:previous-history \
+      --bind=ctrl-n:next-history \
+      --bind=alt-p:previous-history \
+      --bind=alt-n:next-history \
+      --bind=ctrl-j:down \
+      --bind=ctrl-k:up \
+      --bind=alt-j:page-down \
+      --bind=alt-k:page-up \
+      --bind=ctrl-space:toggle \
+      --bind=tab:replace-query \
+      --bind=ctrl-q:toggle-all \
+      --read0"
+
+prompt="Clipboard: "
+
+command=$fzf_cmd
+
+main

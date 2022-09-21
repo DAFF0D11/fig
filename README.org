@@ -1,0 +1,18 @@
+* Config
+
+* Install Fedora Everything
+https://alt.fedoraproject.org/
+[[https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/iso/Fedora-Everything-netinst-x86_64-36-1.5.iso][Direct Download Link]]
+
+* Install ansible/git
+#+begin_src shell
+  sudo dnf install ansible git
+#+end_src
+* Clone dotfiles
+#+begin_src shell
+  git clone https://github.com/daff0d11/fig
+#+end_src
+* Run ansible
+#+begin_src shell
+    ansible-playbook --ask-become-pass -i hosts roles.yml
+#+end_src

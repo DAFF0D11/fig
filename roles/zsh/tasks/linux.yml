@@ -1,0 +1,27 @@
+  # TODO Set zsh as shell?
+
+- name: Install zsh package
+  become: true
+  dnf:
+    name:
+      - zsh
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: Symlink zshrc
+  file:
+    src: "{{ config_dir }}/roles/zsh/files/zshrc"
+    path: "{{ user_home }}/.zshrc"
+    state: link
+
+- name: Symlink zsh config
+  file:
+    src: "{{ config_dir }}/roles/zsh/files/zsh"
+    path: "{{ user_home }}/.config/zsh"
+    state: link
+
+- name: Set default shell to zsh
+  ansible.builtin.command: usermod --shell /usr/bin/zsh {{ user }}
+  become: true
+  changed_when: false
+  when: ansible_distribution == "Fedora"

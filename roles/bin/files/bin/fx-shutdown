@@ -1,0 +1,29 @@
+#!/bin/sh
+
+fzf_cmd(){
+    fzf --prompt="$prompt" \
+        --delimiter="	" \
+        --with-nth=1 \
+        --layout=reverse \
+        --bind=ctrl-j:down \
+        --bind=ctrl-k:up
+}
+
+main(){
+    choice=$( echo "$commands" | "$command" | cut -f2-)
+
+    [ -z "$choice" ] && exit 0
+
+    "$choice"
+}
+
+commands="lockscreen	swaylock
+logout	swaymsg exit
+suspend	systemctl suspend
+hibernate	systemctl hibernate
+reboot	systemctl reboot
+shutdown	systemctl poweroff"
+
+prompt="Choose: "
+command=fzf_cmd
+main

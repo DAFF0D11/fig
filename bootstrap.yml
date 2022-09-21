@@ -1,0 +1,17 @@
+- name: Setup Workstation
+  hosts: localhost
+  roles:
+    - setup
+    - base
+    - bin
+    - sway
+    - waybar
+    - foot
+    - qutebrowser
+    - mpv
+    - dunst
+    - imv
+    - misc
+    - zsh
+    - interception-tools
+    - emacs

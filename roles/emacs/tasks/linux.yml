@@ -1,0 +1,84 @@
+- name: Check if Emacs executable exists
+  stat:
+    path: /usr/local/bin/emacs
+  register: stat_result
+
+# - name: Clone Emacs config repository
+#   become_user: "{{ user }}"
+#   git:
+#     repo: https://github.com/daff0d11/emacs.git
+#     dest: "{{ user_home }}/.config/emacs"
+#     clone: yes
+#     depth: 1
+#     update: yes
+
+- name: Symlink Emacs config
+  file:
+    src: "{{ config_dir }}/roles/emacs/files/emacs"
+    path: "{{ user_home }}/.config/emacs"
+    state: link
+
+- name: Install Emacs build dependencies
+  become: true
+  dnf:
+    name:
+      - make
+      - automake
+      - texinfo
+      - ImageMagick
+      - ImageMagick-devel
+      - gcc
+      - gcc-c++
+      - libgccjit
+      - libgccjit-devel
+      - libXpm-devel
+      - libjpeg-devel
+      - libjpeg-turbo-devel
+      - giflib-devel
+      - gnutls-devel
+      - libtiff-devel
+      - jansson-devel
+      - ncurses-devel
+      - mailx
+      - gtk3-devel
+      - webkit2gtk3-devel
+      - dnf-plugins-core
+    state: present
+  when:
+    - not stat_result.stat.exists
+    - ansible_distribution == "Fedora"
+
+- name: Clone Emacs source repository
+  become_user: "{{ user }}"
+  git:
+    repo: https://git.savannah.gnu.org/git/emacs.git
+    dest: "/tmp/emacs"
+    clone: yes
+    depth: 1
+    update: yes
+  when:
+    - not stat_result.stat.exists
+
+- name: Run Emacs ./autogen.sh
+  become_user: "{{ user }}"
+  ansible.builtin.shell:
+    chdir: "/tmp/emacs"
+    cmd: "./autogen.sh"
+  when:
+    - not stat_result.stat.exists
+
+- name: Run Emacs ./configure with flags
+  become_user: "{{ user }}"
+  ansible.builtin.shell:
+    chdir: "/tmp/emacs"
+    cmd: "./configure --with-native-compilation --with-json=yes --with-wide-int --with-cairo --with-imagemagick --with-mailutils --with-xwidgets --with-pgtk"
+  when:
+    - not stat_result.stat.exists
+
+- name: Make and install Emacs
+  become: true
+  ansible.builtin.shell:
+    chdir: "/tmp/emacs"
+    cmd: "make -j $(nproc) install"
+  when:
+    - not stat_result.stat.exists

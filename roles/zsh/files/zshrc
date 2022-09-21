@@ -1,0 +1,131 @@
+# -*- mode: sh -*-
+
+if [ "$TERM" = "linux" ]; then
+    echo -en "\e]P0000000" #black      #000000
+    echo -en "\e]P1E93C58" #darkgrey   #E93C58
+    echo -en "\e]P21EF1A4" #darkred    #1EF1A4
+    echo -en "\e]P3FFAF87" #red	       #FFAF87
+    echo -en "\e]P46E72AF" #darkgreen  #6E72AF
+    echo -en "\e]P5BC84DF" #green      #BC84DF
+    echo -en "\e]P6A4FFFF" #brown      #A4FFFF
+    echo -en "\e]P7A2A4BA" #yellow     #A2A4BA
+    echo -en "\e]P8232533" #darkblue   #232533
+    echo -en "\e]P9E93C58" #blue       #E93C58
+    echo -en "\e]PA1EF1A4" #darkmagent #1EF1A4a
+    echo -en "\e]PBFFAF87" #magenta    #FFAF87
+    echo -en "\e]PC6E72AF" #darkcyan   #6E72AF
+    echo -en "\e]PDBC84DF" #cyan       #BC84DF
+    echo -en "\e]PEA4FFFF" #lightgrey  #A4FFFF
+    echo -en "\e]PFE1E1E1" #white      #E1E1E1
+    clear #for background artifacting
+fi
+
+# ctrl-w incrementally
+WORDCHARS='~!#$%^&*(){}[]<>?.+;-'
+MOTION_WORDCHARS='~!#$%^&*(){}[]<>?.+;-/'
+''{back,for}ward-word() WORDCHARS=$MOTION_WORDCHARS zle .$WIDGET
+zle -N backward-word
+zle -N forward-word
+
+# Edit command with editor
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey "^y" edit-command-line
+
+autoload -U colors && colors
+prompt_host=$(echo "$HOST" | tr 'a-z' 'A-Z')
+prompt_user=$(echo "$USER" | tr 'a-z' 'A-Z')
+PROMPT="%F{red}${prompt_host}%F{blue}:%F{white}${prompt_user}%{$reset_color%} %~ "
+
+# do i need this?
+# dmenu_run
+bindkey -e
+autoload -Uz compinit
+if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
+    compinit;
+else
+    compinit -C;
+fi;
+
+export HISTSIZE=1000
+export SAVEHIST=$HISTSIZE
+export HISTFILE="$HOME/.history"
+
+export VISUAL="emacsclient -a ''"
+export EDITOR="emacsclient -a ''"
+export ALTERNATE_EDITOR="emacsclient -a ''"
+
+export TERM=xterm-256color
+
+export BROWSER=qutebrowser
+
+export MOZ_ENABLE_WAYLAND=1
+# export BROWSER=firefox
+# export BROWSER=brave-browser
+
+export PATH=$HOME/fig/bin:$PATH
+export PATH=$HOME/pea/sbin:$PATH
+export PATH=$HOME/.local/bin:$PATH
+
+# export PATH=$HOME/src/fxmenu/scripts:$PATH
+# export PATH=$HOME/fig/dafmenu/scripts:$PATH
+
+export NODEJS_HOME=$HOME/src/lang/node
+export PATH=$PATH:$NODEJS_HOME/bin
+export GOPATH=$HOME/src/lang/go
+export PATH=$PATH:$GOPATH/bin
+
+alias ".."="cd .."
+alias "..."="cd ../../"
+alias "...."="cd ../../../"
+alias ls="ls --color=auto"
+alias cp="cp -riv "
+alias mv="mv -iv"
+alias mkdir="mkdir -vp "
+alias e='emacsclient -t'
+alias rmm="trash"
+
+ex(){
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1   ;;
+      *.tar.gz)    tar xzf $1   ;;
+      *.bz2)       bunzip2 $1   ;;
+      *.rar)       unrar x $1   ;;
+      *.gz)        gunzip $1    ;;
+      *.tar)       tar xf $1    ;;
+      *.tbz2)      tar xjf $1   ;;
+      *.tgz)       tar xzf $1   ;;
+      *.zip)       unzip $1     ;;
+      *.Z)         uncompress $1;;
+      *.7z)        7z x $1      ;;
+      *.deb)       ar x $1      ;;
+      *.tar.xz)    tar xf $1    ;;
+      *.tar.zst)   unzstd $1    ;;
+      *)           echo "'$1' cannot be extracted via ex()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# required for XCIAO
+# make gtk use old input events
+# export GDK_CORE_DEVICE_EVENTS=1
+
+# Full wayland
+# export GDK_BACKEND=wayland
+# export QT_QPA_PLATFORM=wayland
+
+export GTK_THEME=dark-theme
+
+export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+ --no-info
+ --no-bold
+ --layout=reverse
+ --color=fg:#a2a4ba,bg:#000000,hl:#fab689
+ --color=fg+:#ffffff,bg+:#000000,hl+:#fab689
+ --color=info:#ffffff,prompt:#ffffff,pointer:#d11f1f
+ --color=marker:#701b70,spinner:#a2a4ba,header:#ffffff'

@@ -1,0 +1,67 @@
+- name: RPMF Importing (free) key
+  become: true
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-free-fedora-2020
+  when: ansible_distribution == "Fedora"
+
+- name: RPMF Importing (non-free) key
+  become: true
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-nonfree-fedora-2020
+  when: ansible_distribution == "Fedora"
+
+- name: RPM Fusion
+  become: true
+  dnf:
+    pkg:
+      - https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ansible_distribution_version}}.noarch.rpm
+      - https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ansible_distribution_version}}.noarch.rpm
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: Install Packages
+  become: true
+  dnf:
+    name:
+      - NetworkManager
+      - NetworkManager-tui
+      - NetworkManager-wifi
+      - iwl7260-firmware
+      - ffmpeg
+      - ffmpegthumbnailer
+      - dnf-plugins-core
+      - net-tools
+      - fira-code-fonts
+      - breeze-cursor-theme
+      - gimp
+      - pcmanfm
+      - flameshot
+      - keepassxc
+      - pavucontrol
+      - pipewire
+      - alsa-utils
+      - curl
+      - fzf
+      - jq
+      - rsync
+      - trash-cli
+      - libtool
+      - unzip
+      - socat
+      - wget
+      - cmake
+      - tar
+      - htop
+      - age
+      - light
+      - wev
+      - pdf-tools
+      - ImageMagick
+      - bzip2
+      - jmtpfs
+      - fd-find
+      - util-linux-user
+    state: present
+  when: ansible_distribution == "Fedora"

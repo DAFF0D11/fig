@@ -1,0 +1,124 @@
+- name: Check if intercept exists
+  stat:
+    path: /usr/local/bin/intercept
+  register: check_intercept
+
+- name: Install interception build dependencies
+  become: true
+  dnf:
+    name:
+      - cmake
+      - libevdev-devel
+      - systemd-devel
+      - yaml-cpp-devel
+      - boost-devel
+      - gcc-c++
+      # - libXrandr-devel
+
+    state: present
+  when:
+    - ansible_distribution == "Fedora"
+    - not check_intercept.stat.exists
+
+- name: Setup interceptor build
+  shell: |
+    cmake -B build -DCMAKE_BUILD_TYPE=Release
+    cmake --build build
+  args:
+    chdir: "{{ user_home }}/fig/roles/interception-tools/files/interception-tools"
+  when: not check_intercept.stat.exists
+
+- name: Install interceptor
+  become: true
+  shell: cmake --install build
+  args:
+    chdir: "{{ user_home }}/fig/roles/interception-tools/files/interception-tools"
+  when: not check_intercept.stat.exists
+
+- name: Check for dual-function-keys
+  stat:
+    path: /usr/local/bin/dual-function-keys
+  register: check_dualfunctionkeys
+
+- name: Make Dual-Function-Keys
+  become: true
+  shell: make
+  args:
+    chdir: "{{ user_home }}/fig/roles/interception-tools/files/dual-function-keys"
+  when: not check_dualfunctionkeys.stat.exists
+
+- name: Install Dual-Function-Keys
+  become: true
+  shell: make install
+  args:
+    chdir: "{{ user_home }}/fig/roles/interception-tools/files/dual-function-keys"
+  when: not check_dualfunctionkeys.stat.exists
+
+- name: Install dual function keys settings
+  become: true
+  shell: "cp {{config_dir}}/roles/interception-tools/files/dual-function-keys.yaml /etc/dual-function-keys.yaml"
+  when: not check_dualfunctionkeys.stat.exists
+
+- name: Check for space2meta
+  stat:
+    path: /usr/local/bin/space2meta
+  register: check_space2meta
+
+- name: Setup Space2Meta build
+  shell: |
+    cmake -Bbuild
+    cmake --build build
+  args:
+    chdir: "{{ user_home }}/fig/roles/interception-tools/files/space2meta"
+  when: not check_space2meta.stat.exists
+
+- name: Install Space2Meta
+  become: true
+  shell: cmake --install build
+  args:
+    chdir: "{{ user_home }}/fig/roles/interception-tools/files/space2meta"
+  when: not check_space2meta.stat.exists
+
+- name: Check for caps2esc
+  stat:
+    path: /usr/local/bin/caps2esc
+  register: check_caps2esc
+
+- name: Setup Caps2Esc build
+  shell: |
+    cmake -B build -DCMAKE_BUILD_TYPE=Release
+    cmake --build build
+  args:
+    chdir: "{{ user_home }}/fig/roles/interception-tools/files/caps2esc"
+  when: not check_caps2esc.stat.exists
+
+- name: Install Caps2Esc
+  become: true
+  shell: cmake --install build
+  args:
+    chdir: "{{ user_home }}/fig/roles/interception-tools/files/caps2esc"
+  when: not check_caps2esc.stat.exists
+
+- name: Install udevmon settings
+  become: true
+  shell: "cp {{config_dir}}/roles/interception-tools/files/udevmon.yaml /etc/udevmon.yaml"
+  when: not check_intercept.stat.exists
+
+- name: Install udevmon service
+  become: true
+  shell: "cp {{ config_dir }}/roles/interception-tools/files/udevmon.service /etc/systemd/system/udevmon.service"
+  when: not check_intercept.stat.exists
+
+- name: Enable udevmon service
+  become: true
+  shell: systemctl enable --now udevmon
+  when: not check_intercept.stat.exists
+
+- name: Start udevmon service
+  become: true
+  shell: systemctl restart udevmon
+  when: not check_intercept.stat.exists
+
+# - name: Reapply xset
+#   shell: xset r rate 300 28
+#   when: not stat_result.stat.exists

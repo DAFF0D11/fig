@@ -1,0 +1,29 @@
+#!/bin/sh
+
+fzf_cmd(){
+  fzf --prompt="$prompt" \
+      --layout=reverse \
+      --exact \
+      --bind=ctrl-p:previous-history \
+      --bind=ctrl-n:next-history \
+      --bind=alt-p:previous-history \
+      --bind=alt-n:next-history \
+      --bind=ctrl-j:down \
+      --bind=ctrl-k:up \
+      --bind=alt-j:page-down \
+      --bind=alt-k:page-up \
+      --bind=ctrl-space:toggle \
+      --bind=tab:replace-query \
+      --bind=ctrl-q:toggle-all
+}
+
+main(){
+  local pid
+  pid=$(ps -ef | sed 1d | grep -v 'root' | "$command" | awk '{print $2}')
+  [ "x$pid" != "x" ] && echo $pid | xargs kill -${1:-9}
+}
+
+prompt="Kill Process: "
+command=fzf_cmd
+
+main

@@ -1,0 +1,132 @@
+#!/bin/sh
+
+# Dependencies: fd-find socat mpv fzf playerctl
+
+MUSIC="$HOME/mus"
+PLAYLIST="$HOME/.local/share/fxplaylist"
+SOCKET="/tmp/fxshuffler"
+
+fzfcmd() {
+  fzf -m \
+      --prompt="" \
+      --layout=reverse \
+      --exact \
+      --expect=ctrl-x,ctrl-h,ctrl-l \
+      --bind=change:first \
+      --bind=alt-enter:print-query \
+      --bind=alt-p:previous-history \
+      --bind=alt-n:next-history \
+      --bind=ctrl-j:down \
+      --bind=ctrl-k:up \
+      --bind=alt-j:page-down \
+      --bind=alt-k:page-up \
+      --bind=ctrl-q:toggle-all \
+      --bind=ctrl-space:toggle \
+      --bind=tab:replace-query
+}
+
+fzfcmdplay() {
+  current_playlist_path=$(cat "$PLAYLIST" | tail -n 1 | rev | cut -d "/" -f2- | rev)
+  base=$(echo "$current_playlist_path" | grep -o "/" | wc -l)
+  nth=$(($base + 2))
+  fzf -m \
+      --prompt="" \
+      --layout=reverse \
+      --exact \
+      --delimiter="/" \
+      --with-nth="$nth" \
+      --expect=ctrl-x,ctrl-h,ctrl-l \
+      --bind=change:first \
+      --bind=alt-enter:print-query \
+      --bind=alt-p:previous-history \
+      --bind=alt-n:next-history \
+      --bind=ctrl-j:down \
+      --bind=ctrl-k:up \
+      --bind=alt-j:page-down \
+      --bind=alt-k:page-up \
+      --bind=ctrl-q:toggle-all \
+      --bind=ctrl-space:toggle \
+      --bind=tab:replace-query
+}
+
+
+clear_playlist(){
+  > "$PLAYLIST"
+}
+
+list_directories(){
+  fd . "$1" --type d -d 1 --prune | rev | cut -d "/" -f1 | rev
+}
+
+list_files(){
+  fd . "$1" --type f --prune
+}
+
+fzf_select_playlist(){
+  list_directories "$MUSIC" | fzfcmd
+}
+
+fzf_choose_play(){
+  cat "$PLAYLIST" | fzfcmdplay
+}
+
+set_playlist(){
+  clear_playlist
+  pl=$(cut_expected "$1")
+  list_files "$MUSIC/$pl" | shuf >> "$PLAYLIST"
+
+  # Add playlist to socket
+  echo '{"command":["loadlist","'"$PLAYLIST"'","replace"]}' | socat - "$SOCKET" >&2
+  playerctl --player=mpv pause
+}
+
+cut_expected(){
+  # Remove the extra line that is added from expect.
+  # its either a ctrl-h line, or an empty one.
+  echo "$1" | tail -n +2
+}
+
+create_playlist(){
+  res=$(cut_expected "$1")
+  minus_selected=$(echo "$res" | grep -vf - "$PLAYLIST" | shuf)
+  clear_playlist
+  echo "$res" >> "$PLAYLIST"
+  echo "$minus_selected" >> "$PLAYLIST"
+
+  # Add playlist to socket
+  echo '{"command":["loadlist","'"$PLAYLIST"'","replace"]}' | socat - "$SOCKET" >&2
+  # Requires a little toggling to work properly
+  playerctl --player=mpv pause
+  playerctl --player=mpv play
+}
+
+initialise() {
+  INSTANCE_EXISTS=$(pgrep -f "mpv --idle --no-terminal --no-audio-display --input-ipc-server=$SOCKET")
+  if [[ ! "$INSTANCE_EXISTS" ]]; then
+    mpv --idle --no-terminal --no-audio-display --input-ipc-server="$SOCKET" &
+  fi
+}
+
+case "$1" in
+  -p) MODE=PLAYLIST ;;
+  -i) initialise; exit 1 ;;
+  *)  MODE=CHOOSE ;;
+esac
+
+initialise
+
+while true; do
+  case "$MODE" in
+    PLAYLIST) RESULT=$(fzf_select_playlist) || exit ;;
+    CHOOSE) RESULT=$(fzf_choose_play ) ;;
+  esac
+  case "$RESULT" in
+    ctrl-h*)MODE=CHOOSE ;;
+    ctrl-l*)MODE=PLAYLIST ;;
+    ctrl-x*) break;; # Emergency quit
+    *) case "$MODE" in
+         PLAYLIST) set_playlist "$RESULT" >/dev/null 2>&1; MODE=CHOOSE ;;
+         CHOOSE) [ "$RESULT" ] && create_playlist "$RESULT" >/dev/null 2>&1; break ;;
+       esac;;
+  esac
+done

@@ -1,0 +1,13 @@
+- name: Install sway package
+  become: true
+  dnf:
+    name:
+      - sway
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: Symlink sway
+  file:
+    src: "{{ config_dir }}/roles/sway/files/sway"
+    path: "{{ user_home }}/.config/sway"
+    state: link

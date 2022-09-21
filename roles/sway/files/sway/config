@@ -1,0 +1,274 @@
+set $mod Mod4
+set $term foot
+
+font pango:Fira Code 11
+
+seat * hide_cursor when-typing enable
+
+# Escape the xorg
+xwayland disable
+
+# gaps outer 14
+# gaps bottom 0
+
+# output "*" background "~/.cache/wallpaper" fill
+# output * bg ~/dat/img/wallpaper/px-wallhaven-l3y8ql.jpg fill
+output * bg "#000000" solid_color
+
+input type:keyboard {
+repeat_delay 230
+repeat_rate 28
+}
+
+# Clipman
+exec wl-paste -t text --watch clipman store
+exec clipman restore
+
+# Notification
+exec --no-startup-id dunst
+
+# Idle lock
+exec swayidle -w \
+timeout 900 'swaylock -f -c 000000 -i $HOME/img/wallpaper/wallhaven-vm5jyl.png' \
+timeout 1500 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
+before-sleep 'swaylock -f -c 000000 -i $HOME/img/wallpaper/wallhaven-vm5jyl.png'
+
+set $laptop eDP-1
+bindswitch --reload --locked lid:on  output $laptop disable
+bindswitch --reload --locked lid:off output $laptop enable
+hide_edge_borders --i3 smart
+
+bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+
+default_border pixel 0
+default_floating_border pixel 1
+
+bindsym XF86MonBrightnessDown exec --no-startup-id light -U 5
+bindsym XF86MonBrightnessUp   exec --no-startup-id light -A 5
+bindsym XF86AudioRaiseVolume  exec --no-startup-id "amixer set Master 10%+"
+bindsym XF86AudioLowerVolume  exec --no-startup-id "amixer set Master 10%-"
+bindsym XF86AudioMute         exec --no-startup-id "amixer set Master toggle"
+bindsym XF86AudioMicMute      exec --no-startup-id "amixer set Master toggle"
+
+for_window [app_id="^.*"]      border pixel 0; layout tabbed
+for_window [app_id="gcolor3" ] floating enable
+for_window [app_id="imv" ]     floating enable
+for_window [app_id="wev" ]     floating enable
+for_window [app_id="float" ]   floating enable
+for_window [app_id="thunar" ]  floating enable
+for_window [app_id="pcmanfm" ] floating enable
+for_window [app_id="thunar" ] floating enable
+for_window [class="float" ]    floating enable
+for_window [title="capture" ]  floating enable; move to workspace current
+
+assign [app_id="emacs"]        3:EMACS
+assign [app_id="org.qutebrowser.qutebrowser"] 2:BROWS
+assign [app_id="mpv"]         4:VIDEO
+assign [app_id="brave-browser"] 1:BRAVE
+assign [app_id="firefox-aurora"] 1:BRAVE
+
+
+bindsym Mod4+h workspace 1:BRAVE
+bindsym Mod4+Shift+h move container to workspace 1:BRAVE
+bindsym Mod4+j workspace 2:BROWS
+bindsym Mod4+Shift+j move container to workspace 2:BROWS
+bindsym Mod4+k workspace 3:EMACS
+bindsym Mod4+Shift+k move container to workspace 3:EMACS
+bindsym Mod4+l workspace 4:VIDEO
+bindsym Mod4+Shift+l move container to workspace 4:VIDEO
+bindsym Mod4+b bar mode toggle
+
+# Middle click title to kill
+bindsym --border button2 kill
+
+# Toggle the current focus between tiling and floating mode
+bindsym Mod4+Shift+f floating toggle
+
+bindsym Mod4+m focus next
+bindsym Mod4+n focus prev
+
+bindsym Mod4+Shift+x kill
+bindsym Mod4+Shift+c reload
+bindsym Mod4+Shift+r restart
+
+# bindsym Mod4+semicolon [urgent=latest] focus # wayland has no urgency (in every sense!)
+
+bindsym Mod4+f fullscreen toggle
+bindsym Mod4+Control+s layout stacking
+bindsym Mod4+Control+t layout tabbed
+
+bindsym Mod4+r exec --no-startup-id "fxmenu float 400x400 fx-launch"
+bindsym Mod4+semicolon exec --no-startup-id "fxmenu float 400x200 fx-sway-switch"
+
+bindsym Control+semicolon exec "fxmenu float 900x300 fx-search"
+bindsym Control+apostrophe exec "fxmenu float 900x300 fx-search -n"
+
+bindsym Mod4+c exec --no-startup-id "em capture"
+bindsym Mod4+backslash exec --no-startup-id "em term"; workspace 3:EMACS
+bindsym Control+Shift+m exec "clipman clear --all"
+bindsym Control+m exec "fxmenu float 900x300 fx-clipman"
+bindsym Control+slash exec "fxmenu float 500x300 fx-shuffler"
+
+# move the currently focused window to the scratchpad
+bindsym Mod4+Shift+minus move scratchpad
+bindsym Mod4+minus scratchpad show
+# Swap focus between the tiling area and the floating area
+bindsym $mod+Return focus mode_toggle
+bindsym Mod4+Shift+t exec $term
+
+# Music Shuffler
+bindsym Control+Shift+h     exec "playerctl --player=mpv previous"
+bindsym Control+Shift+l     exec "playerctl --player=mpv next"
+bindsym Control+Shift+space exec "playerctl --player=mpv play-pause"
+bindsym Control+Shift+i     exec "playerctl --player=mpv volume 0.1+"
+bindsym Control+Shift+u     exec "playerctl --player=mpv volume 0.1-"
+bindsym Control+Shift+j     exec "playerctl --player=mpv position 10- "
+bindsym Control+Shift+k     exec "playerctl --player=mpv position 10+ "
+
+# Kill focused window
+bindsym $mod+Shift+q kill
+
+# mouse button for dragging.
+floating_modifier Mod4 normal
+
+# Reload the configuration file
+bindsym $mod+Control+c reload
+
+set $left h
+set $down j
+set $up k
+set $right l
+
+# Move the focused window with the same, but add Shift
+bindsym $mod+Control+$left move left
+bindsym $mod+Control+$down move down
+bindsym $mod+Control+$up move up
+bindsym $mod+Control+$right move right
+# Ditto, with arrow keys
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Switch to workspace
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+# Move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+
+# mode "resize" {
+#     # left will shrink the containers width
+#     # right will grow the containers width
+#     # up will shrink the containers height
+#     # down will grow the containers height
+#     bindsym $left resize shrink width 10px
+#     bindsym $down resize grow height 10px
+#     bindsym $up resize shrink height 10px
+#     bindsym $right resize grow width 10px
+
+#     # Ditto, with arrow keys
+#     bindsym Left resize shrink width 10px
+#     bindsym Down resize grow height 10px
+#     bindsym Up resize shrink height 10px
+#     bindsym Right resize grow width 10px
+
+#     # Return to default mode
+#     bindsym Return mode "default"
+#     bindsym Escape mode "default"
+# }
+# bindsym $mod+o mode "resize"
+
+# Shutdown menu
+set $shutdown System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (d) shutdown
+mode "$shutdown" {
+    bindsym l exec --no-startup-id i3lock, mode "default"
+    bindsym e exec --no-startup-id i3-msg exit, mode "default"
+    bindsym s exec --no-startup-id systemctl suspend, mode "default"
+    bindsym h exec --no-startup-id systemctl hibernate, mode "default"
+    bindsym r exec --no-startup-id systemctl reboot, mode "default"
+    bindsym d exec --no-startup-id systemctl poweroff, mode "default"
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym Mod4+Shift+s mode "$shutdown"
+
+set $hotmenu Launch:(l) | Kill Process:(k) |  Emacs:(e) | Qute:(q) | Capture:(c) | Play:(p)
+mode "$hotmenu" {
+    bindsym k exec --no-startup-id "fxmenu float 1200x400 fx-kill-process", mode "default"
+    bindsym l exec --no-startup-id "fxmenu float 400x400 fx-launch", mode "default"
+    bindsym q exec --no-startup-id "qutebrowser", mode "default", mode "default"
+    bindsym p exec --no-startup-id "fxmenu float 900x300 fx-play all", mode "default"
+    bindsym c exec --no-startup-id "em capture",mode "default", mode "default"
+    bindsym e exec --no-startup-id "emacsclient -c -a '' ",mode "default", mode "default"
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym F6 mode "$hotmenu"
+
+# Status Bar:
+bar {
+    swaybar_command waybar
+    position bottom
+    strip_workspace_numbers yes
+    colors {
+	background #000000
+	statusline #a8aaba
+	separator  #a8aaba
+	# colorclass       <border> <background> <text>
+	focused_workspace  #000000  #000000     #a8aaba
+	inactive_workspace #000000  #000000     #1a1a21
+	urgent_workspace #E93C58 #E93C58 #a8aaba
+    }
+}
+
+set $bg     #000000
+set $ac     #000000
+set $fg     #a2a4ba
+set $hi     #efef8f
+set $tx     #e8b179
+set $ia     #a2a4ba
+set $be     #a2a4ba
+set $yw     #ccdc90
+set $gn     #88b090
+set $rd     #E93C58
+
+# set some nice colors      border     background  text
+client.focused              $bg        $bg         $tx
+client.unfocused            $bg        $bg         $ia
+client.focused_inactive     $bg        $bg         $ac
+client.urgent               $rd        $rd         $tx
+
+exec_always {
+    gsettings set org.gnome.desktop.interface cursor-theme "Breeze Light"
+    gsettings set org.gnome.desktop.interface cursor-size 24
+    gsettings set org.gnome.desktop.interface gtk-theme oomox-horizon-dark
+    gsettings set org.gnome.desktop.interface font-name "Fira Sans 11"
+    gsettings set org.gnome.desktop.interface monospace-font-name "Fira Code 11"
+
+    # I need to experiment with this.
+    # gsettings set org.gnome.desktop.interface scaling-factor 1.5
+    # gsettings set org.gnome.desktop.interface text-scaling-factor 1.5
+
+
+}

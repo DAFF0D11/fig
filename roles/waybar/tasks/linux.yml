@@ -1,0 +1,13 @@
+- name: Install waybar package
+  become: true
+  dnf:
+    name:
+      - waybar
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: Symlink waybar
+  file:
+    src: "{{ config_dir }}/roles/waybar/files/waybar"
+    path: "{{ user_home }}/.config/waybar"
+    state: link

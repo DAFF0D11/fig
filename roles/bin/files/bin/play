@@ -1,0 +1,124 @@
+#!/bin/sh
+# Dependencies: yt-dlp streamlink jq
+# Commands:
+# play url
+# play clip
+# play high url
+# play pause low url
+# play low clip
+# play pause high clip
+
+WATCH_HISTORY="$HOME/pea/mpv/watch_history"
+
+add_watch_history(){
+	# watch_history $URL
+  RAW=$(yt-dlp -j "$1")
+  TITLE=$(echo "$RAW" | jq -r '.fulltitle' | tr ' ' '_')
+  URL=$(echo "$RAW" | jq  -r '.original_url')
+  CHANNEL=$(echo "$RAW" | jq  -r '.channel' | tr ' ' '_')
+  UPLOADER=$(echo "$RAW" | jq  -r '.uploader_id')
+  if [ "$CHANNEL" = "null" ]
+  then
+	  NAME=$(echo "$UPLOADER")
+  else
+	  NAME=$(echo "$CHANNEL")
+  fi
+
+  FULL=$(echo "${CHANNEL}__${TITLE}	${URL}")
+  echo "$FULL" >> "$WATCH_HISTORY"
+
+}
+
+get_url(){
+	# Get the last argument, which will always be the URL.
+	for i in "$@"; do :; done
+	# Check for clip, protocol and default
+	case "$i" in
+		clip) echo "$(xclip -sel clip -o)" ;;
+		play://*)
+			echo "$i" | cut -d "/" -f3-;;
+		*) echo "$i" ;;
+	esac
+}
+
+get_player(){
+	# Determine which player to use by the URL passed.
+	case "$1" in
+		*youtube.com*)echo "mpv";;
+		*vid.puffyan.us*)echo "mpv";;
+		*twitch.tv/videos/*) echo "mpv";;
+		*twitch.tv*) echo "streamlink";;
+		*) echo "mpv";;
+	esac
+}
+
+play_mpv() {
+	QUALITY="$1"
+	URL="$2"
+	PAUSE="$3"
+	if [ "$PAUSE" = "pause" ]
+	then
+		mpv \
+			--pause \
+			--ytdl-format="bestvideo[height=?$QUALITY]+bestaudio/best" \
+			"$URL" 2>/dev/null 1>&2
+	else
+		mpv \
+			--ytdl-format="bestvideo[height=?$QUALITY]+bestaudio/best" \
+			"$URL" 2>/dev/null 1>&2
+	fi
+
+	add_watch_history "$2"
+}
+
+play_stream(){
+	QUALITY="$1"
+	URL="$2"
+	streamlink \
+		--player mpv \
+		--twitch-disable-ads \
+		--default-stream "$QUALITY" \
+		"$URL" 2>/dev/null 1>&2
+}
+
+play(){
+	QUALITY="$1"
+	URL="$2"
+	PAUSE="$3"
+	PLAYER=$(get_player "$URL")
+	case "$PLAYER" in
+		mpv*)
+			case "$QUALITY" in
+				high*)play_mpv "1080" "$URL" "$PAUSE";;
+				low*)play_mpv "480" "$URL" "$PAUSE";;
+				*)play_mpv "480" "$URL" "$PAUSE";;
+			esac
+			;;
+		streamlink*)
+			case "$QUALITY" in
+				high*)play_stream "best" "$URL";;
+				low*)play_stream "480p,best" "$URL";;
+				*)play_stream "480p,best" "$URL";;
+			esac
+			;;
+	esac
+}
+
+main(){
+	URL=$(get_url "$@")
+
+	case "$1" in
+		high*) play high "$URL";;
+		low*) play low "$URL";;
+		pause*)
+			PAUSE="$1"
+			case "$2" in
+				high*)play high "$URL" "$PAUSE";;
+				low*)play low "$URL" "$PAUSE";;
+			esac
+			;;
+		*)play low "$URL" "pause";;
+	esac
+}
+
+main "$@"

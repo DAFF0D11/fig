@@ -1,0 +1,108 @@
+{
+    //"layer": "top", // Waybar at top layer
+    "position": "bottom", // Waybar at the bottom of your screen
+    "height": 14, // Waybar height
+    // "width": 1366, // Waybar width
+    // Choose the order of the modules
+    "modules-left": ["sway/workspaces", "sway/mode" ],
+    //"modules-center": ["sway/window"],
+    "modules-center": ["clock"],
+   //"modules-right": ["network", "cpu", "memory", "battery","tray", "clock"],
+     "modules-right": ["network","backlight", "battery","tray", "custom/mpv"],
+    "sway/workspaces": {
+        "disable-scroll": false,
+        "disable-scroll-wraparound": true,
+        "all-outputs": false,
+        "format": "{icon}",
+        "format-icons": {
+            "1:BRAVE": "[BRAVE] ",
+            "2:BROWS": "[BROWS] ",
+            "3:EMACS": "[EMACS] ",
+            "4:VIDEO": "[VIDEO] ",
+            "5:music": "#",
+            "6:docs": "#",
+            "urgent": "#",
+            "focused": "[x] ",
+            "default": "[ ] "
+        }
+    },
+    "sway/mode": {
+        "format": "<span>{}</span>"
+    },
+    "tray": {
+        // "icon-size": 21,
+         "spacing": 10
+    },
+    "clock": {
+        "format": "{:%b-%d-%a %I:%M %p}",
+        "on-scroll-up":"swaymsg workspace next",
+        "on-scroll-down":"swaymsg workspace prev"
+    },
+    "custom/mpv": {
+        "format": "[MPV]",
+        "on-click-middle":"playerctl --player=mpv play-pause",
+        "on-click":"playerctl --player=mpv previous",
+        "on-click-right":"playerctl --player=mpv next",
+        "on-scroll-up":"playerctl --player=mpv volume 0.1+",
+        "on-scroll-down":"playerctl --player=mpv volume 0.1-"
+    },
+    "cpu": {
+        "format": " 💻:{usage}% ",
+    },
+    "memory": {
+    "interval": 30,
+    "format": "[ {used:0.1f}G/{total:0.1f}G  ]"
+    },
+    "backlight": {
+        "device": "intel_backlight",
+        "format": " [LIGHT:{percent}] ",
+        "interval":10,
+
+       // "format": " [{icon}:{percent}] ",
+        "format-icons": ["🌙", "⚹"]
+    },
+    "sway/window":{
+        "format": "{app_id}",
+        "on-scroll-up":"swaymsg workspace next",
+        "on-scroll-down":"swaymsg workspace prev"
+    },
+        "battery": {
+        "bat": "BAT1",
+        "states": {
+            "good": 85,
+            "warning": 45,
+            "critical": 15
+        },
+        "full-at": 95,
+        "format": "[BAT:{capacity}] ",
+        //"format": " [{capacity}% {icon}] ",
+         //"format-good": "", // An empty format will hide the module
+        "format-full": "",
+        "format-icons": ["", "", "", "", ""]
+    },
+    "network": {
+        // "interface": "wlp2s0", // (Optional) To force the use of this interface
+        //"format-wifi": " [ {essid} ({signalStrength}%)  ] ",
+        "format-wifi": " [{essid} ({signalStrength}%)] ",
+        //"format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
+        //"format-ethernet": "[  ]",
+        "format-ethernet": "[ETH]",
+        "format-disconnected": "[Disconnected ⚠]"
+    },
+    // "pulseaudio": {
+    //     //"scroll-step": 1,
+    //     "format": "{volume}% {icon}",
+    //     "format-bluetooth": "{volume}% {icon}",
+    //     "format-muted": "",
+    //     "format-icons": {
+    //         "headphones": "",
+    //         "handsfree": "",
+    //         "headset": "",
+    //         "phone": "",
+    //         "portable": "",
+    //         "car": "",
+    //         "default": ["", ""]
+    //     },
+    //     "on-click": "pavucontrol"
+    // }
+}

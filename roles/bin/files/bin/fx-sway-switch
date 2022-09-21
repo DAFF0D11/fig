@@ -1,0 +1,60 @@
+#!/bin/sh
+
+fzf_cmd() {
+    fzf --expect=ctrl-x,ctrl-g,ctrl-p \
+        --prompt="$prompt" \
+        --layout=reverse \
+        --delimiter="	" \
+        --with-nth=1 \
+        --bind=ctrl-j:down \
+        --bind=ctrl-k:up \
+        --bind=alt-j:page-down \
+        --bind=alt-k:page-up \
+        --bind=ctrl-q:toggle-all \
+        --bind=ctrl-space:toggle
+}
+
+trim(){
+    echo "$1" |  tail -n +2
+}
+
+get_windows(){
+    swaymsg -t get_tree | grep "app_id" | cut -d '"' -f4
+}
+
+get_window_title(){
+    swaymsg -t get_tree  | jq -r 'recurse(.nodes[]) | select(.app_id)' | grep "name" | cut -d '"' -f4
+}
+
+switch_window(){
+    trimmed=$(trim "$1")
+    rule="[app_id=$trimmed]"
+    swaymsg "$rule focus"
+}
+
+grab_window(){
+    trimmed=$(trim "$1")
+    rule="[app_id=$trimmed]"
+    swaymsg "$rule move container to workspace current"
+}
+
+close_window(){
+    swaymsg "$rule kill"
+}
+
+main(){
+    choice=$(get_windows | "$command")
+
+    [ -z "$choice" ] && exit 0
+
+    case "$choice" in
+        ctrl-g*) grab_window "$choice";;
+        ctrl-x*) close_window "$choice";;
+        *) switch_window "$choice";;
+    esac
+}
+
+prompt="Choose: "
+command=fzf_cmd
+
+main "$@"

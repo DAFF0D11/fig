@@ -1,0 +1,4 @@
+# TODO
+# - name: print facts
+#   debug: msg="yas redhat/fedora'{{ ansible_os_family }}'"
+#   when: ansible_facts['os_family'] == "RedHat"

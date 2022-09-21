@@ -1,0 +1,129 @@
+#!/bin/sh
+
+# Dafmenu script for selecting videos to play.
+# Select from all, or a specific directory.
+# Also displays watch history of anything played with "play" command.
+
+VIDEO_PATH="$HOME/vid/"
+WATCH_HISTORY="$HOME/pea/mpv/watch_history"
+COMMAND=fzfcmd
+
+fzfcmd() {
+    fzf --expect=ctrl-x,ctrl-f,ctrl-d,ctrl-h \
+        --exact \
+        --layout=reverse \
+        --delimiter="	" \
+        --with-nth=1 \
+        --bind=ctrl-j:down \
+        --bind=ctrl-k:up \
+        --bind=alt-j:page-down \
+        --bind=alt-k:page-up \
+        --bind=ctrl-q:toggle-all \
+        --bind=ctrl-space:toggle
+}
+
+dmenu_cmd(){
+    dmenu -i -c -l 30 -ex 'ctrl-x,ctrl-f,ctrl-d,ctrl-h'
+}
+
+add_watch_history_file(){
+    V_PATH="$1"
+    V_DIR="$2"
+    V_CHOICE="$3"
+    ENTRY=$(echo "$CHOICE	$V_PATH$V_DIR/$V_CHOICE" | tr -d "\n")
+    echo "$ENTRY" >> "$WATCH_HISTORY"
+}
+
+add_watch_history_history(){
+    echo "$1" >> "$WATCH_HISTORY"
+}
+
+add_watch_history_all(){
+    V_PATH="$1"
+    V_DIR=$(echo "$2" | rev | cut -d "/" -f2- | rev | tr -d "\n")
+    V_CHOICE=$(echo "$2" | rev | cut -d "/" -f1 | rev )
+    ENTRY=$(echo "$V_CHOICE	$V_PATH$V_DIR/$V_CHOICE" | tr -d "\n")
+    echo "$ENTRY" >> "$WATCH_HISTORY"
+}
+
+cut_choice(){
+    echo "$1" | tail -n +2 | cut -f2
+}
+
+choose_directory(){
+    fd --base-directory "$VIDEO_PATH" -t d | "$COMMAND"
+}
+
+choose_file(){
+    DIR=$(echo "$1" | tr -d "\n")
+    FILE=$(fd --base-directory "$VIDEO_PATH$DIR" -t f | grep -v "video_archive\|watch_history"  | "$COMMAND")
+    echo "$FILE"
+}
+
+play(){
+  launch mpv "$1" 2>/dev/null 1>&2
+}
+
+file_choice(){
+    V_PATH="$1"
+    V_DIR="$2"
+    V_CHOICE="$3"
+    echo "$V_PATH$V_DIR/$V_CHOICE" | tr -d "\n"
+}
+
+all_choice(){
+    V_PATH="$1"
+    V_CHOICE="$2"
+    echo "$V_PATH$V_CHOICE" | tr -d "\n"
+}
+
+choose_history(){
+    # Remove first duplicates and reverse
+    HST=$(tac "$WATCH_HISTORY" | awk '! seen[$0]++' | "$COMMAND" )
+    [ -z "$HST" ] && exit 0
+    echo "$HST"
+}
+
+case $1 in
+    dirs) MODE=DIRECTORIES ;;
+    all) MODE=ALL ;;
+    *) MODE=DIRECTORIES ;;
+esac
+
+while true; do
+    case "$MODE" in
+        DIRECTORIES) CHOICE=$(choose_directory) ;;
+        FILES) DIR="$CHOICE"; CHOICE=$(choose_file "$CHOICE") ;;
+        ALL) CHOICE=$(choose_file) ;;
+        HISTORY) CHOICE=$(choose_history) ;;
+    esac
+
+    [ -z "$CHOICE" ] && exit 0
+
+    case "$CHOICE" in
+        ctrl-d*)MODE=DIRECTORIES ;;
+        ctrl-f*)MODE=ALL ;;
+        ctrl-h*)MODE=HISTORY ;;
+        ctrl-x*)exit 0 ;;
+        *) case "$MODE" in
+               DIRECTORIES) MODE=FILES;;
+               HISTORY)
+                   RES=$(echo "$CHOICE" | cut -f2- | tr -d "\n" )
+                   [ -z "$RES" ] && exit 0
+
+                   play "$RES"
+
+                   HST=$(echo "$CHOICE" | tail -n +2)
+                   add_watch_history_history "$HST"
+                   break ;;
+               FILES)
+                   play "$(file_choice "$VIDEO_PATH" "$DIR" "$CHOICE")"
+                   add_watch_history_file "$VIDEO_PATH" "$DIR" "$CHOICE"
+                   break ;;
+               ALL)
+                   play "$(all_choice "$VIDEO_PATH" "$CHOICE")"
+                   add_watch_history_all "$VIDEO_PATH" "$CHOICE"
+                   break ;;
+           esac;;
+    esac
+done

@@ -1,0 +1,5 @@
+- name: Symlink Bin
+  file:
+    src: "{{ config_dir }}/roles/bin/files/bin"
+    path: "{{ user_home }}/bin"
+    state: link

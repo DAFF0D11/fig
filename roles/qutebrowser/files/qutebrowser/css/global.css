@@ -1,0 +1,171 @@
+:root {
+/* # (curs    "#1ef1a4") */
+
+/* # (backg   "#040406") */
+/* # (backg   "#000000") */
+/* # (foreg   "#a2a4ba") */
+
+/* # (red     "#E93C58") */
+/* # (green   "#29d398") */
+/* # (yellow  "#efaf8e") */
+/* # (blue    "#6e72af") */
+/* # (magenta "#b072d1") */
+/* # (cyan    "#24a8b4") */
+
+/* # (grayll  "#f9f9f9") */
+/* # (grayl   "#d9dce7") */
+/* # (grayml  "#a2a4ba") */
+/* # (graym   "#454558") */
+/* # (grayd   "#232533") */
+
+/* # (black   "#000000") */
+/* # (white   "#ffffff") */
+
+
+
+
+        --black:black;
+        --white: white;
+        --grayscale-1:#17171b;
+        --grayscale-2:#212127;
+        --grayscale-3:#313139;
+        --grayscale-4:#3d3d47;
+        --grayscale-5:#51525d;
+        --grayscale-6:#5b5d68;
+        --grayscale-7:#757781;
+        --grayscale-8:#8f9099;
+        --grayscale-9:#a4a5ac;
+        --grayscale-10:#b3b4bc;
+        --grayscale-11:#c7c8d1;
+        --grayscale-12:#e4e5ef;
+        --red:#f0373a;
+        --orange:#ffa333;
+        --yellow: #ffec17;
+        --daf: #daff0d;
+        --green: #00ffbb;
+        --blue: #5f71a1;
+        --purple:#ae41d9;
+        --pink:#ff3572;
+        --cyan: #7eeee1;
+        --gray1:#2f2f3b;
+
+        --background-darkmode:#000000;
+        /* --background-darkmode:#040406; */
+        --foreground-darkmode:#e1e2e5;
+        --background-lightmode:#f1f1f1;
+        --foreground-lightmode:#1c1a27;
+        --font-family:monospace;
+        --font-weight:100;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+            --background: var(--background-darkmode) !important;
+            --foreground: var(--foreground-darkmode) !important;
+            /* Pirmary colors */
+            --p:var(--green)!important;
+            --s:var(--orange)!important;
+            --t:var(--daf)!important;
+            /* Grayscale */
+            --g1:var(--grayscale-1)!important;
+            --g2:var(--grayscale-3)!important;
+            --g3:var(--grayscale-4)!important;
+            --g4:var(--grayscale-9)!important;
+
+            --scrollbar:var(--background)!important;
+            --scrollbar-thumb:var(--gray1)!important;
+
+            --selection-foreground:var(--black)!important;
+            --selection-background:var(--daf)!important;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+            --background:var(--background-lightmode);
+            --foreground:var(--foreground-lightmode);
+            /* Pirmary colors */
+            --p:var(--green)!important;
+            --s:var(--orange)!important;
+            --t:var(--pink)!important;
+            /* Grayscale */
+            --g1:var(--grayscale-9)!important;
+            --g2:var(--grayscale-6)!important;
+            --g3:var(--grayscale-3)!important;
+            --g4:var(--grayscale-1)!important;
+
+            --scrollbar:var(--background)!important;
+            --scrollbar-thumb:var(--foreground)!important;
+
+            --selection-foreground:var(--background)!important;
+            --selection-background:var(--t)!important;
+    }
+}
+
+
+::selection{
+    background-color: var(--selection-background);
+    color: var(--selection-foreground);
+}
+
+    /* Scrollbar */
+::-webkit-scrollbar {
+    width: 10px !important;
+    background-color: var(--scrollbar) !important;
+    border-radius: 0 !important;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 0 !important;
+    background: var(--scrollbar-thumb) !important;
+}
+
+::-webkit-scrollbar-corner { background: var(--scrollbar) !important; }
+
+    /* Unfocused scrollbar color */
+/* ::-webkit-scrollbar-thumb:window-inactive { */
+/* } */
+
+
+:root{
+	--post: var(--background) !important;
+	--outside: var(--background) !important;
+	--highlighted: var(--background ) !important;
+	--text: var(--foreground) !important;
+}
+
+
+#column_one > .post:hover {
+	background: var(--g1) !important;
+}
+
+#posts > .post:hover {
+	background: var(--g1) !important;
+}
+
+#sort_options > a:not(.selected):hover, #listing_options > a:not(.selected):hover {
+	background: var(--g1) !important;
+}
+
+.comment_score {
+	background: var(--g1) !important;
+}
+
+select:hover {
+	background: var(--g1) !important;
+}
+
+#sort_options > a.selected, #listing_options > a.selected {
+	color: var(--g1) !important;
+}
+
+.prefs select {
+	background: var(--g1) !important;
+}
+#wiki {
+	background: var(--g1) !important;
+}
+
+.awards {
+    background-color: var(--g1) !important;
+}

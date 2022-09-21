@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# Dependencies: launch
+
+fzf_cmd(){
+    fzf --prompt="$prompt" \
+        --layout=reverse \
+        --exact \
+        --bind=ctrl-j:down \
+        --bind=ctrl-k:up
+}
+
+get_binaries(){
+    printf "%s" "$PATH" \
+        | xargs  -d: -I{} \
+                 find \
+                 -L {} \
+                 -maxdepth 1 \
+                 -mindepth 1 \
+                 -type f \
+                 -executable \
+                 -printf '%P\n' 2>/dev/null | sort -u
+}
+
+main(){
+    choice=$( get_binaries | "$command")
+
+    [ -z "$choice" ] && exit 0
+
+    launch "$choice"
+}
+
+prompt="Launch: "
+command=fzf_cmd
+
+main

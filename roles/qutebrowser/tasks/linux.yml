@@ -1,0 +1,40 @@
+# Qutebrowser needs RPM fusion for the qt5-qtwebengine-freeworld,
+# which is required to play things like youtube videos.
+# The optional python-pip3 package adblock is to use Brave browsers adblocking
+
+- name: Install python pip3 for qutebrowser adblock
+  become: true
+  dnf:
+    name:
+      - python3-pip
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: Install adblock package with pip3
+  become: false
+  ansible.builtin.pip:
+    name: adblock
+    executable: pip3
+  when: ansible_distribution == "Fedora"
+
+- name: Install qt5webengine (prop codecs)
+  become: true
+  dnf:
+    name:
+      - qt5-qtwebengine-freeworld
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: Install qutebrowser package
+  become: true
+  dnf:
+    name:
+      - qutebrowser
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: Symlink qutebrowser config
+  file:
+    src: "{{ config_dir }}/roles/qutebrowser/files/qutebrowser"
+    path: "{{ user_home }}/.config/qutebrowser"
+    state: link

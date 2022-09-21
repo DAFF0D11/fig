@@ -1,0 +1,187 @@
+exec --no-startup-id set-main-hdmi
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+exec --no-startup-id nm-applet
+
+font pango:terminus 9
+
+# remove titlebar on clients
+default_border pixel 0
+default_floating_border pixel 1
+
+for_window [class="^.*"]      border pixel 0 ; layout stacked
+for_window [title="capture" ] floating enable
+for_window [class="float" ]   floating enable
+
+assign [class="qutebrowser"] 7:WWW
+assign [class="Emacs"]       8:EMACS
+assign [class="mpv"]         9:MPV
+
+bindsym Mod4+j workspace 7:WWW
+bindsym Mod4+k workspace 8:EMACS
+bindsym Mod4+l workspace 9:MPV
+
+bindsym Mod4+n focus next
+bindsym Mod4+m focus prev
+
+bindsym Mod4+x kill
+bindsym Mod4+Shift+c reload
+bindsym Mod4+Shift+r restart
+
+bindsym Mod4+semicolon [urgent=latest] focus
+
+bindsym Mod4+f fullscreen toggle
+bindsym Mod4+s layout stacked
+
+bindsym Mod4+r exec --no-startup-id dmenu_run
+bindsym F6 exec --no-startup-id dafmenu-which
+
+bindsym Control+semicolon exec --no-startup-id dafmenu-search-emacs-book
+bindsym Control+m exec --no-startup-id clipmenu
+bindsym Mod4+Shift+s exec --no-startup-id dmenu_shutdown
+
+bindsym Mod4+c exec --no-startup-id "em capture"
+bindsym Mod4+backslash exec --no-startup-id "em term"; workspace number 8
+# bindsym Control+slash exec --no-startup-id dafmenu-mpv-music-shuffler
+bindsym Control+slash exec --no-startup-id "~/tmp/st-music"
+
+# move the currently focused window to the scratchpad
+bindsym Mod4+Shift+minus move scratchpad
+bindsym Mod4+minus scratchpad show
+
+bindsym Mod4+t exec i3-sensible-terminal
+
+# Music Shuffler
+bindsym Control+Shift+h     exec "playerctl --player=mpv previous"
+bindsym Control+Shift+l     exec "playerctl --player=mpv next"
+bindsym Control+Shift+space exec "playerctl --player=mpv play-pause"
+bindsym Control+Shift+i     exec "playerctl --player=mpv volume 0.1+"
+bindsym Control+Shift+u     exec "playerctl --player=mpv volume 0.1-"
+bindsym Control+Shift+j     exec "playerctl --player=mpv position 5+ "
+bindsym Control+Shift+k     exec "playerctl --player=mpv position 5- "
+
+# Use pactl to adjust volume in PulseAudio.
+# set $refresh_i3status killall -SIGUSR1 i3status
+# bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+# bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+# bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+# bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+# use Mouse+Mod4 to drag floating windows to their wanted position
+floating_modifier Mod4
+bindsym Mod4+Shift+g floating toggle
+bindsym Mod4+g focus mode_toggle
+
+# alternatively, you can use the cursor keys:
+bindsym Mod4+Left focus left
+bindsym Mod4+Down focus down
+bindsym Mod4+Up focus up
+bindsym Mod4+Right focus right
+
+# move focused window
+bindsym Mod4+Shift+$left move left
+bindsym Mod4+Shift+$down move down
+bindsym Mod4+Shift+$up move up
+bindsym Mod4+Shift+$right move right
+
+# alternatively, you can use the cursor keys:
+bindsym Mod4+Shift+Left move left
+bindsym Mod4+Shift+Down move down
+bindsym Mod4+Shift+Up move up
+bindsym Mod4+Shift+Right move right
+
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7:WWW"
+set $ws8 "8:EMACS"
+set $ws9 "9:MPV"
+set $ws10 "10"
+
+# switch to workspace
+bindsym Mod4+1 workspace  $ws1
+bindsym Mod4+2 workspace  $ws2
+bindsym Mod4+3 workspace  $ws3
+bindsym Mod4+4 workspace  $ws4
+bindsym Mod4+5 workspace  $ws5
+bindsym Mod4+6 workspace  $ws6
+bindsym Mod4+7 workspace  $ws7
+bindsym Mod4+8 workspace  $ws8
+bindsym Mod4+9 workspace  $ws9
+bindsym Mod4+0 workspace  $ws10
+
+# move focused container to workspace
+bindsym Mod4+Shift+1 move container to workspace $ws1
+bindsym Mod4+Shift+2 move container to workspace $ws2
+bindsym Mod4+Shift+3 move container to workspace $ws3
+bindsym Mod4+Shift+4 move container to workspace $ws4
+bindsym Mod4+Shift+5 move container to workspace $ws5
+bindsym Mod4+Shift+6 move container to workspace $ws6
+bindsym Mod4+Shift+7 move container to workspace $ws7
+bindsym Mod4+Shift+8 move container to workspace $ws8
+bindsym Mod4+Shift+9 move container to workspace $ws9
+bindsym Mod4+Shift+0 move container to workspace $ws10
+
+# exit i3 (logs you out of your X session)
+bindsym Mod4+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+set $up k
+set $down j
+set $left h
+set $right l
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        bindsym $left       resize shrink width 10 px or 10 ppt
+        bindsym $down       resize grow height 10 px or 10 ppt
+        bindsym $up         resize shrink height 10 px or 10 ppt
+        bindsym $right      resize grow width 10 px or 10 ppt
+        bindsym Left        resize shrink width 10 px or 10 ppt
+        bindsym Down        resize grow height 10 px or 10 ppt
+        bindsym Up          resize shrink height 10 px or 10 ppt
+        bindsym Right       resize grow width 10 px or 10 ppt
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym Mod4+r mode "default"
+}
+
+bindsym Mod4+Shift+o mode "resize"
+# color defines for zenburn styled i3
+set $bg     #000000
+set $ac     #000000
+set $fg     #9f9f9f
+set $hi     #efef8f
+set $tx     #ffffff
+set $ia     #8f8f8f
+set $be     #8faf9f
+set $yw     #ccdc90
+set $gn     #88b090
+set $rd     #E93C58
+
+# set some nice colors      border     background  text
+client.focused              $ac        $ac         $tx
+client.unfocused            $bg        $bg         $ia
+client.focused_inactive     $bg        $bg         $ac
+client.urgent               $rd        $rd         $tx
+
+bar {
+    # mode show
+    # hidden_state hide
+    modifier Mod4
+    status_command i3status
+  colors {
+                background #000000
+                statusline #a8aaba
+                separator #a8aaba
+                # colorclass       <border> <background> <text>
+                focused_workspace  #000000  #000000     #a8aaba
+                inactive_workspace #000000  #000000     #1a1a21
+		urgent_workspace #E93C58 #E93C58 #a8aaba
+
+
+        }
+
+
+}

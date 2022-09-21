@@ -1,0 +1,21 @@
+- name: Set global variables
+  set_fact:
+    user: "{{ ansible_env.USER }}"
+    user_home: "{{ ansible_env.HOME }}"
+    config_dir: "{{ ansible_env.PWD }}"
+    dist: "{{ ansible_distribution }}"
+    dist_variety: "{{ ansible_distribution_file_variety }}"
+
+# Just to print out the variables
+- debug:
+    msg:
+      - "{{ user }}"
+      - "{{ user_home }}"
+      - "{{ config_dir }}"
+      - "{{ dist }}"
+      - "{{ dist_variety }}"
+
+- name: Create ~/.config directory
+  file:
+    path: "{{ user_home }}/.config"
+    state: directory

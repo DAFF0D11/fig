@@ -1,0 +1,13 @@
+- name: Install dunst package
+  become: true
+  dnf:
+    name:
+      - dunst
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: Symlink dunst config
+  file:
+    src: "{{ config_dir }}/roles/dunst/files/dunst"
+    path: "{{ user_home }}/.config/dunst"
+    state: link
