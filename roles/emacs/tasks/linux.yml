@@ -75,10 +75,18 @@
   when:
     - not stat_result.stat.exists
 
-- name: Make and install Emacs
+- name: Make Emacs
   become: true
   ansible.builtin.shell:
     chdir: "/tmp/emacs"
-    cmd: "make -j $(nproc) install"
+    cmd: "make -j $(nproc)"
+  when:
+    - not stat_result.stat.exists
+
+- name: Install Emacs
+  become: true
+  ansible.builtin.shell:
+    chdir: "/tmp/emacs"
+    cmd: "make install"
   when:
     - not stat_result.stat.exists
