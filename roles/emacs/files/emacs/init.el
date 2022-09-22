@@ -159,7 +159,7 @@
 	(window-configuration-to-register '_)
 	(delete-other-windows))))
 
-  (defun edit-emacs-configuration () (interactive) (find-file "~/.emacs.d/init.el"))
+  (defun edit-emacs-configuration () (interactive) (find-file "~/.config/emacs/init.el"))
 
   (defun daf/flip-window ()
     "toggle previous buffer, bufferlo needs (setq bufferlo-prefer-local-buffers t)"
@@ -268,7 +268,7 @@
   :config
   (global-undo-tree-mode)
   (setq undo-tree-auto-save-history t)
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo"))))
+  (setq undo-tree-history-directory-alist '(("." . "~/.config/emacs/undo"))))
 
 (use-package evil
   :init
