@@ -1,0 +1,7 @@
+roles/emacs/files/emacs/auto-save-list
+roles/emacs/files/emacs/eln-cache
+roles/emacs/files/emacs/places
+roles/emacs/files/emacs/recentf
+roles/emacs/files/emacs/straight
+roles/emacs/files/emacs/transient
+roles/emacs/files/emacs/undo
