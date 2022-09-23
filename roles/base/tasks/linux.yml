@@ -34,9 +34,11 @@
       - dnf-plugins-core
       - net-tools
       - fira-code-fonts
+      - gdouros-symbola-fonts
       - breeze-cursor-theme
       - gimp
       - pcmanfm
+      - firefox
       - flameshot
       - keepassxc
       - pavucontrol
