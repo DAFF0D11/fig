@@ -66,6 +66,7 @@ assign [app_id="org.qutebrowser.qutebrowser"] 2:BROWS
 assign [app_id="mpv"]         4:VIDEO
 assign [app_id="brave-browser"] 1:BRAVE
 assign [app_id="firefox-aurora"] 1:BRAVE
+assign [app_id="firefox"] 1:BROWS
 
 
 bindsym Mod4+h workspace 1:BRAVE
