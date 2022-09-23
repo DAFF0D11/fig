@@ -1044,7 +1044,7 @@
   :init
   (setq lsp-keep-workspace-alive nil)
   :hook (
-	 (python-mode . lsp)
+	 ;; (python-mode . lsp)
 	 (go-mode . lsp)
 	 (c-mode . lsp)
 	 (rjsx-mode . lsp)
