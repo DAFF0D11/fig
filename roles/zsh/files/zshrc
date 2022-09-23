@@ -35,7 +35,7 @@ bindkey "^y" edit-command-line
 autoload -U colors && colors
 prompt_host=$(echo "$HOST" | tr 'a-z' 'A-Z')
 prompt_user=$(echo "$USER" | tr 'a-z' 'A-Z')
-PROMPT="%F{red}${prompt_host}%F{blue}:%F{white}${prompt_user}%{$reset_color%} %~ "
+PROMPT="%F{white}${prompt_user}%F{black}@%F{red}${prompt_host}%{$reset_color%} %~ "
 
 # do i need this?
 # dmenu_run
