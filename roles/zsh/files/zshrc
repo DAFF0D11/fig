@@ -122,7 +122,6 @@ source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 export GTK_THEME=dark-theme
 
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
- --no-info
  --no-bold
  --layout=reverse
  --color=fg:#a2a4ba,bg:#000000,hl:#fab689
