@@ -149,7 +149,8 @@ main(){
     while true; do
         case $mode_major in
             SEARCH) prompt="$new_tab search:"
-                    mode_list=get_history;;
+                    # mode_list=get_history;;
+                    mode_list="";;
             BOOKMARKS) prompt="bookmarks:"
                        mode_list=get_bookmarks ;;
             HISTORY) prompt="history:"
@@ -203,8 +204,8 @@ main(){
 
 # HISTORY_FILE=$HOME/.cache/fzf-history
 
-HISTORY_PATH=$HOME/.mozilla/firefox/zh6tdesq.dev-edition-default/places.sqlite
-HISTORY_FILE=$HOME/.cache/fzf-history
+# HISTORY_PATH=$HOME/.mozilla/firefox/zh6tdesq.dev-edition-default/places.sqlite
+HISTORY_FILE=$HOME/.cache/fx-search-history
 BLACKLIST_HIST_SEARCH_ENGINES='duckduckgo\|google\|amazon\|ebay\|brave'
 # BOOKMARK_PATH=$HOME/.config/chromium/Default/Bookmarks
 
