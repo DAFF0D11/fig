@@ -5,7 +5,7 @@
 # Audio is the best quality possible, usually opus
 # Example: download-ytdlp audio "https://vid.puffyan.us/watch?v=PV6aVAlrrLc"
 
-# DEPENDENCIES: yt-dlp, dmenu, fd(fd-find)
+# DEPENDENCIES: yt-dlp, wofi, fd(fd-find)
 
 VIDEO_PATH="$HOME/vid/"
 MUSIC_PATH="$HOME/mus/"
@@ -131,7 +131,7 @@ case "$URL" in
 	*watch?v=*|*funimation.com*)
 		case "$DOWNLOAD_TYPE" in
 			low*)
-				PLAYLIST=$( get_list_directories "$VIDEO_PATH" | dmenu -p "playlist:" -l 10 -c | xargs printf '%s/\n')
+				PLAYLIST=$( get_list_directories "$VIDEO_PATH" | wofi --show dmenu | xargs printf '%s/\n')
 
 				# no playlist chosen or input
 				[ "$PLAYLIST" == "/" ] && exit 1
@@ -144,7 +144,7 @@ case "$URL" in
 				notify-send "Finished low quality Download" "$TITLE"
 				;;
 			high*)
-				PLAYLIST=$( get_list_directories "$VIDEO_PATH" | dmenu -p "playlist:" -l 10 -c | xargs printf '%s/\n')
+				PLAYLIST=$( get_list_directories "$VIDEO_PATH" | wofi --show dmenu | xargs printf '%s/\n')
 
 				# no playlist chosen or input
 				[ "$PLAYLIST" == "/" ] && exit 1
@@ -157,7 +157,7 @@ case "$URL" in
 				notify-send "Finished high quality Download" "$TITLE"
 				;;
 			audio*)
-				PLAYLIST=$( get_list_directories "$MUSIC_PATH" | dmenu -p "playlist:" -l 10 -c | xargs printf '%s/\n')
+				PLAYLIST=$( get_list_directories "$MUSIC_PATH" | wofi --show dmenu | xargs printf '%s/\n')
 
 				# stop downloading entire playlists
 				URL=$(echo "$URL" | cut -d "&" -f1 )
@@ -173,7 +173,7 @@ case "$URL" in
 				notify-send "Finished Audio Download" "$TITLE"
 				;;
 			*)
-				PLAYLIST=$( get_list_directories "$VIDEO_PATH" | dmenu -p "playlist:" -l 10 -c | xargs printf '%s/\n')
+				PLAYLIST=$( get_list_directories "$VIDEO_PATH" | wofi --show dmenu | xargs printf '%s/\n')
 
 				# no playlist chosen or input
 				[ "$PLAYLIST" == "/" ] && exit 1
