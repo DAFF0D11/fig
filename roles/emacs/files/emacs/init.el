@@ -1120,6 +1120,12 @@
 
 (use-package restclient :defer t)
 
+(use-package pdf-tools
+  ;; run pdf-tools-install on first use
+  :config
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-page))
+
 (load (concat user-emacs-directory "lisp/rotate.el"))
 
 ;; Really not necessary....UNLESS???
