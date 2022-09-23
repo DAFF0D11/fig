@@ -989,21 +989,17 @@
     (org-capture))
 
 ;;; Testing...
-  (defun make-capture-frame-mini ()
-    "Create a new minibuffer frame and run org-capture."
+  (defun make-capture-frame-mini (list)
+    "Testing dmenu replacement"
+     ;; emacsclient -e '(make-capture-frame-mini (list "chill" "phonk"))'
+
     (interactive)
     (vertico-posframe-mode -1)
-    (make-frame '((width . 120) (height . 15)
-                  (minibuffer . only)
-                  (name . "capture")))
-    (sleep-for 0.01)
+    (make-frame '((width . 120) (height . 15) (minibuffer . only) (name . "capture")))
     (select-frame-by-name "capture")
-    (select-frame-set-input-focus (selected-frame))
+    (select-frame-set-input-focus (selected-frame)) ;; possibly not needed
     (unwind-protect
-        (message (completing-read ; This is where my pdf search function goes
-                  "Choose: "
-                  '("Option 1" "Option 2" "Option 3" "Option 4")))
-
+        (message (completing-read "Choose: " list))
       (delete-frame)
       (vertico-posframe-mode 1)
       ))
