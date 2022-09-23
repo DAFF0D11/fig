@@ -166,8 +166,8 @@ config.bind('<space>pP', 'spawn -d play low {url}', mode='normal')# Open current
 
 # Link
 config.bind('<space>lm', 'hint -r links tab-bg', mode='normal')
-config.bind('<space>lb', 'hint links spawn -d brave {hint-url}', mode='normal')
-config.bind('<space>lB', 'spawn -d brave {url}', mode='normal')
+config.bind('<space>lb', 'hint links spawn -d firefox {hint-url}', mode='normal')
+config.bind('<space>lB', 'spawn -d firefox {url}', mode='normal')
 config.bind('<space>ly', 'hint links yank', mode='normal')
 config.bind('<space>ld', 'hint links download {hint-url}', mode='normal')
 
