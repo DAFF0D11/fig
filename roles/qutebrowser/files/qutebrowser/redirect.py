@@ -1,4 +1,3 @@
-
 # This is an unsupported method of redirecting urls in Qutebrowser.
 
 import operator, re, typing
@@ -20,11 +19,11 @@ REDIRECT_MAP = {
 	# "youtube.com": operator.methodcaller('setHost', 'yewtu.be'),
 	# "www.youtube.com": operator.methodcaller('setHost', 'yewtu.be'),
 
-	"youtube.com": operator.methodcaller('setHost', 'piped.kavin.rocks'),
-	"www.youtube.com": operator.methodcaller('setHost', 'piped.kavin.rocks'),
+	# "youtube.com": operator.methodcaller('setHost', 'piped.kavin.rocks'),
+	# "www.youtube.com": operator.methodcaller('setHost', 'piped.kavin.rocks'),
 
-	# "youtube.com": operator.methodcaller('setHost', 'vid.puffyan.us'),
-	# "www.youtube.com": operator.methodcaller('setHost', 'vid.puffyan.us'),
+	"youtube.com": operator.methodcaller('setHost', 'vid.puffyan.us'),
+	"www.youtube.com": operator.methodcaller('setHost', 'vid.puffyan.us'),
 
 	# "instagram.com": operator.methodcaller('setHost', 'bibliogram.snopyta.org'),
 	# "www.instagram.com": operator.methodcaller('setHost', 'bibliogram.snopyta.org'),
