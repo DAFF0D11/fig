@@ -45,8 +45,7 @@
    config--org-agenda-file    "~/org/agenda/agenda.org"
    config--org-agenda-files '("~/org/agenda/agenda.org")
    config--bookmarks          "~/org/agenda/bookmarks.org"
-   config--emacs-bookmarks    "~/.config/emacs/emacs-bookmarks"
-   ))
+   config--emacs-bookmarks    "~/.config/emacs/emacs-bookmarks"))
 
 (add-to-list 'custom-theme-load-path config--themes)
 (load-theme 'castle t )
@@ -57,23 +56,71 @@
 ;; Delete trailing whitespace on save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-;; The most simple modeline
-(setq-default
- mode-line-format
- (list
-  ;; current branch
+;; OLD The most simple modeline
+;; (setq-default
+;;  mode-line-format
+;;  (list
+;;   ;; current branch
+;;   '(:eval (when-let (vc vc-mode) (list " " (propertize (substring vc 5) 'face 'org-level-5) " ")))
+;;   ;; full path file name
+;;   '(:eval (list (propertize " %f" 'face (if (buffer-modified-p) 'font-lock-keyword-face 'default))))
+;;   ;; position line
+;;   (propertize " %02l" 'face 'font-lock-comment-face)
+;;   ;; position percentage (TOP/BOTTOM)
+;;   ;; (propertize " %p" 'face 'font-lock-comment-face)
+;;   ;; spaces to align right
+;;   ;; '(:eval (propertize " " 'display `((space :align-to (- (+ right right-fringe right-margin)
+;;   ;; 				 ,(+ 3 (string-width mode-name)))))))
+;;   ;; the current major mode
+;;   (propertize " %m " 'face 'font-lock-string-face)))
+
+;; New simple centered modeline (needs work)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun mode-line-fill-right (face reserve)
+  "Return empty space using FACE and leaving RESERVE space on the right."
+  (unless reserve
+    (setq reserve 20))
+  (when (and window-system (eq 'right (get-scroll-bar-mode)))
+    (setq reserve (- reserve 3)))
+  (propertize " "
+              'display `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))
+              'face face))
+
+(defun mode-line-fill-center (face reserve)
+  "Return empty space using FACE to the center of remaining space leaving RESERVE space on the right."
+  (unless reserve
+    (setq reserve 20))
+  (when (and window-system (eq 'right (get-scroll-bar-mode)))
+    (setq reserve (- reserve 3)))
+  (propertize " "
+              'display `((space :align-to (- (+ center (.5 . right-margin)) ,reserve
+                                             (.5 . left-margin))))
+              'face face))
+
+(defconst RIGHT_PADDING 1)
+
+(defun reserve-left/middle ()
+  (/ (length (format-mode-line mode-line-align-middle)) 2))
+
+(defun reserve-middle/right ()
+  (+ RIGHT_PADDING (length (format-mode-line mode-line-align-right))))
+
+(setq mode-line-align-middle
+      (list
   '(:eval (when-let (vc vc-mode) (list " " (propertize (substring vc 5) 'face 'org-level-5) " ")))
-  ;; full path file name
   '(:eval (list (propertize " %f" 'face (if (buffer-modified-p) 'font-lock-keyword-face 'default))))
-  ;; position line
   (propertize " %02l" 'face 'font-lock-comment-face)
-  ;; position percentage (TOP/BOTTOM)
-  ;; (propertize " %p" 'face 'font-lock-comment-face)
-  ;; spaces to align right
-  ;; '(:eval (propertize " " 'display `((space :align-to (- (+ right right-fringe right-margin)
-  ;; 				 ,(+ 3 (string-width mode-name)))))))
-  ;; the current major mode
   (propertize " %m " 'face 'font-lock-string-face)))
+
+(setq-default mode-line-format
+              (list
+                '(:eval (mode-line-fill-center 'mode-line (reserve-left/middle)))
+               mode-line-align-middle '(:eval (mode-line-fill-right 'mode-line (reserve-middle/right)))
+               ))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (set-face-attribute 'default nil :family config--font :height config--font-height)
 (set-face-attribute 'default nil :family config--font :height 105)

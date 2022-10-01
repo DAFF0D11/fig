@@ -5,3 +5,10 @@ roles/emacs/files/emacs/recentf
 roles/emacs/files/emacs/straight
 roles/emacs/files/emacs/transient
 roles/emacs/files/emacs/undo
+roles/emacs/files/emacs/projects
+roles/emacs/files/emacs/elpa
+
+roles/qutebrowser/files/qutebrowser/autoconfig.yml
+roles/qutebrowser/files/qutebrowser/bookmarks
+roles/qutebrowser/files/qutebrowser/quickmarks
+/roles/qutebrowser/files/qutebrowser/blocked-hosts
