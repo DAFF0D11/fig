@@ -733,9 +733,16 @@
   (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
   (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'daf/multi-vterm-toggle-project)
   )
+
 (use-package project
   :straight (:type built-in)
   :config
+  (defun daf/ignore-project-term-buffer-predicate (buffer)
+    (if (string-match (multi-vterm-project-get-buffer-name) (buffer-name buffer))
+        nil
+      t))
+  (set-frame-parameter nil 'buffer-predicate 'daf/ignore-project-term-buffer-predicate)
+
   ;; Create a predicate to check if buffer is a term with the name of the project
   (defun daf/project-vterm-predicate (buffer)
     "Kill buffer defined by (multi-vterm-project-get-buffer-name)"
@@ -743,9 +750,10 @@
         t
       nil))
   (add-to-list 'project-kill-buffer-conditions
-           'daf/project-vterm-predicate
-           t)
+               'daf/project-vterm-predicate
+               t)
   )
+
 (use-package magit
   :init
   (setq ediff-window-setup-function 'ediff-setup-windows-plain)
