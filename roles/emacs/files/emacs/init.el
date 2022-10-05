@@ -2,9 +2,14 @@
 (setq initial-scratch-message nil)
 (setq show-paren-mode nil)
 
-;; disable modes
+;; kill the cursor blink
 (blink-cursor-mode -1)
+(setq visible-cursor nil)
+;; disable modes
 (global-eldoc-mode -1)
+
+;; line numbers
+;; (setq display-line-numbers-type 'relative)
 ;; (global-display-line-numbers-mode 'relative)
 
 ;; enable modes
@@ -77,6 +82,38 @@
 ;; New simple centered modeline (needs work)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+(defface my-modeline-fileface
+  '((((background  dark)) :background "#000000" )
+    (((background  light)) :background "#000000"))
+  "Fringe face for current position."
+  :group 'my-modeline)
+
+(defface my-modeline-modfileface
+  '((((background  dark)) :background "#000000" :foreground "#E93C58")
+    (((background  light)) :background "#000000"))
+  "Fringe face for current position."
+  :group 'my-modeline)
+
+(defface my-modeline-vcface
+  '((((background  dark)) :background "#000000" :foreground "#5cd59c")
+    (((background  light)) :background "#000000"))
+  "Fringe face for current position."
+  :group 'my-modeline)
+
+(defface my-modeline-lnface
+  '((((background  dark)) :background "#000000" :foreground "#464658")
+    (((background  light)) :background "#000000"))
+  "Fringe face for current position."
+  :group 'my-modeline)
+
+(defface my-modeline-modeface
+  '((((background  dark)) :background "#000000")
+    (((background  light)) :background "#000000"))
+  "Fringe face for current position."
+  :group 'my-modeline)
+
+
 (defun mode-line-fill-right (face reserve)
   "Return empty space using FACE and leaving RESERVE space on the right."
   (unless reserve
@@ -108,16 +145,16 @@
 
 (setq mode-line-align-middle
       (list
-  '(:eval (when-let (vc vc-mode) (list " " (propertize (substring vc 5) 'face 'org-level-5) " ")))
-  '(:eval (list (propertize " %f" 'face (if (buffer-modified-p) 'font-lock-keyword-face 'default))))
-  (propertize " %02l" 'face 'font-lock-comment-face)
-  (propertize " %m " 'face 'font-lock-string-face)))
+  '(:eval (when-let (vc vc-mode) (list " " (propertize (concat "   [" (substring vc 5) "]   ") 'face 'my-modeline-vcface) "")))
+  '(:eval (if (not (eq major-mode 'vterm-mode)) (list (propertize "[%f]   " 'face (if (buffer-modified-p) 'my-modeline-modfileface 'my-modeline-fileface)))))
+  '(:eval (if (not (eq major-mode 'vterm-mode)) (list (propertize "[%l]   " 'face 'my-modeline-lnface))))
+  (propertize "[%m]   " 'face 'my-modeline-modeface)))
 
 (setq-default mode-line-format
               (list
                 '(:eval (mode-line-fill-center 'mode-line (reserve-left/middle)))
-               mode-line-align-middle '(:eval (mode-line-fill-right 'mode-line (reserve-middle/right)))
-               ))
+                mode-line-align-middle
+                '(:eval (mode-line-fill-right 'mode-line (reserve-middle/right)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -213,6 +250,18 @@
     (interactive)
     (switch-to-buffer (other-buffer (current-buffer))))
 
+  (defun daf/multi-vterm-toggle-project ()
+    "Toggle current project terminal buffer"
+    (interactive)
+    (if (string-equal (buffer-name) (multi-vterm-project-get-buffer-name))
+        (daf/flip-window)
+      (if (get-buffer (multi-vterm-project-get-buffer-name))
+          (switch-to-buffer (multi-vterm-project-get-buffer-name))
+        (progn
+          (multi-vterm)
+          (multi-vterm-rename-buffer (project-root (project-current)))))))
+
+
   (defun daf/evil-visual-search-replace ()
     (interactive)
     (evil-ex "\'<,\'>s/"))
@@ -237,7 +286,9 @@
     "V" 'evil-window-split
     "v" 'evil-window-vsplit
     "D" 'evil-delete-buffer
-    "x" '(lambda () (interactive) (delete-window)(balance-windows))
+    "x" '(lambda () (interactive)
+           (delete-window)
+           (balance-windows))
     "d" 'kill-this-buffer
     "z" 'toggle-maximize-buffer
     "r" 'narrow-or-widen-dwim
@@ -248,7 +299,7 @@
     "fd"  'find-file
     "fh"  'consult-recent-file
     "fg"  'consult-ripgrep
-    "fR"  '(lambda () (interactive) (find-file "~/"))
+    "fr"  '(lambda () (interactive) (find-file "~/") )
 
     "m" '(:ignore t :which-key "marks")
     "mm"  'bookmark-jump
@@ -271,7 +322,9 @@
 
   (general-def
     :states '(insert emacs)
-    "C-v" 'evil-paste-after)
+    "C-v" 'evil-paste-after
+    "C-t" 'daf/multi-vterm-toggle-project
+    )
 
   (general-def
     :states '(normal emacs)
@@ -281,6 +334,7 @@
     ;; "j" 'evil-next-visual-line
     ;; "k" 'evil-previous-visual-line
     "C-e" 'daf/flip-window
+    "C-t" 'daf/multi-vterm-toggle-project
     "C-<up>" 'shrink-window
     "C-<down>" 'enlarge-window
     "C-<left>" 'shrink-window-horizontally
@@ -432,7 +486,7 @@
 (use-package vertico-posframe
   :config
   (setq vertico-posframe-width 100)
-  (setq vertico-posframe-border-width 1)
+  (setq vertico-posframe-border-width 2) ;; must be at least 2 to see border
   (setq vertico-posframe-parameters '((left-fringe . 8) (right-fringe . 8)))
   (vertico-posframe-mode))
 
@@ -445,7 +499,7 @@
   (setq orderless-component-separator "[ ,]"))
 
 (use-package marginalia
-  :config
+  :init
   (marginalia-mode))
 
 (use-package consult
@@ -671,13 +725,27 @@
     "s" '(lambda () (interactive) (evil-scroll-down 10)))
   :config
   (defun daf/evil-insert-vterm ()
+    "This is for em term, globally open terminal"
     (interactive)
     (multi-vterm)
     (evil-insert-state))
   (evil-define-key 'insert vterm-mode-map (kbd "C-v")      #'yank)
   (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'daf/multi-vterm-toggle-project)
   )
-
+(use-package project
+  :straight (:type built-in)
+  :config
+  ;; Create a predicate to check if buffer is a term with the name of the project
+  (defun daf/project-vterm-predicate (buffer)
+    "Kill buffer defined by (multi-vterm-project-get-buffer-name)"
+    (if (string-match (buffer-name buffer) (multi-vterm-project-get-buffer-name))
+        t
+      nil))
+  (add-to-list 'project-kill-buffer-conditions
+           'daf/project-vterm-predicate
+           t)
+  )
 (use-package magit
   :init
   (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -726,6 +794,9 @@
   (add-hook 'conf-unix-mode-hook 'olivetti-mode)
   (add-hook 'conf-javaprop-mode-hook 'olivetti-mode)
   (add-hook 'eww-mode-hook 'olivetti-mode)
+  (add-hook 'compilation-mode-hook 'olivetti-mode)
+  (add-hook 'help-mode-hook 'olivetti-mode)
+  (add-hook 'pdf-view-mode-hook 'olivetti-mode)
 
   ;; (add-hook 'minibuffer-mode-hook 'olivetti-mode)
   ;; (setq olivetti--visual-line-mode nil)
@@ -1099,7 +1170,7 @@
 	 ;; (sh-mode . lsp)
 	 ;; (lisp-mode . lsp)
 	 ;; (css-mode . lsp)
-	 ;; (html-mode . lsp)
+	 (html-mode . lsp)
 	 ;; (json-mode . lsp)
 	 ;; (latex-mode . lsp)
 	 (lsp-mode . lsp-enable-which-key-integration))
@@ -1112,6 +1183,7 @@
   (daf/key-local-leader
     :keymaps 'prog-mode-map
     "r" 'lsp-rename
+    "d" 'lsp-describe-thing-at-point
     "p" 'lsp-ui-peek-find-references
     "a" 'lsp-execute-code-action
     "f" 'lsp-format-buffer
@@ -1161,12 +1233,17 @@
   (setq js2-mode-show-parse-errors nil)
   (setq js2-mode-show-strict-warnings nil))
 
+(use-package emmet-mode
+  :hook (html-mode . emmet-mode)
+  )
 (use-package restclient :defer t)
 
 (use-package pdf-tools
   ;; run pdf-tools-install on first use
   :config
   (pdf-tools-install)
+  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
+  (add-hook 'pdf-view-mode-hook 'pdf-view-center-in-window)
   (setq-default pdf-view-display-size 'fit-page))
 
 (load (concat user-emacs-directory "lisp/rotate.el"))
