@@ -707,12 +707,14 @@
   (setq async-shell-command-display-buffer nil))
 
 (use-package vterm
+  :demand t
   :config
   (setq vterm-disable-bold t) ;; my love
   (setq vterm-always-compile-module t)
   (add-hook 'vterm-mode-hook (lambda () (display-line-numbers-mode 0))))
 
 (use-package multi-vterm
+  :demand t
   :init
   (setq multi-vterm-buffer-name "term:")
   (setq multi-vterm-dedicated-buffer-name "dterm:")
@@ -738,8 +740,6 @@
 
 (use-package project
  :straight (:type built-in)
- :after ( vterm-mode )
- :defer t
  :config
  (defun daf/ignore-project-term-buffer-predicate (buffer)
    (if (string-match (multi-vterm-project-get-buffer-name) (buffer-name buffer))
