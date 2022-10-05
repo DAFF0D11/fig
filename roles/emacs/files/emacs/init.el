@@ -389,7 +389,8 @@
   :config
   (evil-mode)
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-  (define-key evil-insert-state-map (kbd "C-u") nil))
+  (define-key evil-insert-state-map (kbd "C-u") nil)
+  )
 
 (use-package evil-collection :init (evil-collection-init))
 (use-package evil-commentary :config (evil-commentary-mode))
@@ -418,9 +419,10 @@
   :custom
   (better-jumper-use-evil-jump-advice nil)
   :general
-  (daf/key-m
-   "C-o" 'better-jumper-jump-backward
-   "C-i" 'better-jumper-jump-forward)
+  (general-def
+    :states '(normal)
+    "C-o" 'better-jumper-jump-backward
+    "C-i" 'better-jumper-jump-forward)
   :config
   (better-jumper-mode 1)
   (setq better-jumper-context 'buffer)
@@ -735,24 +737,26 @@
   )
 
 (use-package project
-  :straight (:type built-in)
-  :config
-  (defun daf/ignore-project-term-buffer-predicate (buffer)
-    (if (string-match (multi-vterm-project-get-buffer-name) (buffer-name buffer))
-        nil
-      t))
-  (set-frame-parameter nil 'buffer-predicate 'daf/ignore-project-term-buffer-predicate)
+ :straight (:type built-in)
+ :after ( vterm-mode )
+ :defer t
+ :config
+ (defun daf/ignore-project-term-buffer-predicate (buffer)
+   (if (string-match (multi-vterm-project-get-buffer-name) (buffer-name buffer))
+       nil
+     t))
+ (set-frame-parameter nil 'buffer-predicate 'daf/ignore-project-term-buffer-predicate)
 
-  ;; Create a predicate to check if buffer is a term with the name of the project
-  (defun daf/project-vterm-predicate (buffer)
-    "Kill buffer defined by (multi-vterm-project-get-buffer-name)"
-    (if (string-match (buffer-name buffer) (multi-vterm-project-get-buffer-name))
-        t
-      nil))
-  (add-to-list 'project-kill-buffer-conditions
-               'daf/project-vterm-predicate
-               t)
-  )
+ ;; Create a predicate to check if buffer is a term with the name of the project
+ (defun daf/project-vterm-predicate (buffer)
+   "Kill buffer defined by (multi-vterm-project-get-buffer-name)"
+   (if (string-match (buffer-name buffer) (multi-vterm-project-get-buffer-name))
+       t
+     nil))
+ (add-to-list 'project-kill-buffer-conditions
+              'daf/project-vterm-predicate
+              t)
+ )
 
 (use-package magit
   :init
