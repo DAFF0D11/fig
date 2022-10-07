@@ -265,7 +265,7 @@
           (switch-to-buffer vterm-buffer)))
     (message "This file is not in a project")))
 
-  (defun daf/multi-vterm-toggle-project ()
+  (defun daf/multi-vterm-project-toggle ()
     "Toggle current project terminal buffer"
     (interactive)
     (if (string-equal (buffer-name) (multi-vterm-project-get-buffer-name))
@@ -335,7 +335,7 @@
   (general-def
     :states '(insert emacs)
     "C-v" 'evil-paste-after
-    "C-t" 'daf/multi-vterm-toggle-project
+    "C-t" 'daf/multi-vterm-project-toggle
     )
 
   (general-def
@@ -346,7 +346,7 @@
     ;; "j" 'evil-next-visual-line
     ;; "k" 'evil-previous-visual-line
     "C-e" 'daf/flip-window
-    "C-t" 'daf/multi-vterm-toggle-project
+    "C-t" 'daf/multi-vterm-project-toggle
     "C-<up>" 'shrink-window
     "C-<down>" 'enlarge-window
     "C-<left>" 'shrink-window-horizontally
@@ -755,7 +755,7 @@
     (evil-insert-state))
   (evil-define-key 'insert vterm-mode-map (kbd "C-v")      #'yank)
   (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'daf/multi-vterm-toggle-project)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'daf/multi-vterm-project-toggle)
   )
 
 ;; This doesnt work in use-package for some reason
