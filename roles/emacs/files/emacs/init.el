@@ -250,6 +250,21 @@
     (interactive)
     (switch-to-buffer (other-buffer (current-buffer))))
 
+(defun daf/multi-vterm-project ()
+  "Create new vterm buffer at proect root (no other-window)."
+  (interactive)
+  (if (multi-vterm-project-root)
+      (if (buffer-live-p (get-buffer (multi-vterm-project-get-buffer-name)))
+          (if (string-equal (buffer-name (current-buffer)) (multi-vterm-project-get-buffer-name))
+              (delete-window (selected-window))
+            (switch-to-buffer-other-window (multi-vterm-project-get-buffer-name)))
+        (let* ((vterm-buffer (multi-vterm-get-buffer 'project))
+               (multi-vterm-buffer-list (nconc multi-vterm-buffer-list (list vterm-buffer))))
+          (set-buffer vterm-buffer)
+          (multi-vterm-internal)
+          (switch-to-buffer vterm-buffer)))
+    (message "This file is not in a project")))
+
   (defun daf/multi-vterm-toggle-project ()
     "Toggle current project terminal buffer"
     (interactive)
@@ -257,10 +272,7 @@
         (daf/flip-window)
       (if (get-buffer (multi-vterm-project-get-buffer-name))
           (switch-to-buffer (multi-vterm-project-get-buffer-name))
-        (progn
-          (multi-vterm)
-          (multi-vterm-rename-buffer (project-root (project-current)))))))
-
+        (daf/multi-vterm-project))))
 
   (defun daf/evil-visual-search-replace ()
     (interactive)
@@ -392,6 +404,11 @@
   (define-key evil-insert-state-map (kbd "C-u") nil)
   )
 
+(use-package evil-terminal-cursor-changer
+  :config
+  (unless (display-graphic-p)
+          (evil-terminal-cursor-changer-activate)))
+
 (use-package evil-collection :init (evil-collection-init))
 (use-package evil-commentary :config (evil-commentary-mode))
 (use-package evil-numbers
@@ -414,6 +431,7 @@
     "sd"  'evil-surround-delete)
   :config
   (global-evil-surround-mode 1))
+
 
 (use-package better-jumper
   :custom
@@ -483,14 +501,16 @@
   (general-def
     :keymaps 'minibuffer-local-map
     "ESC" 'keyboard-escape-quit
-    "C-w" 'backward-kill-word))
+    "C-w" 'backward-kill-word)
+  )
 
 (use-package vertico-posframe
   :config
   (setq vertico-posframe-width 100)
   (setq vertico-posframe-border-width 2) ;; must be at least 2 to see border
   (setq vertico-posframe-parameters '((left-fringe . 8) (right-fringe . 8)))
-  (vertico-posframe-mode))
+  (vertico-posframe-mode)
+  )
 
 (use-package prescient)
 
@@ -738,25 +758,22 @@
   (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'daf/multi-vterm-toggle-project)
   )
 
-(use-package project
- :straight (:type built-in)
- :config
- (defun daf/ignore-project-term-buffer-predicate (buffer)
-   (if (string-match (multi-vterm-project-get-buffer-name) (buffer-name buffer))
-       nil
-     t))
- (set-frame-parameter nil 'buffer-predicate 'daf/ignore-project-term-buffer-predicate)
+;; This doesnt work in use-package for some reason
+(defun daf/ignore-project-term-buffer-predicate (buffer)
+  (if (string-equal (multi-vterm-project-get-buffer-name) (buffer-name buffer))
+      nil
+    t))
+(set-frame-parameter nil 'buffer-predicate 'daf/ignore-project-term-buffer-predicate)
 
- ;; Create a predicate to check if buffer is a term with the name of the project
- (defun daf/project-vterm-predicate (buffer)
-   "Kill buffer defined by (multi-vterm-project-get-buffer-name)"
-   (if (string-match (buffer-name buffer) (multi-vterm-project-get-buffer-name))
-       t
-     nil))
- (add-to-list 'project-kill-buffer-conditions
-              'daf/project-vterm-predicate
-              t)
- )
+(defun daf/project-vterm-predicate (buffer)
+  "Kill buffer defined by (multi-vterm-project-get-buffer-name)"
+  (if (string-equal (buffer-name buffer) (multi-vterm-project-get-buffer-name))
+      t
+    nil))
+(add-to-list 'project-kill-buffer-conditions
+             'daf/project-vterm-predicate
+             t)
+;; This doesnt work in use-package for some reason
 
 (use-package magit
   :init
@@ -810,7 +827,7 @@
   (add-hook 'help-mode-hook 'olivetti-mode)
   (add-hook 'pdf-view-mode-hook 'olivetti-mode)
 
-  ;; (add-hook 'minibuffer-mode-hook 'olivetti-mode)
+  (add-hook 'minibuffer-mode-hook 'olivetti-mode)
   ;; (setq olivetti--visual-line-mode nil)
   (setq-default fill-column 100))
 
