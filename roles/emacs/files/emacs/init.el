@@ -140,8 +140,12 @@
 (defun reserve-left/middle ()
   (/ (length (format-mode-line mode-line-align-middle)) 2))
 
+
 (defun reserve-middle/right ()
   (+ RIGHT_PADDING (length (format-mode-line mode-line-align-right))))
+
+(setq mode-line-align-right
+      '("" "%2 " (:eval (format "%%l/%d : %%c " (line-number-at-pos (point-max))))))
 
 (setq mode-line-align-middle
       (list
@@ -160,7 +164,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (set-face-attribute 'default nil :family config--font :height config--font-height)
-(set-face-attribute 'default nil :family config--font :height 105)
+;; (set-face-attribute 'default nil :family config--font :height 105)
 (set-face-attribute 'variable-pitch nil :family config--font :height config--font-height)
 ; (set-face-attribute 'bold nil :family config--font :weight 'bold )
 (set-frame-font config--font nil t)
@@ -250,29 +254,6 @@
     (interactive)
     (switch-to-buffer (other-buffer (current-buffer))))
 
-(defun daf/multi-vterm-project ()
-  "Create new vterm buffer at proect root (no other-window)."
-  (interactive)
-  (if (multi-vterm-project-root)
-      (if (buffer-live-p (get-buffer (multi-vterm-project-get-buffer-name)))
-          (if (string-equal (buffer-name (current-buffer)) (multi-vterm-project-get-buffer-name))
-              (delete-window (selected-window))
-            (switch-to-buffer-other-window (multi-vterm-project-get-buffer-name)))
-        (let* ((vterm-buffer (multi-vterm-get-buffer 'project))
-               (multi-vterm-buffer-list (nconc multi-vterm-buffer-list (list vterm-buffer))))
-          (set-buffer vterm-buffer)
-          (multi-vterm-internal)
-          (switch-to-buffer vterm-buffer)))
-    (message "This file is not in a project")))
-
-  (defun daf/multi-vterm-project-toggle ()
-    "Toggle current project terminal buffer"
-    (interactive)
-    (if (string-equal (buffer-name) (multi-vterm-project-get-buffer-name))
-        (daf/flip-window)
-      (if (get-buffer (multi-vterm-project-get-buffer-name))
-          (switch-to-buffer (multi-vterm-project-get-buffer-name))
-        (daf/multi-vterm-project))))
 
   (defun daf/evil-visual-search-replace ()
     (interactive)
@@ -741,13 +722,62 @@
   (setq confirm-kill-processes nil)
   (setq kill-buffer-query-functions nil)
   :general
-  (daf/key-leader "RET" 'multi-vterm)
+  (daf/key-leader
+    "RET" 'multi-vterm
+    "M-RET" 'daf/multi-vterm-rename
+    )
   (general-def
     :states '(normal emacs)
     :keymaps 'vterm-mode-map
     "t" '(lambda () (interactive) (evil-scroll-up 10))
     "s" '(lambda () (interactive) (evil-scroll-down 10)))
   :config
+
+  (defun daf/ignore-project-term-buffer-predicate (buffer)
+    (if (string-equal (multi-vterm-project-get-buffer-name) (buffer-name buffer))
+        nil
+      t))
+  (set-frame-parameter nil 'buffer-predicate 'daf/ignore-project-term-buffer-predicate)
+
+  (defun daf/project-vterm-predicate (buffer)
+    "Kill buffer defined by (multi-vterm-project-get-buffer-name)"
+    (if (string-equal (buffer-name buffer) (multi-vterm-project-get-buffer-name))
+        t
+      nil))
+  (add-to-list 'project-kill-buffer-conditions
+               'daf/project-vterm-predicate
+               t)
+
+  (defun daf/multi-vterm-project ()
+    "Create new vterm buffer at proect root (no other-window)."
+    (interactive)
+    (if (multi-vterm-project-root)
+        (if (buffer-live-p (get-buffer (multi-vterm-project-get-buffer-name)))
+            (if (string-equal (buffer-name (current-buffer)) (multi-vterm-project-get-buffer-name))
+                (delete-window (selected-window))
+              (switch-to-buffer-other-window (multi-vterm-project-get-buffer-name)))
+          (let* ((vterm-buffer (multi-vterm-get-buffer 'project))
+                 (multi-vterm-buffer-list (nconc multi-vterm-buffer-list (list vterm-buffer))))
+            (set-buffer vterm-buffer)
+            (multi-vterm-internal)
+            (switch-to-buffer vterm-buffer)))
+      (message "This file is not in a project")))
+
+(defun daf/multi-vterm-rename (x)
+  "Create terminal with name"
+  (interactive "sTerminal Name: ")
+  (multi-vterm)
+  (multi-vterm-rename-buffer x))
+
+  (defun daf/multi-vterm-project-toggle ()
+    "Toggle current project terminal buffer"
+    (interactive)
+    (if (string-equal (buffer-name) (multi-vterm-project-get-buffer-name))
+        (daf/flip-window)
+      (if (get-buffer (multi-vterm-project-get-buffer-name))
+          (switch-to-buffer (multi-vterm-project-get-buffer-name))
+        (daf/multi-vterm-project))))
+
   (defun daf/evil-insert-vterm ()
     "This is for em term, globally open terminal"
     (interactive)
@@ -755,25 +785,7 @@
     (evil-insert-state))
   (evil-define-key 'insert vterm-mode-map (kbd "C-v")      #'yank)
   (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'daf/multi-vterm-project-toggle)
-  )
-
-;; This doesnt work in use-package for some reason
-(defun daf/ignore-project-term-buffer-predicate (buffer)
-  (if (string-equal (multi-vterm-project-get-buffer-name) (buffer-name buffer))
-      nil
-    t))
-(set-frame-parameter nil 'buffer-predicate 'daf/ignore-project-term-buffer-predicate)
-
-(defun daf/project-vterm-predicate (buffer)
-  "Kill buffer defined by (multi-vterm-project-get-buffer-name)"
-  (if (string-equal (buffer-name buffer) (multi-vterm-project-get-buffer-name))
-      t
-    nil))
-(add-to-list 'project-kill-buffer-conditions
-             'daf/project-vterm-predicate
-             t)
-;; This doesnt work in use-package for some reason
+  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'daf/multi-vterm-project-toggle))
 
 (use-package magit
   :init
@@ -826,9 +838,7 @@
   (add-hook 'compilation-mode-hook 'olivetti-mode)
   (add-hook 'help-mode-hook 'olivetti-mode)
   (add-hook 'pdf-view-mode-hook 'olivetti-mode)
-
   (add-hook 'minibuffer-mode-hook 'olivetti-mode)
-  ;; (setq olivetti--visual-line-mode nil)
   (setq-default fill-column 100))
 
 (use-package tab-bar
@@ -943,7 +953,6 @@
     "RET" 'org-open-at-point)
 
   :config
-
   (setq org-agenda-files config--org-agenda-files)
   (setq org-directory config--org-directory)
   (setq org-agenda-window-setup 'only-window) ;; make agenda use current window
@@ -1187,11 +1196,18 @@
       (progn (delete-frame) (vertico-posframe-mode 1))))
   )
 
+(use-package org-tempo :straight (:type built-in))
+
+;; This is only used for lsp snippet expansion
+(use-package yasnippet :init (yas-global-mode))
+(use-package yasnippet-snippets)
+
 (use-package lsp-mode
+  :after (yasnippet yasnippet-snippets)
   :init
   (setq lsp-keep-workspace-alive nil)
   :hook (
-	 ;; (python-mode . lsp)
+	 (python-mode . lsp)
 	 (go-mode . lsp)
 	 (c-mode . lsp)
 	 (rjsx-mode . lsp)
@@ -1245,11 +1261,8 @@
 	lsp-ui-imenu-enable nil
 	lsp-ui-doc-enable nil))
 
-;; This is only used for lsp snippet expansion
-(use-package yasnippet-snippets)
-(use-package yasnippet :config (yas-global-mode))
 
-(use-package go-mode :defer t :after lsp-mode :mode "\\.go\\'")
+(use-package go-mode :defer t  :mode "\\.go\\'")
 (use-package json-mode :defer t :mode "\\.json\\'")
 (use-package yaml-mode :defer t :mode "\\.yaml\\'" "\\.yml\\'")
 ;; (use-package web-mode :defer t)
