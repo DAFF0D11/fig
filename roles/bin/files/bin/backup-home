@@ -13,10 +13,10 @@ backup_location="$HOME/backup-$backup_format"
 backup_items=( pea src org img mus vid .gitconfig .icons .themes .ssh)
 
 main(){
-  case $1 in
-    untar) untar_archives ;;
-    *) create_backup_directory; backup_directories ;;
-  esac
+    case $1 in
+        untar) untar_archives ;;
+        *) create_backup_directory; backup_directories ;;
+    esac
 }
 
 create_backup_directory(){
@@ -30,39 +30,39 @@ create_backup_directory(){
 }
 
 backup_directory(){
-  tar -cvzf "$backup_location/$1.tar.gz" "$1"
+    tar -cvzf "$backup_location/$1.tar.gz" "$1"
 }
 
 backup_directories(){
-  for i in "${backup_items[@]}"; do
-    if [[ -d "$HOME/$i" ]] || [[ -f "$HOME/$i" ]];then
-      backup_directory "$i"
-    else
-      printf "$i not found\n"
-    fi
-  done
+    for i in "${backup_items[@]}"; do
+        if [[ -d "$HOME/$i" ]] || [[ -f "$HOME/$i" ]];then
+            backup_directory "$i"
+        else
+            printf "$i not found\n"
+        fi
+    done
 }
 
 untar_archive(){
-  tar -xvzf "$1" -C "$HOME"
+    tar -xvzf "$1" -C "$HOME"
 }
 
 untar_archives(){
 
-  # Just take everything in the current directory and try to untar it.
-  local current_dir_archives=($(find -type f | cut -d "/" -f2-))
+    # Just take everything in the current directory and try to untar it.
+    local current_dir_archives=($(find -type f | cut -d "/" -f2-))
 
-  for i in "${current_dir_archives[@]}"; do
+    for i in "${current_dir_archives[@]}"; do
 
-    local current_archive=$(echo "$i" | rev | cut -d "." -f3- | rev)
+        local current_archive=$(echo "$i" | rev | cut -d "." -f3- | rev)
 
-    # Check if directory already exists
-    if [[ ! -d "$HOME/$current_archive" ]] || [[ ! -f "$HOME/$current_dir" ]];then
-      untar_archive "$i"
-    else
-      printf "$HOME/$current_archive already exists. Skipping.\n"
-    fi
-  done
+        # Check if directory already exists
+        if [[ ! -d "$HOME/$current_archive" ]] || [[ ! -f "$HOME/$current_dir" ]];then
+            untar_archive "$i"
+        else
+            printf "$HOME/$current_archive already exists. Skipping.\n"
+        fi
+    done
 }
 
 main "$@"

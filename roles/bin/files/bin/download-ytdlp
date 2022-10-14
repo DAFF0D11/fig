@@ -23,170 +23,164 @@ URL="$2"
 # }
 
 get_list_directories(){
-	# This allows for recursive folder access/creation
-	fd ---base-directory "$1" -t d
+    # This allows for recursive folder access/creation
+    fd ---base-directory "$1" -t d
 }
 
 high_quality_progress_bar(){
-	yt-dlp \
-		-ciw \
-		--download-archive "$VIDEO_ARCHIVE" \
-		--add-metadata \
-		--embed-thumbnail \
-		--add-chapters \
-		--embed-subs \
-		--restrict-filename \
-		-o "$VIDEO_PATH$2$FILE_NAME_FORMAT" \
-		-f "bestvideo[height=720]+bestaudio/best" \
-		--merge-output-format mp4 \
-		--progress-template "%(progress._percent_str)s" \
-		--newline \
-		"$1" | while read line; do
-		echo "$line" | cut -d "." -f1 | xargs -I %% notify-send -h int:value:%% -h string:x-canonical-private-synchronous:volume "$3" "$2"
-	done
+    yt-dlp \
+        -ciw \
+        --download-archive "$VIDEO_ARCHIVE" \
+        --add-metadata \
+        --embed-thumbnail \
+        --add-chapters \
+        --embed-subs \
+        -o "$VIDEO_PATH$2$FILE_NAME_FORMAT" \
+        -f "bestvideo[height=720]+bestaudio/best" \
+        --merge-output-format mp4 \
+        --progress-template "%(progress._percent_str)s" \
+        --newline \
+        "$1" | while read line; do
+        echo "$line" | cut -d "." -f1 | xargs -I %% notify-send -h int:value:%% -h string:x-canonical-private-synchronous:volume "$3" "$2"
+    done
 
 }
 
 high_quality(){
-	yt-dlp \
-		-ciw \
-		--download-archive "$VIDEO_ARCHIVE" \
-		--add-metadata \
-		--embed-thumbnail \
-		--add-chapters \
-		--embed-subs \
-		--restrict-filename \
-		-o "$VIDEO_PATH$2$FILE_NAME_FORMAT" \
-		-f "bestvideo[height=720]+bestaudio/best" \
-		--merge-output-format mp4 \
-		--progress-template "%(progress._percent_str)s" \
-		--newline \
-		"$1"
+    yt-dlp \
+        -ciw \
+        --download-archive "$VIDEO_ARCHIVE" \
+        --add-metadata \
+        --embed-thumbnail \
+        --add-chapters \
+        --embed-subs \
+        -o "$VIDEO_PATH$2$FILE_NAME_FORMAT" \
+        -f "bestvideo[height=720]+bestaudio/best" \
+        --merge-output-format mp4 \
+        --progress-template "%(progress._percent_str)s" \
+        --newline \
+        "$1"
 }
 
 low_quality_progress_bar(){
-	yt-dlp \
-		-ciw \
-		--download-archive "$VIDEO_ARCHIVE" \
-		--add-metadata \
-		--embed-thumbnail \
-		--add-chapters \
-		--embed-subs \
-		--restrict-filename \
-		-o "$VIDEO_PATH$2$FILE_NAME_FORMAT" \
-		-f "bestvideo[height<720]+bestaudio/best" \
-		--merge-output-format mp4 \
-		--progress-template "%(progress._percent_str)s" \
-		--newline \
-		"$1" | while read line; do
-		echo "$line" | cut -d "." -f1 | xargs -I %% notify-send -h int:value:%% -h string:x-canonical-private-synchronous:volume "$3" "$2"
-	done
+    yt-dlp \
+        -ciw \
+        --download-archive "$VIDEO_ARCHIVE" \
+        --add-metadata \
+        --embed-thumbnail \
+        --add-chapters \
+        --embed-subs \
+        -o "$VIDEO_PATH$2$FILE_NAME_FORMAT" \
+        -f "bestvideo[height<720]+bestaudio/best" \
+        --merge-output-format mp4 \
+        --progress-template "%(progress._percent_str)s" \
+        --newline \
+        "$1" | while read line; do
+        echo "$line" | cut -d "." -f1 | xargs -I %% notify-send -h int:value:%% -h string:x-canonical-private-synchronous:volume "$3" "$2"
+    done
 }
 
 low_quality(){
-	yt-dlp \
-		-ciw \
-		--download-archive "$VIDEO_ARCHIVE" \
-		--add-metadata \
-		--embed-thumbnail \
-		--add-chapters \
-		--embed-subs \
-		--restrict-filename \
-		-o "$VIDEO_PATH$2$FILE_NAME_FORMAT" \
-		-f "bestvideo[height<720]+bestaudio/best" \
-		--merge-output-format mp4 \
-		"$1"
+    yt-dlp \
+        -ciw \
+        --download-archive "$VIDEO_ARCHIVE" \
+        --add-metadata \
+        --embed-thumbnail \
+        --add-chapters \
+        --embed-subs \
+        -o "$VIDEO_PATH$2$FILE_NAME_FORMAT" \
+        -f "bestvideo[height<720]+bestaudio/best" \
+        --merge-output-format mp4 \
+        "$1"
 }
 
 audio_download_progress_bar(){
-	yt-dlp \
-		-ciw \
-		--download-archive "$MUSIC_ARCHIVE" \
-		-o "$MUSIC_PATH$2$FILE_NAME_FORMAT" \
-		-f bestaudio \
-		-x \
-		--restrict-filename \
-		--add-metadata \
-		--progress-template "%(progress._percent_str)s" \
-		--newline \
-		"$1" | while read line; do
-			echo "$line" | cut -d "." -f1 | xargs -I %% notify-send -h int:value:%% -h string:x-canonical-private-synchronous:volume "$3" "$2"
-	done
+    yt-dlp \
+        -ciw \
+        --download-archive "$MUSIC_ARCHIVE" \
+        -o "$MUSIC_PATH$2$FILE_NAME_FORMAT" \
+        -f bestaudio \
+        -x \
+        --add-metadata \
+        --progress-template "%(progress._percent_str)s" \
+        --newline \
+        "$1" | while read line; do
+        echo "$line" | cut -d "." -f1 | xargs -I %% notify-send -h int:value:%% -h string:x-canonical-private-synchronous:volume "$3" "$2"
+    done
 }
 
 
 audio_download(){
-	yt-dlp \
-		-ciw \
-		--download-archive "$MUSIC_ARCHIVE" \
-		-o "$MUSIC_PATH$2$FILE_NAME_FORMAT" \
-		-f bestaudio \
-		-x \
-		--restrict-filename \
-		--add-metadata \
-		"$1"
+    yt-dlp \
+        -ciw \
+        --download-archive "$MUSIC_ARCHIVE" \
+        -o "$MUSIC_PATH$2$FILE_NAME_FORMAT" \
+        -f bestaudio \
+        -x \
+        --add-metadata \
+        "$1"
 }
 
 case "$URL" in
-	*watch?v=*|*funimation.com*)
-		case "$DOWNLOAD_TYPE" in
-			low*)
-				PLAYLIST=$( get_list_directories "$VIDEO_PATH" | wofi --show dmenu | xargs printf '%s/\n')
+    *watch?v=*|*funimation.com*)
+        case "$DOWNLOAD_TYPE" in
+            low*)
+                PLAYLIST=$( get_list_directories "$VIDEO_PATH" | wofi --show dmenu | xargs printf '%s/\n')
 
-				# no playlist chosen or input
-				[ "$PLAYLIST" == "/" ] && exit 1
+                # no playlist chosen or input
+                [ "$PLAYLIST" == "/" ] && exit 1
 
-				TITLE=$(yt-dlp --dump-json "$URL" | cut -d ":" -f3 | cut -d "\"" -f2)
+                TITLE=$(yt-dlp --dump-json "$URL" | cut -d ":" -f3 | cut -d "\"" -f2)
 
-				# notify-send "Start low quality Download" "$TITLE\n<b>PLAYLIST:</b>$PLAYLIST"
-				# low_quality "$URL" "$PLAYLIST" || notify-send "Error with low quality download"
-				low_quality_progress_bar "$URL" "$PLAYLIST" "$TITLE"
-				notify-send "Finished low quality Download" "$TITLE"
-				;;
-			high*)
-				PLAYLIST=$( get_list_directories "$VIDEO_PATH" | wofi --show dmenu | xargs printf '%s/\n')
+                # notify-send "Start low quality Download" "$TITLE\n<b>PLAYLIST:</b>$PLAYLIST"
+                # low_quality "$URL" "$PLAYLIST" || notify-send "Error with low quality download"
+                low_quality_progress_bar "$URL" "$PLAYLIST" "$TITLE"
+                notify-send "Finished low quality Download" "$TITLE"
+                ;;
+            high*)
+                PLAYLIST=$( get_list_directories "$VIDEO_PATH" | wofi --show dmenu | xargs printf '%s/\n')
 
-				# no playlist chosen or input
-				[ "$PLAYLIST" == "/" ] && exit 1
+                # no playlist chosen or input
+                [ "$PLAYLIST" == "/" ] && exit 1
 
-				TITLE=$(yt-dlp --dump-json "$URL" | cut -d ":" -f3 | cut -d "\"" -f2 )
+                TITLE=$(yt-dlp --dump-json "$URL" | cut -d ":" -f3 | cut -d "\"" -f2 )
 
-				# notify-send "Start high quality Download" "$TITLE\n<b>PLAYLIST:</b>$PLAYLIST"
-				# high_quality "$URL" "$PLAYLIST" || notify-send "Error with high quality download"
-				high_quality_progress_bar "$URL" "$PLAYLIST" "$TITLE"
-				notify-send "Finished high quality Download" "$TITLE"
-				;;
-			audio*)
-				PLAYLIST=$( get_list_directories "$MUSIC_PATH" | wofi --show dmenu | xargs printf '%s/\n')
+                # notify-send "Start high quality Download" "$TITLE\n<b>PLAYLIST:</b>$PLAYLIST"
+                # high_quality "$URL" "$PLAYLIST" || notify-send "Error with high quality download"
+                high_quality_progress_bar "$URL" "$PLAYLIST" "$TITLE"
+                notify-send "Finished high quality Download" "$TITLE"
+                ;;
+            audio*)
+                PLAYLIST=$( get_list_directories "$MUSIC_PATH" | wofi --show dmenu | xargs printf '%s/\n')
 
-				# stop downloading entire playlists
-				URL=$(echo "$URL" | cut -d "&" -f1 )
+                # stop downloading entire playlists
+                URL=$(echo "$URL" | cut -d "&" -f1 )
 
-				# no playlist chosen or input
-				[ "$PLAYLIST" == "/" ] && exit 1
+                # no playlist chosen or input
+                [ "$PLAYLIST" == "/" ] && exit 1
 
-				TITLE=$(yt-dlp --dump-json "$URL" | cut -d ":" -f3 | cut -d "\"" -f2)
+                TITLE=$(yt-dlp --dump-json "$URL" | cut -d ":" -f3 | cut -d "\"" -f2)
 
-				# notify-send "Start Audio Download" "$TITLE\n<b>PLAYLIST:</b>$PLAYLIST"
-				# audio_download "$URL" "$PLAYLIST" || notify-send "Error with audio download"
-				audio_download_progress_bar "$URL" "$PLAYLIST" "$TITLE"
-				notify-send "Finished Audio Download" "$TITLE"
-				;;
-			*)
-				PLAYLIST=$( get_list_directories "$VIDEO_PATH" | wofi --show dmenu | xargs printf '%s/\n')
+                # notify-send "Start Audio Download" "$TITLE\n<b>PLAYLIST:</b>$PLAYLIST"
+                # audio_download "$URL" "$PLAYLIST" || notify-send "Error with audio download"
+                audio_download_progress_bar "$URL" "$PLAYLIST" "$TITLE"
+                notify-send "Finished Audio Download" "$TITLE"
+                ;;
+            *)
+                PLAYLIST=$( get_list_directories "$VIDEO_PATH" | wofi --show dmenu | xargs printf '%s/\n')
 
-				# no playlist chosen or input
-				[ "$PLAYLIST" == "/" ] && exit 1
+                # no playlist chosen or input
+                [ "$PLAYLIST" == "/" ] && exit 1
 
-				TITLE=$(yt-dlp --dump-json "$URL" | cut -d ":" -f3 | cut -d "\"" -f2)
+                TITLE=$(yt-dlp --dump-json "$URL" | cut -d ":" -f3 | cut -d "\"" -f2)
 
-				# notify-send "Start default Download" "$TITLE\n<b>PLAYLIST:</b>$PLAYLIST"
-				# low_quality "$URL" "$PLAYLIST" || notify-send "Error with low quality download"
+                # notify-send "Start default Download" "$TITLE\n<b>PLAYLIST:</b>$PLAYLIST"
+                # low_quality "$URL" "$PLAYLIST" || notify-send "Error with low quality download"
 
-				low_quality_progress_bar "$URL" "$PLAYLIST" "$TITLE"
-				notify-send "Finished default Download" "$TITLE"
-				;;
-		esac
-		;;
-	*) notify-send "NOT A VIABLE LINK" "For 'security' check the switch statement for proper link globs";;
+                low_quality_progress_bar "$URL" "$PLAYLIST" "$TITLE"
+                notify-send "Finished default Download" "$TITLE"
+                ;;
+        esac
+        ;;
+    *) notify-send "NOT A VIABLE LINK" "For 'security' check the switch statement for proper link globs";;
 esac
