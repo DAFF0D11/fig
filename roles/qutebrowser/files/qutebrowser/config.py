@@ -10,49 +10,33 @@ c.url.searchengines = { 'DEFAULT': 'https://search.brave.com/search?q={}&source=
 
 c.content.user_stylesheets = ['~/.config/qutebrowser/css/global.css']
 
+c.content.javascript.enabled = False
+c.content.cookies.accept = 'never'
 c.content.geolocation = False
 c.content.media.audio_video_capture = False
 c.content.media.audio_capture = False
 c.content.media.video_capture = False
 c.content.notifications.enabled = False
 c.content.javascript.can_access_clipboard = False
-c.content.javascript.enabled = False
-c.content.cookies.accept = 'never'
-
-# Privacy Settings
 config.set("content.webgl", False, "*")
 config.set("content.canvas_reading", False)
-config.set("content.geolocation", False)
 config.set("content.webrtc_ip_handling_policy", "default-public-interface-only")
 
-config.set('content.cookies.accept', 'no-3rdparty', 'https://search.brave.com/*')
-config.set('content.cookies.accept', 'no-3rdparty', 'http://127.0.0.1:8384/*') # Syncthing
-config.set('content.cookies.accept', 'no-3rdparty', 'https://libreddit.spike.codes/*')
-config.set('content.cookies.accept', 'no-3rdparty', 'https://vid.puffyan.us/*')
 config.set('content.cookies.accept', 'no-3rdparty', 'https://github.com/*')
 config.set('content.cookies.accept', 'no-3rdparty', 'https://gitlab.com/*')
-config.set('content.cookies.accept', 'all', 'https://imgur.com/*')
 config.set('content.cookies.accept', 'all', 'https://mailbox.org/*')
-config.set('content.cookies.accept', 'all', 'https://libredd.it/*')
-config.set('content.cookies.accept', 'all', 'https://wallhaven.cc/*')
-config.set('content.cookies.accept', 'all', 'https://office.mailbox.org/*')
-config.set('content.cookies.accept', 'all', 'https://meta.sr.ht/register/*')
-config.set('content.cookies.accept', 'all', 'https://word.tips/word-generator/*')
+config.set('content.cookies.accept', 'no-3rdparty', 'https://libreddit.spike.code/*')
 
 c.window.title_format = '{perc}{current_title}'
-# c.fonts.default_family = ["Monospace"]
 c.fonts.default_family = ["Fira Code"]
-# c.fonts.default_family = ["Terminus"]
 c.fonts.default_size = "11pt"
 c.zoom.default = "110%"
 # config.set("statusbar.show","never")
-# c.content.blocking.whitelist = ['thepiratebay.org']
-c.editor.command = ['emacsclient', '-e', '(find-file "{file}")', '-e', '(goto-line {line})', '-e', '(move-to-column {column0})']
+# c.editor.command = ['emacsclient', '-e', '(find-file "{file}")', '-e', '(goto-line {line})', '-e', '(move-to-column {column0})']
 
 # Unbound keys
 config.unbind('f', mode='normal')
 config.unbind('d', mode='normal')
-# config.unbind('<Ctrl-[>' 'fake-key <Escape>', mode='normal')
 
 # Background white
 config.bind('<F12>', 'config-cycle -p -t colors.webpage.bg white black')
@@ -62,8 +46,7 @@ config.bind('<Ctrl-j>', 'tab-prev', mode='normal')
 config.bind('<Ctrl-j>', 'tab-prev', mode='insert')
 config.bind('<Ctrl-k>', 'tab-next', mode='normal')
 config.bind('<Ctrl-k>', 'tab-next', mode='insert')
-
-## Vertical Tabs
+# Vertical
 # config.bind('<Ctrl-k>', 'tab-prev', mode='normal')
 # config.bind('<Ctrl-k>', 'tab-prev', mode='insert')
 # config.bind('<Ctrl-j>', 'tab-next', mode='normal')
@@ -77,14 +60,9 @@ config.bind('<Ctrl-j>', 'completion-item-focus next', mode='command')
 config.bind('<Ctrl-k>', 'completion-item-focus prev', mode='command')
 config.bind('s', 'scroll-page 0 0.5', mode='normal')
 config.bind('t', 'scroll-page 0 -0.5', mode='normal')
-# config.bind('s', 'fake-key <PageDown>', mode='normal')
-# config.bind('t', 'fake-key <PageUp>', mode='normal')
-
-# config.bind('<Ctrl-j>', 'tab-prev', mode='normal')
 
 config.bind('<Ctrl-[>', 'back')
 config.bind('<Ctrl-]>', 'forward')
-
 
 # Readline
 config.bind('<Ctrl-j>', 'fake-key <Down>', mode='insert')
@@ -104,8 +82,7 @@ config.bind("<Mod1-d>", "fake-key <Ctrl-Delete>", "insert")
 config.bind("<Ctrl-d>", "fake-key <Delete>", "insert")
 config.bind("<Ctrl-w>", "fake-key <Ctrl-Backspace>", "insert")
 config.bind("<Ctrl-u>", "fake-key <Shift-Home><Delete>", "insert")
-# config.bind("<Ctrl-x><Ctrl-e>", "open-editor", "insert")
-# config.bind("<Ctrl-w>", "fake-key <Ctrl-Backspace>", "command")
+
 # alt-hjkl
 config.bind("<Mod1-h>", "fake-key <Left>", "insert")
 config.bind("<Mod1-j>", "fake-key <Down>", "insert")
@@ -143,6 +120,7 @@ config.bind('<Ctrl-i>', 'hint inputs', mode='insert')
 
 # Privacy Toggles
 config.bind('<space>cj', 'config-cycle -p -u *://{url:host}/* content.javascript.enabled;;reload', mode='normal')
+config.bind('<space>cJ', 'config-cycle -p -u * content.javascript.enabled;;reload', mode='normal')
 config.bind('<space>cc', 'config-cycle -p -t -u {url} content.cookies.accept no-3rdparty never;;reload', mode='normal')
 config.bind('<space>cC', 'config-cycle -p -t -u {url} content.cookies.accept no-3rdparty all;;reload', mode='normal')
 config.bind('<space>cg', 'config-cycle -p -t content.geolocation True False;;reload', mode='normal')

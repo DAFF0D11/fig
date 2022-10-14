@@ -332,13 +332,13 @@ c.colors.tabs.even.bg = back
 c.colors.tabs.pinned.even.bg = back
 
 # Foreground color of pinned unselected even tabs.
-c.colors.tabs.pinned.even.fg = red
+c.colors.tabs.pinned.even.fg = dgray
 
 # Background color of pinned unselected odd tabs.
 c.colors.tabs.pinned.odd.bg = back
 
 # Foreground color of pinned unselected odd tabs.
-c.colors.tabs.pinned.odd.fg = red
+c.colors.tabs.pinned.odd.fg = dgray
 
 # Background color of pinned selected even tabs.
 c.colors.tabs.pinned.selected.even.bg = back
