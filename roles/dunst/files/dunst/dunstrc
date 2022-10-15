@@ -1,6 +1,6 @@
 [global]
     # font = Terminus 12
-    font = monospace 12
+    font = Fira Code 12
 	# top-right
 	# bottom-center
 	# top-center
