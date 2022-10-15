@@ -1,6 +1,7 @@
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
-(setq show-paren-mode nil)
+(setq show-paren-mode t)
+(setq show-paren-delay 0)
 
 ;; kill the cursor blink
 (blink-cursor-mode -1)
@@ -15,6 +16,10 @@
 ;; enable modes
 (recentf-mode 1)
 (save-place-mode 1)
+
+;; hooks
+;; Delete trailing whitespace on save
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; These cause littering, disable them
 (setq make-backup-files nil)
@@ -32,14 +37,15 @@
       split-height-threshold nil)
 (setq vc-follow-symlinks t)
 
-(setq scroll-margin 13)
+;; (setq scroll-margin 13)
+(setq scroll-step 1)
 (setq scroll-conservatively 100000 )
-(setq scroll-step 10)
+
+;; (add-to-list 'default-frame-alist '(internal-border-width . 10))
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq indent-line-function 'insert-tab)
-
 (if (file-exists-p "~/pea/emacs/config.el")
     (load "~/pea/emacs/config.el")
   (setq
@@ -51,22 +57,20 @@
    config--org-agenda-files '("~/org/agenda/agenda.org")
    config--bookmarks          "~/org/agenda/bookmarks.org"
    config--emacs-bookmarks    "~/.config/emacs/emacs-bookmarks"))
-
-(add-to-list 'custom-theme-load-path config--themes)
-(load-theme 'castle t )
-
 (setq bookmark-save-flag 1)
 (setq bookmark-default-file config--emacs-bookmarks)
-
-;; Delete trailing whitespace on save
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-to-list 'custom-theme-load-path config--themes)
+;; (load-theme 'cmyk t )
+(load-theme 'mod-cmyk t )
+;; (set-face-attribute 'flymake-error nil :underline '(:color "red" :style line))
+;; (load-theme 'castle t )
 
 ;; OLD The most simple modeline
 ;; (setq-default
 ;;  mode-line-format
 ;;  (list
 ;;   ;; current branch
-;;   '(:eval (when-let (vc vc-mode) (list " " (propertize (substring vc 5) 'face 'org-level-5) " ")))
+;;   '(:eval (when-leforgt (vc vc-mode) (list " " (propertize (substring vc 5) 'face 'org-level-5) " ")))
 ;;   ;; full path file name
 ;;   '(:eval (list (propertize " %f" 'face (if (buffer-modified-p) 'font-lock-keyword-face 'default))))
 ;;   ;; position line
@@ -82,37 +86,35 @@
 ;; New simple centered modeline (needs work)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 (defface my-modeline-fileface
-  '((((background  dark)) :background "#000000" )
+  '((((background  dark)) )
     (((background  light)) :background "#000000"))
   "Fringe face for current position."
   :group 'my-modeline)
 
 (defface my-modeline-modfileface
-  '((((background  dark)) :background "#000000" :foreground "#E93C58")
+  '((((background  dark))  :foreground "#e61566"  )
     (((background  light)) :background "#000000"))
   "Fringe face for current position."
   :group 'my-modeline)
 
 (defface my-modeline-vcface
-  '((((background  dark)) :background "#000000" :foreground "#5cd59c")
+  '((((background  dark))  :foreground "#00bdb1" )
     (((background  light)) :background "#000000"))
   "Fringe face for current position."
   :group 'my-modeline)
 
 (defface my-modeline-lnface
-  '((((background  dark)) :background "#000000" :foreground "#464658")
-    (((background  light)) :background "#000000"))
+  '((((background  dark)) :foreground "#f7e92e" )
+    (((background  light))  :background "#000000"))
   "Fringe face for current position."
   :group 'my-modeline)
 
 (defface my-modeline-modeface
-  '((((background  dark)) :background "#000000")
+  '((((background  dark))  )
     (((background  light)) :background "#000000"))
   "Fringe face for current position."
   :group 'my-modeline)
-
 
 (defun mode-line-fill-right (face reserve)
   "Return empty space using FACE and leaving RESERVE space on the right."
@@ -135,30 +137,30 @@
                                              (.5 . left-margin))))
               'face face))
 
-(defconst RIGHT_PADDING 1)
+;; (defconst RIGHT_PADDING 1)
 
 (defun reserve-left/middle ()
   (/ (length (format-mode-line mode-line-align-middle)) 2))
 
+;; (defun reserve-middle/right ()
+;;   (+ RIGHT_PADDING (length (format-mode-line mode-line-align-right))))
 
-(defun reserve-middle/right ()
-  (+ RIGHT_PADDING (length (format-mode-line mode-line-align-right))))
-
-(setq mode-line-align-right
-      '("" "%2 " (:eval (format "%%l/%d : %%c " (line-number-at-pos (point-max))))))
+;; (setq mode-line-align-right
+;;       '("" "%2 " (:eval (format "%%l/%d : %%c " (line-number-at-pos (point-max))))))
 
 (setq mode-line-align-middle
       (list
-  '(:eval (when-let (vc vc-mode) (list " " (propertize (concat "   [" (substring vc 5) "]   ") 'face 'my-modeline-vcface) "")))
-  '(:eval (if (not (eq major-mode 'vterm-mode)) (list (propertize "[%f]   " 'face (if (buffer-modified-p) 'my-modeline-modfileface 'my-modeline-fileface)))))
-  '(:eval (if (not (eq major-mode 'vterm-mode)) (list (propertize "[%l]   " 'face 'my-modeline-lnface))))
-  (propertize "[%m]   " 'face 'my-modeline-modeface)))
+  '(:eval (when-let (vc vc-mode) (list "" (propertize (concat ""(substring vc 5)" ") 'face 'my-modeline-vcface))))
+  '(:eval (if (not (eq major-mode 'vterm-mode)) (list (propertize "%f" 'face (if (buffer-modified-p) 'my-modeline-modfileface 'my-modeline-fileface)))))
+  '(:eval (if (not (eq major-mode 'vterm-mode)) (list (propertize " %l" 'face 'my-modeline-lnface))))
+  (propertize " %m" 'face 'my-modeline-modeface)))
 
 (setq-default mode-line-format
               (list
                 '(:eval (mode-line-fill-center 'mode-line (reserve-left/middle)))
                 mode-line-align-middle
-                '(:eval (mode-line-fill-right 'mode-line (reserve-middle/right)))))
+                ;; '(:eval (mode-line-fill-right 'mode-line (reserve-middle/right)))
+                ))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -472,6 +474,15 @@
     "v" 'er/expand-region
     "V" 'er/contract-region))
 
+;; (use-package fido
+;; ;; This mode is just really slow, no caching
+;;   :straight (:type built-in)
+;;   :init
+;;   (fido-mode 1)
+;;   (fido-vertical-mode 1)
+;;   :config
+;; (setq window-combination-resize nil))
+
 (use-package vertico
   :init (vertico-mode)
   :general
@@ -483,8 +494,8 @@
     :keymaps 'minibuffer-local-map
     "ESC" 'keyboard-escape-quit
     "C-w" 'backward-kill-word)
+  ;; (setq window-combination-resize nil) ;; stop completion buffer from pushing above
   )
-
 (use-package vertico-posframe
   :config
   (setq vertico-posframe-width 100)
@@ -732,13 +743,6 @@
     "t" '(lambda () (interactive) (evil-scroll-up 10))
     "s" '(lambda () (interactive) (evil-scroll-down 10)))
   :config
-
-  (defun daf/ignore-project-term-buffer-predicate (buffer)
-    (if (string-equal (multi-vterm-project-get-buffer-name) (buffer-name buffer))
-        nil
-      t))
-  (set-frame-parameter nil 'buffer-predicate 'daf/ignore-project-term-buffer-predicate)
-
   (defun daf/project-vterm-predicate (buffer)
     "Kill buffer defined by (multi-vterm-project-get-buffer-name)"
     (if (string-equal (buffer-name buffer) (multi-vterm-project-get-buffer-name))
@@ -785,7 +789,15 @@
     (evil-insert-state))
   (evil-define-key 'insert vterm-mode-map (kbd "C-v")      #'yank)
   (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'daf/multi-vterm-project-toggle))
+  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'daf/multi-vterm-project-toggle)
+
+  ;; Modify buffer predicate to ignore multi-vterm-project terminal buffer
+  (defun daf/ignore-project-term-buffer-predicate (buffer)
+    (if (string-equal (multi-vterm-project-get-buffer-name) (buffer-name buffer))
+        nil
+      t))
+  (set-frame-parameter nil 'buffer-predicate 'daf/ignore-project-term-buffer-predicate)
+  )
 
 (use-package magit
   :init
@@ -839,6 +851,8 @@
   (add-hook 'help-mode-hook 'olivetti-mode)
   (add-hook 'pdf-view-mode-hook 'olivetti-mode)
   (add-hook 'minibuffer-mode-hook 'olivetti-mode)
+  (add-hook 'messages-buffer-mode-hook 'olivetti-mode)
+  (add-hook 'special-mode-hook 'olivetti-mode)
   (setq-default fill-column 100))
 
 (use-package tab-bar
@@ -849,24 +863,56 @@
   (general-def
     :states '(normal emacs)
     "C-j"  'tab-previous
-    "C-k"  'tab-next
-    )
+    "C-k"  'tab-next)
+
   (daf/key-leader
     "t" '(:ignore t :which-key "tabs")
     "tt"  'tab-bar-switch-to-tab
-    "ta"  'tab-bar-new-tab
-    "tq"  'tab-bar-close-tab
+    "ta"  'daf/tab-bar-new-tab
+    "tq"  'daf/tab-bar-close-tab
     "tn"  'tab-next
     "tp"  'tab-previous
     "<" 'tab-previous
     ">" 'tab-next)
   :config
+  (defun daf/tab-bar-hide-or-show ()
+    (interactive)
+    "Used to 'turn off' tab-bar with single tab"
+    (if (> (length (tab-bar-tabs)) 1)
+        (set-face-attribute 'tab-bar-tab nil :foreground "#e8b179")
+      (set-face-attribute 'tab-bar-tab nil :foreground "#000000")))
+
+  (daf/tab-bar-hide-or-show)
+
+  (defun daf/tab-bar-new-tab()
+    (interactive)
+    (tab-bar-new-tab)
+    (daf/tab-bar-hide-or-show))
+
+  (defun daf/tab-bar-close-tab()
+    (interactive)
+    (tab-bar-close-tab)
+    (daf/tab-bar-hide-or-show))
+
+  (defun daf/name-tab-by-project-or-default ()
+    (if (project-current)
+        (concat "PROJ: " (car (last (split-string(car (last (project-current))) "/") 2)))
+      (tab-bar-tab-name-current))
+    )
+
+  (setq tab-bar-tab-name-function #'daf/name-tab-by-project-or-default)
   (setq tab-bar-close-button-show nil)
-  (setq tab-bar-new-button nil))
+  (setq tab-bar-new-button nil)
+;; (if (not (tab-bar-switch-to-next-tab))
+;; (set-face-attribute 'tab-bar-tab nil :foreground "#000000" )
+;; (setq tab-bar-mode t)
+;; (setq tab-bar-show nil)
+  )
 
 (use-package rg :defer t)
 (use-package wgrep :defer t :config (setq wgrep-enable-key "T"))
 
+;; (use-package org-appear :defer t)
 (use-package org-bullets
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
@@ -941,7 +987,9 @@
     ","  'org-toggle-checkbox
     "i"  'org-insert-link
     "I"  'daf/insert-url-as-org-link-fancy
-    "l"  'daf/org-open-current-frame)
+    ;; "l"  'daf/org-open-current-frame
+    "l"  'org-toggle-link-display
+    )
 
   (general-def
     :states '(normal emacs)
@@ -953,10 +1001,11 @@
     "RET" 'org-open-at-point)
 
   :config
-  (setq org-agenda-files config--org-agenda-files)
-  (setq org-directory config--org-directory)
+  (setq org-hide-emphasis-markers t) ;; hide org markdown elemets like *bold*
+  (setq org-agenda-files config--org-agenda-files) ;; location of agenda files
+  (setq org-directory config--org-directory) ;; location of org directory
   (setq org-agenda-window-setup 'only-window) ;; make agenda use current window
-  (setq org-use-tag-inheritance t)
+  (setq org-use-tag-inheritance t) ;; tags will apply to lower headings (for agenda filtering)
   (setq org-agenda-use-tag-inheritance t) ;; make tags apply to lower items as well
 
   (setq org-todo-keywords
@@ -972,13 +1021,13 @@
 		("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
 		("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 
-  (setq org-todo-keyword-faces
-	(quote (("TODO"      :foreground "#24a8b4" :weight nil)
-		    ("NEXT"      :foreground "#29d398" :weight nil)
-		    ("DONE"      :foreground "#2e303d" :weight nil)
-		    ("KILL"      :foreground "#E93C58" :weight nil)
-		    ("MEETING"   :foreground "#ffaf87" :weight nil)
-		    ("PHONE"     :foreground "#9d6eba" :weight nil))))
+  ;; (setq org-todo-keyword-faces
+  ;;   (quote (("TODO"      :foreground "#24a8b4" :weight nil)
+  ;;   	    ("NEXT"      :foreground "#29d398" :weight nil)
+  ;;   	    ("DONE"      :foreground "#2e303d" :weight nil)
+  ;;   	    ("KILL"      :foreground "#E93C58" :weight nil)
+  ;;   	    ("MEETING"   :foreground "#ffaf87" :weight nil)
+  ;;   	    ("PHONE"     :foreground "#9d6eba" :weight nil))))
 
   (defun daf/org-archive-done-tasks ()
     (interactive)
@@ -1141,59 +1190,63 @@
     (interactive)
     (select-frame-set-input-focus
      (make-frame '((name . "capture") (width . 120) (height . 15))))
-    (vertico-posframe-mode -1)
+    (if (bound-and-true-p vertico-posframe-mode)
+        (vertico-posframe-mode -1))
     (org-capture))
 
-;;; Testing...
-  (defun make-capture-frame-mini (list)
-    "Testing dmenu replacement"
-     ;; emacsclient -e '(make-capture-frame-mini (list "chill" "phonk"))'
 
-    (interactive)
-    (vertico-posframe-mode -1)
-    (make-frame '((width . 120) (height . 15) (minibuffer . only) (name . "capture")))
-    (select-frame-by-name "capture")
-    (select-frame-set-input-focus (selected-frame)) ;; possibly not needed
-    (unwind-protect
-        (message (completing-read "Choose: " list))
-      (delete-frame)
-      (vertico-posframe-mode 1)
-      ))
-;;;
+;;; Testing...
+  ;; (defun make-capture-frame-mini (list)
+  ;;   "Testing dmenu replacement"
+  ;;    ;; emacsclient -e '(make-capture-frame-mini (list "chill" "phonk"))'
+
+  ;;   (interactive)
+  ;;   (make-frame '((width . 120) (height . 15) (minibuffer . only) (name . "capture")))
+  ;;   (select-frame-by-name "capture")
+  ;;   (select-frame-set-input-focus (selected-frame)) ;; possibly not needed
+  ;;   (unwind-protect
+  ;;       (message (completing-read "Choose: " list))
+  ;;     (delete-frame)
+  ;;     ))
 
   (defadvice org-switch-to-buffer-other-window
       (after supress-window-splitting activate)
     "Delete the extra window if we're in a capture frame"
     (if (equal "capture" (frame-parameter nil 'name))
-	(delete-other-windows)))
+        (delete-other-windows)))
 
   (defadvice org-capture-destroy
       (after delete-capture-frame activate)
     "Advise capture-destroy to close the frame"
     (if (equal "capture" (frame-parameter nil 'name))
-      (progn (delete-frame) (vertico-posframe-mode 1))))
+        (progn (delete-frame)
+               (if (not (bound-and-true-p vertico-posframe-mode))
+                   (vertico-posframe-mode 1)))))
 
   (defadvice org-capture-select-template (around delete-capture-frame activate)
     "Advise org-capture-select-template to close the frame on abort"
     (unless (ignore-errors ad-do-it t)
       (setq ad-return-value "q"))
     (if (and
-	 (equal "q" ad-return-value)
-	 (equal "capture" (frame-parameter nil 'name)))
-      (progn (delete-frame) (vertico-posframe-mode 1))))
+         (equal "q" ad-return-value)
+         (equal "capture" (frame-parameter nil 'name)))
+        (progn (delete-frame) (if (not (bound-and-true-p vertico-posframe-mode))
+                                  (vertico-posframe-mode 1)))))
 
   (defadvice org-capture-refile
       (after delete-capture-frame activate)
     "Advise org-refile to close the frame"
     (if (equal "capture" (frame-parameter nil 'name))
-      (progn (delete-frame) (vertico-posframe-mode 1))))
+        (progn (delete-frame)     (if (not (bound-and-true-p vertico-posframe-mode))
+                                      (vertico-posframe-mode 1)))))
 
   (defadvice org-capture-finalize
       (after delete-capture-frame activate)
     "Advise capture-finalize to close the frame"
     (when (and (equal "capture" (frame-parameter nil 'name))
-	       (not (eq this-command 'org-capture-refile)))
-      (progn (delete-frame) (vertico-posframe-mode 1))))
+               (not (eq this-command 'org-capture-refile)))
+      (progn (delete-frame)     (if (not (bound-and-true-p vertico-posframe-mode))
+                                    (vertico-posframe-mode 1)))))
   )
 
 (use-package org-tempo :straight (:type built-in))
@@ -1245,8 +1298,8 @@
   (setq lsp-log-io nil)
   (setq lsp-enable-file-watchers nil)
   ;; bash
-  (setq sh-basic-offset 2)
-  (setq shr-indentation 2))
+  (setq sh-basic-offset 4)
+  (setq shr-indentation 4))
 
 (use-package lsp-ui
   :after lsp-mode
@@ -1261,10 +1314,13 @@
 	lsp-ui-imenu-enable nil
 	lsp-ui-doc-enable nil))
 
-
-(use-package go-mode :defer t  :mode "\\.go\\'")
-(use-package json-mode :defer t :mode "\\.json\\'")
-(use-package yaml-mode :defer t :mode "\\.yaml\\'" "\\.yml\\'")
+(use-package go-mode   :mode "\\.go\\'")
+(use-package html-mode
+  :straight (:type built-in)
+  :mode "\\.tmpl\\'"
+  )
+(use-package json-mode  :mode "\\.json\\'")
+(use-package yaml-mode  :mode "\\.yaml\\'" "\\.yml\\'")
 ;; (use-package web-mode :defer t)
 (use-package rjsx-mode
   :defer t
@@ -1275,9 +1331,7 @@
   (setq js2-mode-show-parse-errors nil)
   (setq js2-mode-show-strict-warnings nil))
 
-(use-package emmet-mode
-  :hook (html-mode . emmet-mode)
-  )
+(use-package emmet-mode :hook (html-mode . emmet-mode))
 (use-package restclient :defer t)
 
 (use-package pdf-tools
@@ -1338,3 +1392,10 @@
 ;; (use-package default-text-scale
 ;;   :config
 ;;   (default-text-scale-mode))
+
+;; (use-package tree-sitter
+;;   :init
+;;   (global-tree-sitter-mode)
+;;   (global-tree-,hl)
+;;   )
+;; (use-package tree-sitter-langs)
