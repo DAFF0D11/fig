@@ -45,7 +45,7 @@
        (grayl   "#d9dce7")
        (grayml  "#a2a4ba")
        (graym   "#464658")
-       (grayd   "#2f2f3a")
+       (grayd   "#232533")
        (graydd  "#070709")
 
        (black   "#000000")
@@ -65,7 +65,7 @@
  'castle
  ;; Standard font lock faces
  `(default                          ((t (:background, backg :foreground, foreg ))))
- `(bold                             ((t (:bold nil :foreground, foreg ))))
+ ;; `(bold                             ((t (:bold nil :foreground, foreg ))))
  `(italic                           ((t (:bold nil))))
  `(underline                        ((t (:bold nil))))
  `(variable-pitch                   ((t (nil))))
@@ -98,7 +98,8 @@
  `(line-number   ((t (:foreground, graym ))))
 
  ;; split window color vertical border
- `(vertical-border  ((t ( :foreground, foreg  ))))
+ ;; `(vertical-border  ((t ( :foreground, foreg  ))))
+ `(vertical-border  ((t ( :foreground, backg  ))))
 
  `(region              ((t (:background, grayd :foreground, red ))))
  `(secondary-selection ((t (:background, backg :foreground, grayll ))))
@@ -213,6 +214,9 @@
  ;; Vertico
  `(vertico-current ((t (:background, grayd :foreground, foreg ))))
 
+ ;; Vertico posframe
+ `(vertico-posframe-border ((t (:background, grayml ))))
+
  ;; Consult
  `(consult-preview-match  ((t (:background, backg :foreground, foreg ))))
  `(consult-preview-cursor ((t (:background, backg :foreground, foreg ))))
@@ -288,6 +292,12 @@
  `(message-header-other ((t (:foreground, blue ))))
  `(message-header-to ((t (:foreground, yellow ))))
 
+ ;; `(my-modeline-fileface ((t (:background, grayd :foreground, foreg))))
+ ;; `(my-modeline-modfileface ((t (:background, grayd :foreground red))))
+ ;; `(my-modeline-vcface ((t (:background, grayd :foreground, red ))))
+ ;; `(my-modeline-lnface ((t (:background, grayd :foreground, graym ))))
+ ;; `(my-modeline-modeface ((t (:background, grayd :foreground yellow ))))
+
 ;; bufler ?
 
  ;; Terminal
@@ -295,7 +305,7 @@
  `(vterm-color-inverse-video ((t (:bold nil :background, foreg ))))
  `(vterm-color-default       ((t (:bold nil :background, foreg :foreground, foreg ))))
  `(vterm-color-white         ((t (:bold nil :foreground, white ))))
- `(vterm-color-black         ((t (:bold nil :background, graym :foreground, graym ))))
+ `(vterm-color-black         ((t (:bold nil :background, grayd :foreground, graym ))))
  `(vterm-color-red           ((t (:bold nil :foreground, red ))))
  `(vterm-color-green         ((t (:bold nil :foreground, green))))
  `(vterm-color-yellow        ((t (:bold nil :foreground, yellow ))))
