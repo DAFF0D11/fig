@@ -1,7 +1,6 @@
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
-(setq show-paren-mode t)
-(setq show-paren-delay 0)
+(setq show-paren-mode nil)
 
 ;; kill the cursor blink
 (blink-cursor-mode -1)
@@ -61,7 +60,8 @@
 (setq bookmark-default-file config--emacs-bookmarks)
 (add-to-list 'custom-theme-load-path config--themes)
 ;; (load-theme 'cmyk t )
-(load-theme 'mod-cmyk t )
+;; (load-theme 'mod-cmyk t )
+(load-theme 'dark-fi t )
 ;; (set-face-attribute 'flymake-error nil :underline '(:color "red" :style line))
 ;; (load-theme 'castle t )
 
@@ -93,19 +93,19 @@
   :group 'my-modeline)
 
 (defface my-modeline-modfileface
-  '((((background  dark))  :foreground "#e61566"  )
+  '((((background  dark))  :foreground "#E93C58"  )
     (((background  light)) :background "#000000"))
   "Fringe face for current position."
   :group 'my-modeline)
 
 (defface my-modeline-vcface
-  '((((background  dark))  :foreground "#00bdb1" )
+  '((((background  dark))  :foreground "#2e2e3a" )
     (((background  light)) :background "#000000"))
   "Fringe face for current position."
   :group 'my-modeline)
 
 (defface my-modeline-lnface
-  '((((background  dark)) :foreground "#f7e92e" )
+  '((((background  dark)) :foreground "#2e2e3a" )
     (((background  light))  :background "#000000"))
   "Fringe face for current position."
   :group 'my-modeline)
@@ -150,10 +150,16 @@
 
 (setq mode-line-align-middle
       (list
-  '(:eval (when-let (vc vc-mode) (list "" (propertize (concat ""(substring vc 5)" ") 'face 'my-modeline-vcface))))
-  '(:eval (if (not (eq major-mode 'vterm-mode)) (list (propertize "%f" 'face (if (buffer-modified-p) 'my-modeline-modfileface 'my-modeline-fileface)))))
-  '(:eval (if (not (eq major-mode 'vterm-mode)) (list (propertize " %l" 'face 'my-modeline-lnface))))
-  (propertize " %m" 'face 'my-modeline-modeface)))
+       '(:eval (when-let (vc vc-mode)
+                 (list "" (propertize (concat ""(substring vc 5)" ") 'face 'my-modeline-vcface))))
+       '(:eval (if (not (eq major-mode 'vterm-mode))
+                   (list (propertize "%f" 'face
+                                     (if (buffer-modified-p)
+                                         'my-modeline-modfileface 'my-modeline-fileface)))))
+       '(:eval (if (not (eq major-mode 'vterm-mode))
+                   (list (propertize " %l" 'face 'my-modeline-lnface))))
+       '(:eval (list (if major-mode (propertize " %m" 'face 'my-modeline-modeface))))
+  ))
 
 (setq-default mode-line-format
               (list
@@ -161,9 +167,6 @@
                 mode-line-align-middle
                 ;; '(:eval (mode-line-fill-right 'mode-line (reserve-middle/right)))
                 ))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (set-face-attribute 'default nil :family config--font :height config--font-height)
 ;; (set-face-attribute 'default nil :family config--font :height 105)
@@ -202,8 +205,8 @@
 (define-key minibuffer-local-map (kbd "ESC") 'keyboard-escape-quit)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Narrowing confuses people and is      ;;
-;;disabled by default, this enables it. ;;
+;; Narrowing confuses people and is     ;;
+;; disabled by default, this enables it.;;
 (put 'narrow-to-defun  'disabled nil)   ;;
 (put 'narrow-to-page   'disabled nil)   ;;
 (put 'narrow-to-region 'disabled nil)   ;;
@@ -305,7 +308,6 @@
     "g" '(:ignore t :which-key "Git")
     "gg"  'recompile
     "gc"  'compile
-    "gR"  'revert-buffer-no-confirm
 
     "s" '(:ignore t :which-key "surround")
     "ss" '((lambda () (interactive) (switch-to-buffer "*scratch*")) :which-key "open scratch")
@@ -558,6 +560,37 @@
   (define-key company-active-map (kbd "<return>") 'company-complete-selection)
   (define-key company-search-map (kbd "C-j") 'company-select-next)
   (define-key company-search-map (kbd "C-k") 'company-select-previous))
+
+;; i tried...
+;; (use-package corfu
+;;   :custom
+;;   (corfu-cycle t)
+;;   (corfu-auto t)
+;;   (corfu-auto-prefix 2)
+;;   (corfu-auto-delay 0.0)
+;;   (corfu-quit-at-boundry 'seperator)
+;;   (corfu-preview-current 'insert)
+;;   (corfu-preselect-first nil)
+;;   :bind (:map corfu-map
+;;               ("C-j" . corfu-next)
+;;               ("C-k" . corfu-previous)
+;;               )
+;;   :init
+;;   (global-corfu-mode)
+;;   )
+
+(use-package prescient)
+
+(use-package orderless
+  :custom
+  (completion-styles '(partial-completion orderless))
+  :config
+  (setq orderless-component-separator "[ ,]"))
+
+(use-package marginalia
+  :init
+  (marginalia-mode))
+
 
 (use-package bufler
   :general
