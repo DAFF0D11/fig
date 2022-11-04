@@ -3,11 +3,15 @@ set $term foot
 font pango:Fira Code 10
 seat * hide_cursor when-typing enable
 # Escape the xorg
-xwayland disable
+# xwayland disable
 
-# gaps outer 16
-gaps inner 16
-# gaps all 16
+# All
+# gaps inner 16
+
+# No bottom, no inner
+# gaps top 16
+# gaps right 16
+# gaps left 16
 
 title_align center
 
@@ -80,6 +84,8 @@ bindsym Mod4+Shift+k move container to workspace 3
 bindsym Mod4+l workspace                         4
 bindsym Mod4+Shift+l move container to workspace 4
 
+bindsym Mod4+e workspace back_and_forth
+
 bindsym Mod4+b bar mode toggle
 # Middle click title to kill
 bindsym --border button2 kill
@@ -93,6 +99,7 @@ bindsym Mod4+Shift+r restart
 bindsym Mod4+f fullscreen toggle
 bindsym Mod4+Control+s layout stacking
 bindsym Mod4+Control+t layout tabbed
+
 
 # move the currently focused window to the scratchpad
 bindsym Mod4+Shift+minus move scratchpad
