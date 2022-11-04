@@ -1,5 +1,4 @@
 # -*- mode: sh -*-
-
 if [ "$TERM" = "linux" ]; then
     echo -en "\e]P0000000" #black      #000000
     echo -en "\e]P1E93C58" #darkgrey   #E93C58
@@ -11,7 +10,7 @@ if [ "$TERM" = "linux" ]; then
     echo -en "\e]P7A2A4BA" #yellow     #A2A4BA
     echo -en "\e]P8232533" #darkblue   #232533
     echo -en "\e]P9E93C58" #blue       #E93C58
-    echo -en "\e]PA1EF1A4" #darkmagent #1EF1A4a
+    echo -en "\e]PA1EF1A4" #darkmagent #1EF1A4
     echo -en "\e]PBFFAF87" #magenta    #FFAF87
     echo -en "\e]PC6E72AF" #darkcyan   #6E72AF
     echo -en "\e]PDBC84DF" #cyan       #BC84DF
@@ -28,28 +27,26 @@ zle -N backward-word
 zle -N forward-word
 
 # Edit command with editor
-autoload -z edit-command-line
-zle -N edit-command-line
-bindkey "^y" edit-command-line
+# autoload -z edit-command-line
+# zle -N edit-command-line
+# bindkey "^y" edit-command-line
 
 autoload -U colors && colors
 prompt_host=$(echo "$HOST" | tr 'a-z' 'A-Z')
 prompt_user=$(echo "$USER" | tr 'a-z' 'A-Z')
-PROMPT="%F{white}${prompt_user}%F{black}@%F{red}${prompt_host}%{$reset_color%} %~ "
+PROMPT="${prompt_user}%F{blue}@%F{red}${prompt_host}%{$reset_color%} %~ "
 
-# do i need this?
-# dmenu_run
-bindkey -e
-autoload -Uz compinit
-if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
-    compinit;
-else
-    compinit -C;
-fi;
+setopt HIST_EXPIRE_DUPS_FIRST    # Expire duplicate entries first when trimming history.
+setopt HIST_IGNORE_ALL_DUPS      # Delete old recorded entry if new entry is a duplicate.
+setopt HIST_FIND_NO_DUPS         # Do not display a line previously found.
+
+setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history file.
+
 
 export HISTSIZE=1000
 export SAVEHIST=$HISTSIZE
 export HISTFILE="$HOME/.history"
+
 
 export VISUAL="emacsclient -a ''"
 export EDITOR="emacsclient -a ''"
@@ -58,17 +55,11 @@ export ALTERNATE_EDITOR="emacsclient -a ''"
 export TERM=xterm-256color
 
 export BROWSER=qutebrowser
+export MOZ_ENABLE_WAYLAND=1 # Make sure firefox uses Wayland
 
-export MOZ_ENABLE_WAYLAND=1
-# export BROWSER=firefox
-# export BROWSER=brave-browser
-
-export PATH=$HOME/fig/bin:$PATH
+export PATH=$HOME/bin:$PATH
 export PATH=$HOME/pea/sbin:$PATH
-export PATH=$HOME/.local/bin:$PATH
-
-# export PATH=$HOME/src/fxmenu/scripts:$PATH
-# export PATH=$HOME/fig/dafmenu/scripts:$PATH
+# export PATH=$HOME/.local/bin:$PATH
 
 export NODEJS_HOME=$HOME/src/lang/node
 export PATH=$PATH:$NODEJS_HOME/bin
@@ -82,7 +73,7 @@ alias ls="ls --color=auto"
 alias cp="cp -riv "
 alias mv="mv -iv"
 alias mkdir="mkdir -vp "
-alias e='emacsclient -t'
+alias e='emacsclient -a ""'
 alias rmm="trash"
 
 ex(){
@@ -109,22 +100,21 @@ ex(){
   fi
 }
 
+export FZF_CTRL_R_OPTS='--no-sort --exact'
+export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+ --no-bold
+ --layout=reverse
+ --color=fg:#6b6c83,hl:#1EF1A4
+ --color=fg+:#ffffff,bg+:#000000,hl+:#1EF1A4
+ --color=info:#ffffff,prompt:#ffffff,pointer:#1EF1A4
+ --color=marker:#E93C58,spinner:#6b6c83,header:#ffffff'
+
 source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+# testing
+source ~/fig/roles/zsh/files/zsh/completion.zsh
+source ~/fig/roles/zsh/files/zsh/key-bindings.zsh
 
 # required for XCIAO
 # make gtk use old input events
 # export GDK_CORE_DEVICE_EVENTS=1
-
-# Full wayland
-# export GDK_BACKEND=wayland
-# export QT_QPA_PLATFORM=wayland
-
-export GTK_THEME=dark-theme
-
-export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
- --no-bold
- --layout=reverse
- --color=fg:#a2a4ba,bg:#000000,hl:#fab689
- --color=fg+:#ffffff,bg+:#000000,hl+:#fab689
- --color=info:#ffffff,prompt:#ffffff,pointer:#d11f1f
- --color=marker:#701b70,spinner:#a2a4ba,header:#ffffff'
+# export GTK_THEME=dark-theme
