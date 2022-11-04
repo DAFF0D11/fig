@@ -118,7 +118,7 @@ initialise
 while true; do
   case "$MODE" in
     PLAYLIST) RESULT=$(fzf_select_playlist) || exit ;;
-    CHOOSE) RESULT=$(fzf_choose_play ) ;;
+    CHOOSE) RESULT=$( fzf_choose_play ) ;;
   esac
   case "$RESULT" in
     ctrl-h*)MODE=CHOOSE ;;

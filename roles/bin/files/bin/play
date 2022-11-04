@@ -56,6 +56,9 @@ play_mpv() {
 	QUALITY="$1"
 	URL="$2"
 	PAUSE="$3"
+
+	add_watch_history "$2"
+
 	if [ "$PAUSE" = "pause" ]
 	then
 		mpv \
@@ -68,7 +71,6 @@ play_mpv() {
 			"$URL" 2>/dev/null 1>&2
 	fi
 
-	add_watch_history "$2"
 }
 
 play_stream(){

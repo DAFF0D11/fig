@@ -1,5 +1,4 @@
 #!/bin/sh
-# Dafmenu script for selecting videos to play.
 # Select from all, or a specific directory.
 # Also displays watch history of anything played with "play" command.
 
