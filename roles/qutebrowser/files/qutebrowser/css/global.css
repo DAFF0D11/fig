@@ -1,25 +1,20 @@
 :root {
-/* # (curs    "#1ef1a4") */
 
-/* # (backg   "#040406") */
-/* # (backg   "#000000") */
-/* # (foreg   "#a2a4ba") */
-
-/* # (red     "#E93C58") */
-/* # (green   "#29d398") */
-/* # (yellow  "#efaf8e") */
-/* # (blue    "#6e72af") */
-/* # (magenta "#b072d1") */
-/* # (cyan    "#24a8b4") */
-
-/* # (grayll  "#f9f9f9") */
-/* # (grayl   "#d9dce7") */
-/* # (grayml  "#a2a4ba") */
-/* # (graym   "#454558") */
-/* # (grayd   "#232533") */
-
-/* # (black   "#000000") */
-/* # (white   "#ffffff") */
+/* dark-fi */
+/* --bakg        :#000000 */
+/* --forg        :#d1d1d1 */
+/* --red         :#E93C58 */
+/* --green       :#1EF1A4 */
+/* --yellow      :#e8b179 */
+/* --cyan        :#24a8b4 */
+/* --magenta     :#9f78ba */
+/* --blue        :#5f71a1 */
+/* --black       :#000000 */
+/* --white       :#ffffff */
+/* --gray        :#2e2e3a */
+/* --darkgray    :#111119 */
+/* --mediumgray  :#6b6c83 */
+/* --lightgray   :#e9e9e9 */
 
 
 
@@ -42,7 +37,7 @@
         --orange:#ffa333;
         --yellow: #ffec17;
         --daf: #daff0d;
-        --green: #00ffbb;
+        --green: #20ffad;
         --blue: #5f71a1;
         --purple:#ae41d9;
         --pink:#ff3572;
@@ -65,7 +60,7 @@
             /* Pirmary colors */
             --p:var(--green)!important;
             --s:var(--orange)!important;
-            --t:var(--daf)!important;
+            --t:var(--green)!important;
             /* Grayscale */
             --g1:var(--grayscale-1)!important;
             --g2:var(--grayscale-3)!important;
@@ -76,7 +71,7 @@
             --scrollbar-thumb:var(--gray1)!important;
 
             --selection-foreground:var(--black)!important;
-            --selection-background:var(--daf)!important;
+            --selection-background:var(--green)!important;
     }
 }
 
