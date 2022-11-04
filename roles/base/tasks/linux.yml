@@ -39,6 +39,7 @@
       - gimp
       - pcmanfm
       - firefox
+      - foot
       - flameshot
       - keepassxc
       - pavucontrol
@@ -47,6 +48,7 @@
       - curl
       - fzf
       - jq
+      - bc
       - rsync
       - trash-cli
       - libtool
