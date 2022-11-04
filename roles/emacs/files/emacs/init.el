@@ -35,10 +35,9 @@
 (setq split-width-threshold 400              ; Favor vertical split over horizontal
       split-height-threshold nil)
 (setq vc-follow-symlinks t)
-
+(setq scroll-step 5)
 ;; (setq scroll-margin 13)
-(setq scroll-step 1)
-(setq scroll-conservatively 100000 )
+;; (setq scroll-conservatively 100000 )
 
 ;; (add-to-list 'default-frame-alist '(internal-border-width . 10))
 
@@ -59,118 +58,59 @@
 (setq bookmark-save-flag 1)
 (setq bookmark-default-file config--emacs-bookmarks)
 (add-to-list 'custom-theme-load-path config--themes)
+;; (load-theme 'dark-fi t )
+;; (load-theme 'light-fi t )
 ;; (load-theme 'cmyk t )
 ;; (load-theme 'mod-cmyk t )
-(load-theme 'dark-fi t )
 ;; (set-face-attribute 'flymake-error nil :underline '(:color "red" :style line))
 ;; (load-theme 'castle t )
 
-;; OLD The most simple modeline
-;; (setq-default
-;;  mode-line-format
-;;  (list
-;;   ;; current branch
-;;   '(:eval (when-leforgt (vc vc-mode) (list " " (propertize (substring vc 5) 'face 'org-level-5) " ")))
-;;   ;; full path file name
-;;   '(:eval (list (propertize " %f" 'face (if (buffer-modified-p) 'font-lock-keyword-face 'default))))
-;;   ;; position line
-;;   (propertize " %02l" 'face 'font-lock-comment-face)
-;;   ;; position percentage (TOP/BOTTOM)
-;;   ;; (propertize " %p" 'face 'font-lock-comment-face)
-;;   ;; spaces to align right
-;;   ;; '(:eval (propertize " " 'display `((space :align-to (- (+ right right-fringe right-margin)
-;;   ;; 				 ,(+ 3 (string-width mode-name)))))))
-;;   ;; the current major mode
-;;   (propertize " %m " 'face 'font-lock-string-face)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ (defun mode-line-fill-right (face reserve)
+   "Return empty space using FACE and leaving RESERVE space on the right.
+    https://gist.github.com/fhdhsni/990cba7794b4b6918afea94af0b30d66"
+   (unless reserve
+     (setq reserve 20))
+   (when (and window-system (eq 'right (get-scroll-bar-mode)))
+     (setq reserve (- reserve 3)))
+   (propertize " "
+               'display `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))
+               'face face))
 
-;; New simple centered modeline (needs work)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ (defun mode-line-fill-center (face reserve)
+   "Return empty space using FACE to the center of remaining space leaving RESERVE space on the right."
+   (unless reserve
+     (setq reserve 20))
+   (when (and window-system (eq 'right (get-scroll-bar-mode)))
+     (setq reserve (- reserve 3)))
+   (propertize " "
+               'display `((space :align-to (- (+ center (.5 . right-margin)) ,reserve
+                                              (.5 . left-margin))))
+               'face face))
 
-(defface my-modeline-fileface
-  '((((background  dark)) )
-    (((background  light)) :background "#000000"))
-  "Fringe face for current position."
-  :group 'my-modeline)
+ (defun reserve-left/middle ()
+   (/ (length (format-mode-line mode-line-align-middle)) 2))
 
-(defface my-modeline-modfileface
-  '((((background  dark))  :foreground "#E93C58"  )
-    (((background  light)) :background "#000000"))
-  "Fringe face for current position."
-  :group 'my-modeline)
+ (setq mode-line-align-middle
+       (list
+        '(:eval (when-let (vc vc-mode)
+                  (list "" (propertize (concat ""(substring vc 5)" ") 'face 'tooltip))))
+        '(:eval (if (not (eq major-mode 'vterm-mode))
+                    (list (propertize "%f" 'face
+                                      (if (buffer-modified-p)
+                                          'font-lock-warning-face)))))
+        '(:eval (if (not (eq major-mode 'vterm-mode))
+                    (list (propertize " %l" 'face 'tooltip))))
+        '(:eval (list (if major-mode (propertize " %m" ))))))
 
-(defface my-modeline-vcface
-  '((((background  dark))  :foreground "#2e2e3a" )
-    (((background  light)) :background "#000000"))
-  "Fringe face for current position."
-  :group 'my-modeline)
-
-(defface my-modeline-lnface
-  '((((background  dark)) :foreground "#2e2e3a" )
-    (((background  light))  :background "#000000"))
-  "Fringe face for current position."
-  :group 'my-modeline)
-
-(defface my-modeline-modeface
-  '((((background  dark))  )
-    (((background  light)) :background "#000000"))
-  "Fringe face for current position."
-  :group 'my-modeline)
-
-(defun mode-line-fill-right (face reserve)
-  "Return empty space using FACE and leaving RESERVE space on the right."
-  (unless reserve
-    (setq reserve 20))
-  (when (and window-system (eq 'right (get-scroll-bar-mode)))
-    (setq reserve (- reserve 3)))
-  (propertize " "
-              'display `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))
-              'face face))
-
-(defun mode-line-fill-center (face reserve)
-  "Return empty space using FACE to the center of remaining space leaving RESERVE space on the right."
-  (unless reserve
-    (setq reserve 20))
-  (when (and window-system (eq 'right (get-scroll-bar-mode)))
-    (setq reserve (- reserve 3)))
-  (propertize " "
-              'display `((space :align-to (- (+ center (.5 . right-margin)) ,reserve
-                                             (.5 . left-margin))))
-              'face face))
-
-;; (defconst RIGHT_PADDING 1)
-
-(defun reserve-left/middle ()
-  (/ (length (format-mode-line mode-line-align-middle)) 2))
-
-;; (defun reserve-middle/right ()
-;;   (+ RIGHT_PADDING (length (format-mode-line mode-line-align-right))))
-
-;; (setq mode-line-align-right
-;;       '("" "%2 " (:eval (format "%%l/%d : %%c " (line-number-at-pos (point-max))))))
-
-(setq mode-line-align-middle
-      (list
-       '(:eval (when-let (vc vc-mode)
-                 (list "" (propertize (concat ""(substring vc 5)" ") 'face 'my-modeline-vcface))))
-       '(:eval (if (not (eq major-mode 'vterm-mode))
-                   (list (propertize "%f" 'face
-                                     (if (buffer-modified-p)
-                                         'my-modeline-modfileface 'my-modeline-fileface)))))
-       '(:eval (if (not (eq major-mode 'vterm-mode))
-                   (list (propertize " %l" 'face 'my-modeline-lnface))))
-       '(:eval (list (if major-mode (propertize " %m" 'face 'my-modeline-modeface))))
-  ))
-
-(setq-default mode-line-format
-              (list
-                '(:eval (mode-line-fill-center 'mode-line (reserve-left/middle)))
-                mode-line-align-middle
-                ;; '(:eval (mode-line-fill-right 'mode-line (reserve-middle/right)))
-                ))
-
+ (setq-default mode-line-format
+               (list '(:eval (mode-line-fill-center 'mode-line (reserve-left/middle)))
+                 mode-line-align-middle))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (set-face-attribute 'default nil :family config--font :height config--font-height)
-;; (set-face-attribute 'default nil :family config--font :height 105)
+;; (set-face-attribute 'default nil :family config--font :height 120)
 (set-face-attribute 'variable-pitch nil :family config--font :height config--font-height)
+;; (set-face-attribute 'default nil :family config--font :height 105)
 ; (set-face-attribute 'bold nil :family config--font :weight 'bold )
 (set-frame-font config--font nil t)
 
@@ -197,6 +137,15 @@
   (straight-use-package-by-default t)
   (straight-vc-git-default-clone-depth 1)
   (straight-check-for-modifications nil))
+
+(use-package heaven-and-hell
+  :init
+  (load-theme 'dark-fi t )
+  (setq heaven-and-hell-load-theme-no-confirm t)
+  (setq heaven-and-hell-theme-type 'dark) ;; Omit to use light by default
+  (setq heaven-and-hell-themes
+        '((light . light-fi)
+          (dark . dark-fi))))
 
 (use-package general
   :config
@@ -291,6 +240,7 @@
     "z" 'toggle-maximize-buffer
     "r" 'narrow-or-widen-dwim
     "R" 'rotate-window
+    "M" 'man
     "." 'edit-emacs-configuration
 
     "f" '(:ignore t :which-key "Files")
@@ -304,6 +254,7 @@
     "mb"  'daf/bm-heading
     "mo"  'bookmark-jump-other-window
     "ms"  'bookmark-set
+    "mm"  'bookmark-jump
 
     "g" '(:ignore t :which-key "Git")
     "gg"  'recompile
@@ -387,6 +338,15 @@
   (evil-mode)
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
   (define-key evil-insert-state-map (kbd "C-u") nil)
+  ;; jumplist
+  (setq evil-jumps-cross-buffers nil)
+  (evil-add-command-properties #'evil-insert :jump t)
+  (evil-add-command-properties #'evil-change :jump t)
+  (evil-add-command-properties #'evil-delete :jump t)
+  (evil-add-command-properties #'avy-goto-char-timer :jump t)
+  (evil-add-command-properties #'avy-goto-word-0 :jump t)
+  (evil-add-command-properties #'avy-goto-word-1 :jump t)
+  (evil-add-command-properties #'evil-avy-goto-word-1 :jump t)
   )
 
 (use-package evil-terminal-cursor-changer
@@ -417,57 +377,61 @@
   :config
   (global-evil-surround-mode 1))
 
+;; (use-package better-jumper
+;;   :custom
+;;   (better-jumper-use-evil-jump-advice nil)
+;;   :general
+;;   (general-def
+;;     :states '(normal)
+;;     "C-o" 'better-jumper-jump-backward
+;;     "C-i" 'better-jumper-jump-forward)
+;;   :config
+;;   (better-jumper-mode 1)
+;;   (setq better-jumper-context 'buffer)
+;;   (setq better-jumper-add-jump-behavior 'append)
 
-(use-package better-jumper
-  :custom
-  (better-jumper-use-evil-jump-advice nil)
-  :general
-  (general-def
-    :states '(normal)
-    "C-o" 'better-jumper-jump-backward
-    "C-i" 'better-jumper-jump-forward)
-  :config
-  (better-jumper-mode 1)
-  (setq better-jumper-context 'buffer)
-  (setq better-jumper-add-jump-behavior 'append)
+;;   ;; this lets me toggle between two points. (adapted from evil-jump-backward-swap)
+;;   (evil-define-motion better-jumper-toggle (count)
+;;     (let ((pnt (point)))
+;;       (better-jumper-jump-backward 1)
+;;       (better-jumper-set-jump pnt)))
 
-  ;; this lets me toggle between two points. (adapted from evil-jump-backward-swap)
-  (evil-define-motion better-jumper-toggle (count)
-    (let ((pnt (point)))
-      (better-jumper-jump-backward 1)
-      (better-jumper-set-jump pnt)))
+;;   (defun daf/jump-advice (oldfun &rest args)
+;;     (let ((old-pos (point)))
+;;       (apply oldfun args)
+;;       (when (> (abs (- (line-number-at-pos old-pos) (line-number-at-pos (point)))) 1)
+;; 	(better-jumper-set-jump old-pos))))
 
-  ;; Yes this is a mismatched paren in org-mode, but not when tangled.
-  (defun daf/jump-advice (oldfun &rest args)
-    (let ((old-pos (point)))
-      (apply oldfun args)
-      (when (> (abs (- (line-number-at-pos old-pos) (line-number-at-pos (point)))) 1)
-	(better-jumper-set-jump old-pos))))
-
-  (advice-add 'evil-next-line :around #'daf/jump-advice)
-  (advice-add 'evil-previous-line :around #'daf/jump-advice)
-  (advice-add 'evil-search-forward :around #'daf/jump-advice)
-  (advice-add 'evil-search-next :around #'daf/jump-advice)
-  (advice-add 'evil-search-previous :around #'daf/jump-advice)
-  (advice-add 'evil-search-backward :around #'daf/jump-advice)
-  (advice-add 'evil-find-char :around #'daf/jump-advice)
-  (advice-add 'evil-replace :around #'daf/jump-advice)
-  (advice-add 'evil-change :around #'daf/jump-advice)
-  (advice-add 'evil-undo :around #'daf/jump-advice)
-  (advice-add 'evil-paste-after :around #'daf/jump-advice)
-  (advice-add 'evil-paste-before :around #'daf/jump-advice)
-  (advice-add 'evil-redo :around #'daf/jump-advice)
-  (advice-add 'evil-delete :around #'daf/jump-advice)
-  (advice-add 'evil-open-below :around #'daf/jump-advice)
-  (advice-add 'evil-open-above :around #'daf/jump-advice)
-  (advice-add 'evil-goto-first-line :around #'daf/jump-advice)
-  (advice-add 'evil-goto-line :around #'daf/jump-advice)
-  (advice-add 'evil-goto-definition :around #'daf/jump-advice)
-  (advice-add 'lsp-ui-peek-find-definitions :around #'daf/jump-advice)
-  (advice-add 'avy-goto-char-timer :around #'daf/jump-advice)
-  (advice-add 'avy-goto-word-0 :around #'daf/jump-advice)
-  (advice-add 'avy-goto-word-1 :around #'daf/jump-advice)
-  (advice-add 'evil-goto-mark  :around #'daf/jump-advice))
+;;   (advice-add 'evil-next-line :around #'daf/jump-advice)
+;;   (advice-add 'evil-previous-line :around #'daf/jump-advice)
+;;   ;; (advice-add 'evil-search-forward :around #'daf/jump-advice)
+;;   ;; (advice-add 'evil-search-next :around #'daf/jump-advice)
+;;   ;; (advice-add 'evil-search-previous :around #'daf/jump-advice)
+;;   ;; (advice-add 'evil-search-backward :around #'daf/jump-advice)
+;;   ;; (advice-add 'evil-find-char :around #'daf/jump-advice)
+;;   ;; (advice-add 'evil-undo :around #'daf/jump-advice)
+;;   ;; (advice-add 'evil-redo :around #'daf/jump-advice)
+;;   ;; (advice-add 'evil-goto-mark  :around #'daf/jump-advice)
+;;   (advice-add 'evil-replace :around #'daf/jump-advice)
+;;   (advice-add 'evil-paste-after :around #'daf/jump-advice)
+;;   (advice-add 'evil-paste-before :around #'daf/jump-advice)
+;;   (advice-add 'evil-delete :around #'daf/jump-advice)
+;;   (advice-add 'evil-delete-line :around #'daf/jump-advice)
+;;   (advice-add 'evil-delete-whole-line :around #'daf/jump-advice)
+;;   (advice-add 'evil-insert :around #'daf/jump-advice)
+;;   (advice-add 'evil-insert-line :around #'daf/jump-advice)
+;;   (advice-add 'evil-insert-whole-line :around #'daf/jump-advice)
+;;   (advice-add 'evil-change :around #'daf/jump-advice)
+;;   (advice-add 'evil-change-line :around #'daf/jump-advice)
+;;   (advice-add 'evil-open-below :around #'daf/jump-advice)
+;;   (advice-add 'evil-open-above :around #'daf/jump-advice)
+;;   (advice-add 'evil-goto-first-line :around #'daf/jump-advice)
+;;   (advice-add 'evil-goto-line :around #'daf/jump-advice)
+;;   (advice-add 'evil-goto-definition :around #'daf/jump-advice)
+;;   (advice-add 'avy-goto-char-timer :around #'daf/jump-advice)
+;;   (advice-add 'avy-goto-word-0 :around #'daf/jump-advice)
+;;   (advice-add 'avy-goto-word-1 :around #'daf/jump-advice)
+;;   )
 
 (use-package expand-region
   :general
@@ -695,7 +659,7 @@
 
 (use-package dired
   :straight (:type built-in)
-  :custom ((dired-listing-switches "-aghoA --group-directories-first"))
+  :custom ((dired-listing-switches "-arghoA --group-directories-first"))
   :general
 
   (daf/key-local-leader
@@ -754,7 +718,7 @@
 (use-package vterm
   :demand t
   :config
-  (setq vterm-disable-bold t) ;; my love
+  (setq vterm-disable-bold t)
   (setq vterm-always-compile-module t)
   (add-hook 'vterm-mode-hook (lambda () (display-line-numbers-mode 0))))
 
@@ -764,18 +728,22 @@
   (setq multi-vterm-buffer-name "term:")
   (setq multi-vterm-dedicated-buffer-name "dterm:")
   (setq confirm-kill-processes nil)
+  (setq vterm-disable-bold t)
   (setq kill-buffer-query-functions nil)
   :general
+
   (daf/key-leader
     "RET" 'multi-vterm
-    "M-RET" 'daf/multi-vterm-rename
-    )
+    "M-RET" 'daf/multi-vterm-rename)
+
   (general-def
     :states '(normal emacs)
     :keymaps 'vterm-mode-map
     "t" '(lambda () (interactive) (evil-scroll-up 10))
     "s" '(lambda () (interactive) (evil-scroll-down 10)))
+
   :config
+
   (defun daf/project-vterm-predicate (buffer)
     "Kill buffer defined by (multi-vterm-project-get-buffer-name)"
     (if (string-equal (buffer-name buffer) (multi-vterm-project-get-buffer-name))
@@ -868,6 +836,9 @@
 ;; Non-necessary.... unless?
 (use-package rainbow-mode :defer t )
 (use-package olivetti
+  :init
+  (setq olivetti-mode-on-hook nil)
+
   :config
   (add-hook 'elfeed-show-mode-hook 'olivetti-mode)
   (add-hook 'elfeed-search-update-hook 'olivetti-mode)
@@ -912,8 +883,8 @@
     (interactive)
     "Used to 'turn off' tab-bar with single tab"
     (if (> (length (tab-bar-tabs)) 1)
-        (set-face-attribute 'tab-bar-tab nil :foreground "#e8b179")
-      (set-face-attribute 'tab-bar-tab nil :foreground "#000000")))
+        (set-face-attribute 'tab-bar-tab nil :foreground "blue")
+      (set-face-attribute 'tab-bar-tab nil :foreground "black")))
 
   (daf/tab-bar-hide-or-show)
 
@@ -985,6 +956,7 @@
   :straight (:type built-in)
   :init
   (add-hook 'org-mode-hook #'org-indent-mode)
+  (add-hook 'org-mode-hook #'visual-line-mode)
   (add-hook 'org-capture-mode-hook #'evil-insert-state)
   (add-hook 'org-agenda-finalize-hook #'hl-line-mode)
   :general
@@ -1190,19 +1162,20 @@
   ;; CAPTURE
   (setq org-capture-templates
 	'(
-	  ("t" "todo" entry (file+headline config--org-agenda-file "Tasks")
+	  ("t" "TODO" entry (file+headline config--org-agenda-file "TASK")
 	   "* TODO %?\n")
-	  ("w" "Watch" entry (file+headline config--org-agenda-file "Watch") "* TODO Watch %?\n")
-	  ("f" "Finance" entry (file+headline config--org-agenda-file "Finances") "* TODO Buy %?\n")
-	  ("r" "Respond" entry (file+headline config--org-agenda-file "Refile")
-	   "* NEXT Respond to %^{to} about %^{about} \nSCHEDULED: %t\n%U\n\n" :immediate-finish t)
-	  ("n" "note" entry (file+headline config--org-agenda-file "Notes") "* %?\n")
-	  ("m" "Meeting" entry (file+headline config--org-agenda-file "Refile")
-	   "* MEETING with %? :MEETING:\n%U")
-	  ("p" "Phone call" entry (file+headline config--org-agenda-file "Refile")
-	   "* PHONE %? :PHONE:\n%U")
-	  ("h" "Habit" entry (file+headline config--org-agenda-file "Habit")
+	  ("w" "WATCH" entry (file+headline config--org-agenda-file "WATCH") "* TODO %?\n")
+	  ("f" "BUY" entry (file+headline config--org-agenda-file "BUY") "* TODO %?\n")
+	  ("R" "READ" entry (file+headline config--org-agenda-file "READ") "* TODO %?\n")
+	  ("n" "NOTE" entry (file+headline config--org-agenda-file "NOTE") "** %?\n")
+	  ("h" "HABIT" entry (file+headline config--org-agenda-file "HABIT")
 	   "* NEXT %?\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
+	  ;; ("m" "MEETING" entry (file+headline config--org-agenda-file "Refile")
+	  ;;  "* MEETING with %? :MEETING:\n%U")
+	  ;; ("p" "Phone call" entry (file+headline config--org-agenda-file "Refile")
+	  ;;  "* PHONE %? :PHONE:\n%U")
+	  ;; ("r" "RESPOND" entry (file+headline config--org-agenda-file "REFILE")
+	  ;;  "* NEXT Respond to %^{to} about %^{about} \nSCHEDULED: %t\n%U\n\n" :immediate-finish t)
 	  ))
 
   ;; Set up external capture frame.
@@ -1280,6 +1253,24 @@
                (not (eq this-command 'org-capture-refile)))
       (progn (delete-frame)     (if (not (bound-and-true-p vertico-posframe-mode))
                                     (vertico-posframe-mode 1)))))
+
+  ;; Org babel
+  ;; Run/highlight code using babel in org-mode
+
+  (load-file (concat user-emacs-directory "ob-languages/ob-sh.el"))
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '(
+     ;; (python . t)
+     (sh . t)
+     (shell . t)
+     ))
+  ;; Syntax highlight in #+BEGIN_SRC blocks
+  (setq org-src-fontify-natively t)
+  ;; Don't prompt before running code in org
+  (setq org-confirm-babel-evaluate nil)
+
   )
 
 (use-package org-tempo :straight (:type built-in))
@@ -1297,29 +1288,33 @@
 	 (go-mode . lsp)
 	 (c-mode . lsp)
 	 (rjsx-mode . lsp)
-	 ;; (web-mode . lsp)
+	 (web-mode . lsp)
 	 ;; (sh-mode . lsp)
 	 ;; (lisp-mode . lsp)
 	 ;; (css-mode . lsp)
-	 (html-mode . lsp)
+	 ;; (html-mode . lsp)
 	 ;; (json-mode . lsp)
 	 ;; (latex-mode . lsp)
 	 (lsp-mode . lsp-enable-which-key-integration))
   :general
 
   (daf/key-leader
-    "i" 'consult-imenu
-    "I" 'consult-imenu-multi)
+    "i" 'consult-imenu-multi
+    "I" 'consult-imenu
+    )
 
   (daf/key-local-leader
     :keymaps 'prog-mode-map
     "r" 'lsp-rename
+    "R" 'lsp-workspace-restart
     "d" 'lsp-describe-thing-at-point
-    "p" 'lsp-ui-peek-find-references
+    "m" 'lsp-ui-peek-find-references
     "a" 'lsp-execute-code-action
     "f" 'lsp-format-buffer
     "s" 'lsp-signature-activate
     "i" 'lsp-organize-imports
+    "n" 'flymake-goto-next-error
+    "p" 'flymake-goto-prev-error
     "u" 'lsp-ui-imenu)
   :config
   (setq lsp-restart 'ignore)
@@ -1348,13 +1343,15 @@
 	lsp-ui-doc-enable nil))
 
 (use-package go-mode   :mode "\\.go\\'")
-(use-package html-mode
-  :straight (:type built-in)
-  :mode "\\.tmpl\\'"
-  )
+;; (use-package html-mode
+;;   :straight (:type built-in)
+;;   :mode "\\.tmpl\\'"
+;;   )
 (use-package json-mode  :mode "\\.json\\'")
 (use-package yaml-mode  :mode "\\.yaml\\'" "\\.yml\\'")
-;; (use-package web-mode :defer t)
+(use-package web-mode
+  :mode "\\.tmpl\\'"
+  )
 (use-package rjsx-mode
   :defer t
   :mode ("\\.js\\'" "\\.jsx\\'")
@@ -1420,15 +1417,3 @@
 	      ("youtu\\.?be/watch.*" . daf/play)
 	      ("vid\\.puffyan\\.?us/watch.*" . daf/play)
 	      ("." . browse-url-default-browser))))
-
-
-;; (use-package default-text-scale
-;;   :config
-;;   (default-text-scale-mode))
-
-;; (use-package tree-sitter
-;;   :init
-;;   (global-tree-sitter-mode)
-;;   (global-tree-,hl)
-;;   )
-;; (use-package tree-sitter-langs)
