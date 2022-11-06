@@ -1,0 +1,20 @@
+#!/bin/sh
+# Yank thing and format for purpose
+
+# Deps: wl-clipboard
+
+MODE="$1"
+URL="$2"
+
+case "$MODE" in
+    rss) case "$URL" in
+             *vid.puffyan.us/channel/*)
+                 # format vid.puffyan.us channel user for rss
+                 FORMAT="https://www.youtube.com/feeds/videos.xml?channel_id="
+                 USERID=$( echo "$URL" | rev |  cut -d "/" -f1 | rev)
+                 wl-copy "$FORMAT$USERID"
+                 ;;
+         esac
+         ;;
+    *)echo "pass a valid mode: yank rss 'url'";;
+esac
