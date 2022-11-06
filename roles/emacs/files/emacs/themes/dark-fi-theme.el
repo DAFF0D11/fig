@@ -1,4 +1,4 @@
-;; kark-fi-theme.el --- A minimalistic custom theme for Emacs
+;; dark-fi-theme.el --- A minimalistic custom theme for Emacs
 ;; prog gray and red
 ;; full suite of color for other things like:
 ;; - orderless
@@ -27,6 +27,8 @@
        (medium-gray   "#6b6c83")
        (light-gray    "#e9e9e9")
 
+       (notice-me     "#24a8b4")
+
        (git-hl-add    "#1EF1A4")
        (git-hl-change "#e8b179")
        (git-hl-delete "#E93C58")
@@ -48,7 +50,7 @@
  `(underline                        ((t (:bold nil))))
  `(variable-pitch                   ((t (nil))))
  `(error                           ((t (:foreground,red ))))
- `(cursor                           ((t (:background, green))))
+ `(cursor                           ((t (:background, notice-me))))
 
  `(font-lock-comment-face           ((t (:bold nil :foreground, yellow ))))
  `(font-lock-comment-delimiter-face ((t (:bold nil :foreground, yellow ))))
@@ -73,7 +75,7 @@
  ;; Emacs Interface
  `(fringe              ((t (:background, bakg :foreground, bakg ))))
  ;; `(menu                ((t (:background, grayd :foreground, grayl ))))
- `(minibuffer-prompt   ((t (:foreground, green ))))
+ `(minibuffer-prompt   ((t (:foreground, notice-me ))))
  `(line-number   ((t (:foreground, medium-gray ))))
  `(line-number-current-line   ((t (:foreground, light-gray ))))
 
@@ -93,12 +95,12 @@
  `(mode-line-inactive ((t (:bold nil :background, bakg :foreground, gray ))))
 
  ;; Search
- `(isearch                     ((t (:foreground, green :background, bakg ))))
- `(isearch-lazy-highlight-face ((t (:foreground, green ))))
- `(lazy-highlight              ((t (:foreground, green :background, bakg ))))
+ `(isearch                     ((t (:foreground, notice-me :background, bakg ))))
+ `(isearch-lazy-highlight-face ((t (:foreground, notice-me ))))
+ `(lazy-highlight              ((t (:foreground, notice-me :background, bakg ))))
 
  ;; Parenthesis matching
- `(show-paren-match    ((t (:foreground, green :background, bakg ))))
+ `(show-paren-match    ((t (:foreground, notice-me :background, bakg ))))
  `(show-paren-mismatch ((t (:foreground, forg :background, bakg ))))
 
 
@@ -189,12 +191,12 @@
  `(org-scheduled-today ((t (:background, bakg :foreground, forg ))))
 
  ;; Avy
- `(avy-goto-char-timer-face ((t ( :bold t :background, bakg :foreground, green ))))
- `(avy-background-face ((t ( :bold t :background, bakg :foreground, green ))))
- `(avy-lead-face ((t ( :bold t :background, bakg :foreground, green ))))
- `(avy-lead-face-0 ((t ( :bold t :background, bakg :foreground, green ))))
- `(avy-lead-face-1 ((t (:bold t :background, bakg :foreground, green ))))
- `(avy-lead-face-2 ((t (:bold t :background, bakg :foreground, green ))))
+ `(avy-goto-char-timer-face ((t ( :bold t :background, bakg :foreground, notice-me ))))
+ `(avy-background-face ((t ( :bold t :background, bakg :foreground, notice-me ))))
+ `(avy-lead-face ((t ( :bold t :background, bakg :foreground, notice-me ))))
+ `(avy-lead-face-0 ((t ( :bold t :background, bakg :foreground, notice-me ))))
+ `(avy-lead-face-1 ((t (:bold t :background, bakg :foreground, notice-me ))))
+ `(avy-lead-face-2 ((t (:bold t :background, bakg :foreground, notice-me ))))
 
  ;; JavaScript
  `(js2-function-param ((t ( :foreground, forg ))))
@@ -210,12 +212,12 @@
  `(consult-preview-cursor ((t (:background, bakg :foreground, forg ))))
  `(consult-file ((t (:foreground, medium-gray ))))
  `(consult-narrow-indicator ((t (:background, bakg :foreground, cyan ))))
- `(consult-preview-match ((t (:foreground, green ))))
+ `(consult-preview-match ((t (:foreground, notice-me ))))
 
  ;; Completion
- `(completions-common-part      ((t ( :foreground, green ))))
+ `(completions-common-part      ((t ( :foreground, notice-me ))))
  `(completions-first-difference ((t (:bold nil :foreground, forg ))))
- `(completions-common-part      ((t ( :foreground, green ))))
+ `(completions-common-part      ((t ( :foreground, notice-me ))))
 ;; web-mode
  `(web-mode-html-tag-face    ((t ( :foreground, red ))))
  `(web-mode-variable-name-face   ((t ( :foreground, magenta ))))
@@ -229,7 +231,7 @@
 
 
  ;; Company
- `(company-tooltip-common               ((t (:bold nil :background, bakg :foreground, green ))))
+ `(company-tooltip-common               ((t (:bold nil :background, bakg :foreground, notice-me ))))
  `(company-tooltip-common-selection     ((t (:bold nil :background, dark-gray :foreground, white ))))
  `(company-tooltip                      ((t (:bold nil :background, bakg :foreground, gray ))))
  `(company-tooltip-selection            ((t (:bold nil :background, dark-gray :foreground, white ))))
@@ -273,9 +275,9 @@
  `(sh-heredoc ((t (  :foreground, gray ))))
 
 ;; orderless
- `(orderless-match-face-0 ((t (:foreground, green ))))
- `(orderless-match-face-1 ((t (:foreground, green ))))
- `(orderless-match-face-2 ((t (:foreground, green ))))
+ `(orderless-match-face-0 ((t (:foreground, notice-me ))))
+ `(orderless-match-face-1 ((t (:foreground, notice-me ))))
+ `(orderless-match-face-2 ((t (:foreground, notice-me ))))
  `(orderless-match-face-3 ((t (:foreground, white ))))
 
 ;; elfeed
