@@ -1,6 +1,7 @@
 set $mod Mod4
 set $term foot
-font pango:Fira Code 10
+# font pango:Fira Code 10
+font pango:Jetbrains Mono Bold 11
 seat * hide_cursor when-typing enable
 # Escape the xorg
 # xwayland disable
@@ -117,7 +118,7 @@ bindsym Mod4+c exec --no-startup-id         "em capture"
 bindsym Mod4+backslash exec --no-startup-id "em term"; workspace 3
 bindsym Control+Shift+m exec                "clipman clear --all"
 bindsym Control+m exec                      "fxmenu float 916x300 fx-clipman"
-bindsym Control+slash exec                  "fxmenu float 500x300 fx-shuffler"
+bindsym Control+slash exec                  "fxmenu float 900x300 fx-shuffler"
 
 # Music Shuffler
 bindsym Control+Shift+h     exec "playerctl --player=mpv previous"
@@ -192,7 +193,7 @@ mode "$hotmenu" {
     bindsym k exec --no-startup-id "fxmenu float 916x300 fx-kill-process", mode "default"
     bindsym l exec --no-startup-id "fxmenu float 400x300 fx-launch", mode "default"
     bindsym q exec --no-startup-id "qutebrowser", mode "default", mode "default"
-    bindsym p exec --no-startup-id "fxmenu float 916x300 fx-play all", mode "default"
+    bindsym p exec --no-startup-id "fxmenu float 916x300 fx-play", mode "default"
     bindsym c exec --no-startup-id "em capture",mode "default", mode "default"
     bindsym e exec --no-startup-id "emacsclient -c -a '' ",mode "default", mode "default"
 
@@ -203,9 +204,9 @@ mode "$hotmenu" {
 bindsym F6 mode "$hotmenu"
 
 set $background #000000
-set $foreground #a2a4ba
+set $foreground #6b6c83
 set $testground #E93C58
-set $selected   #f7bc81
+set $selected   #e8b179
 
 # Status Bar:
 bar {
