@@ -5,12 +5,13 @@
 ;; kill the cursor blink
 (blink-cursor-mode -1)
 (setq visible-cursor nil)
-;; disable modes
-(global-eldoc-mode -1)
 
-;; line numbers
+;; line numbers, are they really needed with avy?
 ;; (setq display-line-numbers-type 'relative)
 ;; (global-display-line-numbers-mode 'relative)
+
+;; disable modes
+(global-eldoc-mode -1)
 
 ;; enable modes
 (recentf-mode 1)
@@ -20,7 +21,7 @@
 ;; Delete trailing whitespace on save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-;; These cause littering, disable them
+;; Stop littering
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 (setq make-backup-files nil)
@@ -32,10 +33,10 @@
 (setq completion-ignore-case t)
 (setq read-file-name-completion-ignore-case t)
 (setq-default cursor-in-non-selected-windows nil)
-(setq split-width-threshold 400              ; Favor vertical split over horizontal
+(setq split-width-threshold 400 ; Favor vertical split over horizontal
       split-height-threshold nil)
 (setq vc-follow-symlinks t)
-(setq scroll-step 5)
+(setq scroll-step 1)
 ;; (setq scroll-margin 13)
 ;; (setq scroll-conservatively 100000 )
 
@@ -62,7 +63,6 @@
 ;; (load-theme 'light-fi t )
 ;; (load-theme 'cmyk t )
 ;; (load-theme 'mod-cmyk t )
-;; (set-face-attribute 'flymake-error nil :underline '(:color "red" :style line))
 ;; (load-theme 'castle t )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -108,7 +108,7 @@
                  mode-line-align-middle))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (set-face-attribute 'default nil :family config--font :height config--font-height)
-;; (set-face-attribute 'default nil :family config--font :height 120)
+;; (set-face-attribute 'default nil :family config--font :height 105)
 (set-face-attribute 'variable-pitch nil :family config--font :height config--font-height)
 ;; (set-face-attribute 'default nil :family config--font :height 105)
 ; (set-face-attribute 'bold nil :family config--font :weight 'bold )
@@ -903,7 +903,6 @@
         (concat "PROJ: " (car (last (split-string(car (last (project-current))) "/") 2)))
       (tab-bar-tab-name-current))
     )
-
   (setq tab-bar-tab-name-function #'daf/name-tab-by-project-or-default)
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-new-button nil)
@@ -1123,7 +1122,7 @@
 		  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
 		   (org-agenda-overriding-header "HIGH-PRIORITY")))
 	    (agenda "" ((org-agenda-span 'week)))
-	    (tags-todo "-project-refile-habit-finance" ""
+	    (tags-todo "-project-refile-habit-finance-read" ""
 		       ((org-agenda-skip-function
 			 '(or (air-org-skip-subtree-if-habit)
 			      (air-org-skip-subtree-if-priority ?A)
@@ -1134,7 +1133,7 @@
 		  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
 		   (org-agenda-overriding-header "HIGH-PRIORITY")))
 	    (agenda "" ((org-agenda-span 'day)))
-	    (tags-todo "-project-refile-event-watch-finance"
+	    (tags-todo "-project-refile-event-watch-finance-read"
 		       ((org-agenda-skip-function
 			 '(or (air-org-skip-subtree-if-habit)
 			      (air-org-skip-subtree-if-priority ?A)
@@ -1417,3 +1416,12 @@
 	      ("youtu\\.?be/watch.*" . daf/play)
 	      ("vid\\.puffyan\\.?us/watch.*" . daf/play)
 	      ("." . browse-url-default-browser))))
+
+(defun daf/filename ()
+  (interactive)
+  (message (dired-get-filename))
+  ;; cut file path
+  ;; underscore to space
+  ;; put in clipboard
+  ;; search youtube
+  )
