@@ -1,129 +1,123 @@
-#!/bin/sh
+#!/bin/bash
 
-# Dafmenu script for selecting videos to play.
-# Select from all, or a specific directory.
-# Also displays watch history of anything played with "play" command.
+# Takes a directory full of music files in this format:
+# 20221108__Delta_Heavy__Stay_Maduk_Remix__music_energy.hiVevrMP2uQ.webm
+# Choose one to play.
+# Add video to watch history.
+# Search and play watch history.
 
-VIDEO_PATH="$HOME/vid/"
+VIDEO_LOCATION=$HOME/vid
 WATCH_HISTORY="$HOME/pea/mpv/watch_history"
-COMMAND=fzfcmd
 
-fzfcmd() {
-    fzf --expect=ctrl-x,ctrl-f,ctrl-d,ctrl-h \
-        --exact \
+main() {
+    case $1 in
+        -h) MODE=HISTORY ;;
+        *) MODE=ALL ;;
+    esac
+
+    while true; do
+        case "$MODE" in
+            ALL) SELECTION=$(list_video_files | fzf_choose ) ;;
+            HISTORY) SELECTION=$(list_watch_history | fzf_history) ;;
+        esac
+
+        [ -z "$SELECTION" ] && exit 0
+
+        case "$SELECTION" in
+            ctrl-f*)MODE=ALL ;;
+            ctrl-h*)MODE=HISTORY ;;
+            ctrl-x*)exit 0 ;;
+            *) case "$MODE" in
+                   HISTORY)  echo "$SELECTION" | cut_expected | add_history_to_history
+                             echo "$SELECTION" | cut_expected | cut_history | play
+                             break;;
+                   ALL) echo "$SELECTION" | cut_expected | add_selection_to_history
+                        echo "$SELECTION" | cut_expected | play
+                        break;;
+               esac;;
+        esac
+    done
+}
+
+list_video_files() {
+    ls -d "$VIDEO_LOCATION/"*
+}
+
+cut_history() {
+    # watch_history is a TSV of title and url/path
+    # To use with play we need only the url/path
+    cut -d "	" -f2
+}
+
+play(){
+    local selection
+    selection=$(cat -)
+    launch mpv "$selection" 2>/dev/null 1>&2
+}
+
+add_selection_to_history(){
+    local selection
+    local title
+    local src
+    selection=$(cat -)
+    title=$(echo "$selection" | awk -F '[_][_]' '{print $2"__"$3}')
+    src="$selection"
+    echo "$title	$src" >> "$WATCH_HISTORY"
+}
+
+add_history_to_history(){
+    local selection
+    selection=$(cat -)
+    echo "$selection" >> "$WATCH_HISTORY"
+}
+
+cut_expected(){
+    tail -n +2
+}
+
+list_watch_history() {
+    # Visually remove duplicates
+    tac "$WATCH_HISTORY" | awk '! seen[$0]++'
+}
+
+fzf_choose() {
+    fzf --prompt="" \
         --layout=reverse \
-        --delimiter="	" \
-        --with-nth=1 \
+        --exact \
+        --delimiter="__" \
+        --with-nth="2,3,4" \
+        --expect=ctrl-x,ctrl-h,ctrl-f \
+        --bind=change:first \
+        --bind=alt-enter:print-query \
+        --bind=alt-p:previous-history \
+        --bind=alt-n:next-history \
         --bind=ctrl-j:down \
         --bind=ctrl-k:up \
         --bind=alt-j:page-down \
         --bind=alt-k:page-up \
         --bind=ctrl-q:toggle-all \
-        --bind=ctrl-space:toggle
+        --bind=ctrl-space:toggle \
+        --bind=tab:replace-query
 }
 
-dmenu_cmd(){
-    dmenu -i -c -l 30 -ex 'ctrl-x,ctrl-f,ctrl-d,ctrl-h'
+fzf_history() {
+    fzf --prompt="" \
+        --layout=reverse \
+        --exact \
+        --delimiter="	" \
+        --with-nth="1" \
+        --expect=ctrl-x,ctrl-h,ctrl-f \
+        --bind=change:first \
+        --bind=alt-enter:print-query \
+        --bind=alt-p:previous-history \
+        --bind=alt-n:next-history \
+        --bind=ctrl-j:down \
+        --bind=ctrl-k:up \
+        --bind=alt-j:page-down \
+        --bind=alt-k:page-up \
+        --bind=ctrl-q:toggle-all \
+        --bind=ctrl-space:toggle \
+        --bind=tab:replace-query
 }
 
-add_watch_history_file(){
-    V_PATH="$1"
-    V_DIR="$2"
-    V_CHOICE="$3"
-    ENTRY=$(echo "$CHOICE	$V_PATH$V_DIR/$V_CHOICE" | tr -d "\n")
-    echo "$ENTRY" >> "$WATCH_HISTORY"
-}
-
-add_watch_history_history(){
-    echo "$1" >> "$WATCH_HISTORY"
-}
-
-add_watch_history_all(){
-    V_PATH="$1"
-    V_DIR=$(echo "$2" | rev | cut -d "/" -f2- | rev | tr -d "\n")
-    V_CHOICE=$(echo "$2" | rev | cut -d "/" -f1 | rev )
-    ENTRY=$(echo "$V_CHOICE	$V_PATH$V_DIR/$V_CHOICE" | tr -d "\n")
-    echo "$ENTRY" >> "$WATCH_HISTORY"
-}
-
-cut_choice(){
-    echo "$1" | tail -n +2 | cut -f2
-}
-
-choose_directory(){
-    fd --base-directory "$VIDEO_PATH" -t d | "$COMMAND"
-}
-
-choose_file(){
-    DIR=$(echo "$1" | tr -d "\n")
-    FILE=$(fd --base-directory "$VIDEO_PATH$DIR" -t f | grep -v "video_archive\|watch_history"  | "$COMMAND")
-    echo "$FILE"
-}
-
-play(){
-  launch mpv "$1" 2>/dev/null 1>&2
-}
-
-file_choice(){
-    V_PATH="$1"
-    V_DIR="$2"
-    V_CHOICE="$3"
-    echo "$V_PATH$V_DIR/$V_CHOICE" | tr -d "\n"
-}
-
-all_choice(){
-    V_PATH="$1"
-    V_CHOICE="$2"
-    echo "$V_PATH$V_CHOICE" | tr -d "\n"
-}
-
-choose_history(){
-    # Remove first duplicates and reverse
-    HST=$(tac "$WATCH_HISTORY" | awk '! seen[$0]++' | "$COMMAND" )
-    [ -z "$HST" ] && exit 0
-    echo "$HST"
-}
-
-case $1 in
-    dirs) MODE=DIRECTORIES ;;
-    all) MODE=ALL ;;
-    *) MODE=DIRECTORIES ;;
-esac
-
-while true; do
-    case "$MODE" in
-        DIRECTORIES) CHOICE=$(choose_directory) ;;
-        FILES) DIR="$CHOICE"; CHOICE=$(choose_file "$CHOICE") ;;
-        ALL) CHOICE=$(choose_file) ;;
-        HISTORY) CHOICE=$(choose_history) ;;
-    esac
-
-    [ -z "$CHOICE" ] && exit 0
-
-    case "$CHOICE" in
-        ctrl-d*)MODE=DIRECTORIES ;;
-        ctrl-f*)MODE=ALL ;;
-        ctrl-h*)MODE=HISTORY ;;
-        ctrl-x*)exit 0 ;;
-        *) case "$MODE" in
-               DIRECTORIES) MODE=FILES;;
-               HISTORY)
-                   RES=$(echo "$CHOICE" | cut -f2- | tr -d "\n" )
-                   [ -z "$RES" ] && exit 0
-
-                   play "$RES"
-
-                   HST=$(echo "$CHOICE" | tail -n +2)
-                   add_watch_history_history "$HST"
-                   break ;;
-               FILES)
-                   play "$(file_choice "$VIDEO_PATH" "$DIR" "$CHOICE")"
-                   add_watch_history_file "$VIDEO_PATH" "$DIR" "$CHOICE"
-                   break ;;
-               ALL)
-                   play "$(all_choice "$VIDEO_PATH" "$CHOICE")"
-                   add_watch_history_all "$VIDEO_PATH" "$CHOICE"
-                   break ;;
-           esac;;
-    esac
-done
+main "$@"
