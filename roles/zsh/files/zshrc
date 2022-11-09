@@ -110,8 +110,8 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
  --color=marker:#E93C58,spinner:#6b6c83,header:#ffffff'
 
 source ~/.config/zsh/zsh-autosuggestions.zsh
-source ~/fig/roles/zsh/files/zsh/completion.zsh
-source ~/fig/roles/zsh/files/zsh/key-bindings.zsh
+source ~/.config/zsh/completion.zsh
+source ~/.config/zsh/key-bindings.zsh
 
 # required for XCIAO
 # make gtk use old input events
