@@ -14,6 +14,8 @@ darkgray   = "#111119"
 mediumgray = "#6b6c83"
 lightgray  = "#e9e9e9"
 
+noticeme   = "#24a8b4"
+
 # Transparent
 tr  = "rgba(0, 0, 0, 0)"
 
@@ -43,7 +45,7 @@ c.colors.completion.category.border.bottom = bakg
 c.colors.completion.item.selected.fg = white
 
 # Background color of the selected completion item. -> selected item bg
-c.colors.completion.item.selected.bg = bakg
+c.colors.completion.item.selected.bg = gray
 
 # Top border color of the selected completion item.
 c.colors.completion.item.selected.border.top = bakg
@@ -52,10 +54,10 @@ c.colors.completion.item.selected.border.top = bakg
 c.colors.completion.item.selected.border.bottom = bakg
 
 # Foreground color of the matched text in the selected completion item.
-c.colors.completion.item.selected.match.fg = green
+c.colors.completion.item.selected.match.fg = noticeme
 
 # Foreground color of the matched text in the completion.
-c.colors.completion.match.fg = green
+c.colors.completion.match.fg = noticeme
 
 # Color of the scrollbar handle in the completion view.
 c.colors.completion.scrollbar.fg = darkgray
@@ -104,7 +106,7 @@ config.set("hints.border", "0px solid gray")
 c.hints.padding = { "bottom": 3, "top": 2, "left": 4, "right": 4 }
 
 # Font color for hints.
-c.colors.hints.fg = green
+c.colors.hints.fg = noticeme
 
 # Background color for hints. Note that you can use a `rgba(...)` value
 # for transparency (tr).
@@ -171,7 +173,7 @@ c.colors.statusbar.normal.fg = forg
 c.colors.statusbar.normal.bg = bakg
 
 # Foreground color of the statusbar in insert mode.
-c.colors.statusbar.insert.fg = bakg
+c.colors.statusbar.insert.fg = noticeme
 
 # Background color of the statusbar in insert mode.
 c.colors.statusbar.insert.bg = bakg
