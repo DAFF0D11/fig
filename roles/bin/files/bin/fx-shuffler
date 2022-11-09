@@ -8,7 +8,7 @@
 # With a playlist selected, you can choose multiple songs (in order)
 # to play next in the playlist, or what ever shuffled song is next.
 
-MUSIC_LOCATION=~/mus
+MUSIC_LOCATION=$HOME/mus
 PLAYLIST="$HOME/.local/share/shuffler_playlist"
 SOCKET="/tmp/shuffler_socket"
 
@@ -22,9 +22,12 @@ main() {
 
     while true; do
         case "$MODE" in
-            PLAYLIST) SELECTION=$( list_uniq_minor_tags | fzf_playlist ) || exit ;;
-            CHOOSE) SELECTION=$(list_playlist | fzf_choose) ;;
+            PLAYLIST) SELECTION=$(list_uniq_minor_tags | fzf_playlist);;
+            CHOOSE) SELECTION=$(list_playlist | fzf_choose);;
         esac
+
+        [ -z "$SELECTION" ] && exit 0
+
         case "$SELECTION" in
             ctrl-h*)MODE=CHOOSE ;;
             ctrl-l*)MODE=PLAYLIST ;;

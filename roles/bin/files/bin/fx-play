@@ -17,7 +17,7 @@ main() {
 
     while true; do
         case "$MODE" in
-            ALL) SELECTION=$(list_video_files | fzf_choose ) ;;
+            ALL) SELECTION=$(list_video_files | fzf_choose) ;;
             HISTORY) SELECTION=$(list_watch_history | fzf_history) ;;
         esac
 
