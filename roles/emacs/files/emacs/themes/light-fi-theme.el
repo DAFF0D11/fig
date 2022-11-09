@@ -59,7 +59,7 @@
  `(font-lock-doc-face               ((t (:foreground, medium-gray ))))
 
  `(font-lock-function-name-face     ((t (           :foreground, forg ))))
- `(font-lock-builtin-face           ((t (:bold, nil :foreground, forg))))
+ `(font-lock-builtin-face           ((t (:bold, nil :foreground, red))))
  `(font-lock-variable-name-face     ((t (           :foreground, forg ))))
  ;; `(font-lock-reference-face         ((t (           :foreground, forg ))))
  ;; `(font-lock-function               ((t (           :foreground, green ))))
@@ -109,7 +109,7 @@
  ;; Line highlighting
  `(hl-line                     ((t (:background, light-gray :foreground nil ))))
  ;; `(highlight                   ((t (:background, dark-gray :foreground nil ))))
- `(region              ((t (:background, medium-gray :foreground, bakg ))))
+ `(region              ((t (:background, notice-me  ))))
 
  ;; what is this?
  ;; `(highlight-current-line-face ((t (:background, grayd :foreground nil ))))
