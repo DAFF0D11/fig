@@ -34,6 +34,7 @@
       - dnf-plugins-core
       - net-tools
       - fira-code-fonts
+      - jetbrains-mono-fonts-all
       - gdouros-symbola-fonts
       - breeze-cursor-theme
       - gimp
