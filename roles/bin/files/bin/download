@@ -1,0 +1,98 @@
+#!/usr/bin/bash
+
+# download low
+# download high
+# download audio
+
+# Download video/audio and add tags
+
+main(){
+    MODE="$1"
+    URL="$2"
+    DATE=$(date "+%Y%m%d")
+
+    TAGS=$(get_tags)
+    [ -z "$TAGS" ] && exit 0
+
+    FILE_NAME_FORMAT="${DATE}__%(channel)s__%(title)s__${TAGS}.%(id)s.%(ext)s"
+
+    # Read the tags and use the proper path
+    PROPER_PATH=$(get_download_path "$TAGS")
+    DEFAULT_PATH="$HOME/$PROPER_PATH/"
+
+    case "$MODE" in
+        low) download_low "$URL";;
+        high) download_high "$URL";;
+        audio) download_audio "$URL";;
+        *) echo "You must pass 'high', 'low' or 'audio'";;
+    esac
+}
+
+download_low() {
+    local url
+    url="$1"
+    notify-send "Downloading low..."
+    yt-dlp -ciw \
+           --add-metadata \
+           --add-chapters \
+           --embed-subs \
+           --restrict-filenames \
+           --download-archive "$HOME/pea/mpv/video_download_archive" \
+           -o "$DEFAULT_PATH$FILE_NAME_FORMAT" \
+           -f "bestvideo[height<720]+bestaudio/best" \
+           "$url"
+    notify-send "Finished!"
+}
+
+download_high() {
+    local url
+    url="$1"
+    notify-send "Downloading high..."
+    yt-dlp -ciw \
+           --add-metadata \
+           --add-chapters \
+           --embed-subs \
+           --restrict-filenames \
+           --download-archive "$HOME/pea/mpv/video_download_archive" \
+           -o "$DEFAULT_PATH$FILE_NAME_FORMAT" \
+           -f "bestvideo[height=720]+bestaudio/best" \
+           "$url"
+    notify-send "Finished!"
+}
+
+download_audio() {
+    local url
+    url="$1"
+    notify-send "Downloading audio..."
+    yt-dlp -ciw \
+           --add-metadata \
+           --restrict-filenames \
+           --download-archive "$HOME/pea/mpv/music_download_archive" \
+           -o "$DEFAULT_PATH$FILE_NAME_FORMAT" \
+           -f bestaudio \
+           "$url"
+    notify-send "Finished!"
+}
+
+get_tags(){
+    local defined_tags
+    local minor
+    local major
+
+    case "$MODE" in
+        low|high) major="video";;
+        audio) major="music";;
+    esac
+
+    minor=$(echo -e "$defined_tags" | wofi --show dmenu --prompt "minor tag")
+    printf "%s" "${major}_${minor}" | tr "," "_"
+}
+
+get_download_path() {
+    case "$MODE" in
+        low|high) echo "vid";;
+        audio) echo "mus";;
+    esac
+}
+
+main "$@"
