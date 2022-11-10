@@ -1,50 +1,10 @@
-(setq inhibit-startup-message t)
-(setq initial-scratch-message nil)
-(setq show-paren-mode nil)
-
-;; kill the cursor blink
-(blink-cursor-mode -1)
-(setq visible-cursor nil)
-
-;; line numbers, are they really needed with avy?
-;; (setq display-line-numbers-type 'relative)
-;; (global-display-line-numbers-mode 'relative)
-
-;; disable modes
-(global-eldoc-mode -1)
-
-;; enable modes
+;; Enable modes
 (recentf-mode 1)
 (save-place-mode 1)
 
 ;; hooks
-;; Delete trailing whitespace on save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-;; Stop littering
-(setq make-backup-files nil)
-(setq auto-save-default nil)
-(setq make-backup-files nil)
-(setq create-lockfiles nil)
-(setq vc-make-backup-files nil)
-
-;; General settings
-(defalias 'yes-or-no-p 'y-or-n-p)
-(setq completion-ignore-case t)
-(setq read-file-name-completion-ignore-case t)
-(setq-default cursor-in-non-selected-windows nil)
-(setq split-width-threshold 400 ; Favor vertical split over horizontal
-      split-height-threshold nil)
-(setq vc-follow-symlinks t)
-(setq scroll-step 1)
-;; (setq scroll-margin 13)
-;; (setq scroll-conservatively 100000 )
-
-;; (add-to-list 'default-frame-alist '(internal-border-width . 10))
-
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
-(setq indent-line-function 'insert-tab)
 (if (file-exists-p "~/pea/emacs/config.el")
     (load "~/pea/emacs/config.el")
   (setq
@@ -59,16 +19,12 @@
 (setq bookmark-save-flag 1)
 (setq bookmark-default-file config--emacs-bookmarks)
 (add-to-list 'custom-theme-load-path config--themes)
-;; (load-theme 'dark-fi t )
-;; (load-theme 'light-fi t )
-;; (load-theme 'cmyk t )
-;; (load-theme 'mod-cmyk t )
-;; (load-theme 'castle t )
+;; (add-to-list 'default-frame-alist '(internal-border-width . 10))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Center modeline
  (defun mode-line-fill-right (face reserve)
    "Return empty space using FACE and leaving RESERVE space on the right.
-    https://gist.github.com/fhdhsni/990cba7794b4b6918afea94af0b30d66"
+    source: https://gist.github.com/fhdhsni/990cba7794b4b6918afea94af0b30d66"
    (unless reserve
      (setq reserve 20))
    (when (and window-system (eq 'right (get-scroll-bar-mode)))
@@ -98,7 +54,7 @@
         '(:eval (if (not (eq major-mode 'vterm-mode))
                     (list (propertize "%f" 'face
                                       (if (buffer-modified-p)
-                                          'font-lock-warning-face)))))
+                                          'error)))))
         '(:eval (if (not (eq major-mode 'vterm-mode))
                     (list (propertize " %l" 'face 'tooltip))))
         '(:eval (list (if major-mode (propertize " %m" ))))))
@@ -106,12 +62,9 @@
  (setq-default mode-line-format
                (list '(:eval (mode-line-fill-center 'mode-line (reserve-left/middle)))
                  mode-line-align-middle))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (set-face-attribute 'default nil :family config--font :height config--font-height)
-;; (set-face-attribute 'default nil :family config--font :height 105)
 (set-face-attribute 'variable-pitch nil :family config--font :height config--font-height)
-;; (set-face-attribute 'default nil :family config--font :height 105)
-; (set-face-attribute 'bold nil :family config--font :weight 'bold )
 (set-frame-font config--font nil t)
 
 ;; bootstrap straight
@@ -149,17 +102,14 @@
 
 (use-package general
   :config
-
   ;; Just always...
 (define-key minibuffer-local-map (kbd "ESC") 'keyboard-escape-quit)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Narrowing confuses people and is     ;;
-;; disabled by default, this enables it.;;
-(put 'narrow-to-defun  'disabled nil)   ;;
-(put 'narrow-to-page   'disabled nil)   ;;
-(put 'narrow-to-region 'disabled nil)   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Narrowing confuses people and is
+;; disabled by default, this enables it.
+(put 'narrow-to-defun  'disabled nil)
+(put 'narrow-to-page   'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 (defun narrow-or-widen-dwim (p)
   "Widen if buffer is narrowed, narrow-dwim otherwise.
    Dwim means: region, org-src-block, org-subtree, or
@@ -306,7 +256,8 @@
     "C-e" 'daf/flip-window
     "t" 'evil-scroll-up
     "s" 'evil-scroll-down
-    "/" 'daf/evil-visual-search-replace))
+    "/" 'daf/evil-visual-search-replace)
+  )
 
 (use-package which-key
   :config
@@ -377,77 +328,12 @@
   :config
   (global-evil-surround-mode 1))
 
-;; (use-package better-jumper
-;;   :custom
-;;   (better-jumper-use-evil-jump-advice nil)
-;;   :general
-;;   (general-def
-;;     :states '(normal)
-;;     "C-o" 'better-jumper-jump-backward
-;;     "C-i" 'better-jumper-jump-forward)
-;;   :config
-;;   (better-jumper-mode 1)
-;;   (setq better-jumper-context 'buffer)
-;;   (setq better-jumper-add-jump-behavior 'append)
-
-;;   ;; this lets me toggle between two points. (adapted from evil-jump-backward-swap)
-;;   (evil-define-motion better-jumper-toggle (count)
-;;     (let ((pnt (point)))
-;;       (better-jumper-jump-backward 1)
-;;       (better-jumper-set-jump pnt)))
-
-;;   (defun daf/jump-advice (oldfun &rest args)
-;;     (let ((old-pos (point)))
-;;       (apply oldfun args)
-;;       (when (> (abs (- (line-number-at-pos old-pos) (line-number-at-pos (point)))) 1)
-;; 	(better-jumper-set-jump old-pos))))
-
-;;   (advice-add 'evil-next-line :around #'daf/jump-advice)
-;;   (advice-add 'evil-previous-line :around #'daf/jump-advice)
-;;   ;; (advice-add 'evil-search-forward :around #'daf/jump-advice)
-;;   ;; (advice-add 'evil-search-next :around #'daf/jump-advice)
-;;   ;; (advice-add 'evil-search-previous :around #'daf/jump-advice)
-;;   ;; (advice-add 'evil-search-backward :around #'daf/jump-advice)
-;;   ;; (advice-add 'evil-find-char :around #'daf/jump-advice)
-;;   ;; (advice-add 'evil-undo :around #'daf/jump-advice)
-;;   ;; (advice-add 'evil-redo :around #'daf/jump-advice)
-;;   ;; (advice-add 'evil-goto-mark  :around #'daf/jump-advice)
-;;   (advice-add 'evil-replace :around #'daf/jump-advice)
-;;   (advice-add 'evil-paste-after :around #'daf/jump-advice)
-;;   (advice-add 'evil-paste-before :around #'daf/jump-advice)
-;;   (advice-add 'evil-delete :around #'daf/jump-advice)
-;;   (advice-add 'evil-delete-line :around #'daf/jump-advice)
-;;   (advice-add 'evil-delete-whole-line :around #'daf/jump-advice)
-;;   (advice-add 'evil-insert :around #'daf/jump-advice)
-;;   (advice-add 'evil-insert-line :around #'daf/jump-advice)
-;;   (advice-add 'evil-insert-whole-line :around #'daf/jump-advice)
-;;   (advice-add 'evil-change :around #'daf/jump-advice)
-;;   (advice-add 'evil-change-line :around #'daf/jump-advice)
-;;   (advice-add 'evil-open-below :around #'daf/jump-advice)
-;;   (advice-add 'evil-open-above :around #'daf/jump-advice)
-;;   (advice-add 'evil-goto-first-line :around #'daf/jump-advice)
-;;   (advice-add 'evil-goto-line :around #'daf/jump-advice)
-;;   (advice-add 'evil-goto-definition :around #'daf/jump-advice)
-;;   (advice-add 'avy-goto-char-timer :around #'daf/jump-advice)
-;;   (advice-add 'avy-goto-word-0 :around #'daf/jump-advice)
-;;   (advice-add 'avy-goto-word-1 :around #'daf/jump-advice)
-;;   )
-
 (use-package expand-region
   :general
   (general-def
     :states '(visual)
     "v" 'er/expand-region
     "V" 'er/contract-region))
-
-;; (use-package fido
-;; ;; This mode is just really slow, no caching
-;;   :straight (:type built-in)
-;;   :init
-;;   (fido-mode 1)
-;;   (fido-vertical-mode 1)
-;;   :config
-;; (setq window-combination-resize nil))
 
 (use-package vertico
   :init (vertico-mode)
@@ -460,17 +346,9 @@
     :keymaps 'minibuffer-local-map
     "ESC" 'keyboard-escape-quit
     "C-w" 'backward-kill-word)
-  ;; (setq window-combination-resize nil) ;; stop completion buffer from pushing above
-  )
-(use-package vertico-posframe
   :config
-  (setq vertico-posframe-width 100)
-  (setq vertico-posframe-border-width 2) ;; must be at least 2 to see border
-  (setq vertico-posframe-parameters '((left-fringe . 8) (right-fringe . 8)))
-  (vertico-posframe-mode)
+  (setq vertico-resize nil) ;; stop minibuffer from chaging size
   )
-
-(use-package prescient)
 
 (use-package orderless
   :custom
@@ -525,26 +403,7 @@
   (define-key company-search-map (kbd "C-j") 'company-select-next)
   (define-key company-search-map (kbd "C-k") 'company-select-previous))
 
-;; i tried...
-;; (use-package corfu
-;;   :custom
-;;   (corfu-cycle t)
-;;   (corfu-auto t)
-;;   (corfu-auto-prefix 2)
-;;   (corfu-auto-delay 0.0)
-;;   (corfu-quit-at-boundry 'seperator)
-;;   (corfu-preview-current 'insert)
-;;   (corfu-preselect-first nil)
-;;   :bind (:map corfu-map
-;;               ("C-j" . corfu-next)
-;;               ("C-k" . corfu-previous)
-;;               )
-;;   :init
-;;   (global-corfu-mode)
-;;   )
-
 (use-package prescient)
-
 (use-package orderless
   :custom
   (completion-styles '(partial-completion orderless))
@@ -554,7 +413,6 @@
 (use-package marginalia
   :init
   (marginalia-mode))
-
 
 (use-package bufler
   :general
@@ -731,7 +589,6 @@
   (setq vterm-disable-bold t)
   (setq kill-buffer-query-functions nil)
   :general
-
   (daf/key-leader
     "RET" 'multi-vterm
     "M-RET" 'daf/multi-vterm-rename)
@@ -838,7 +695,6 @@
 (use-package olivetti
   :init
   (setq olivetti-mode-on-hook nil)
-
   :config
   (add-hook 'elfeed-show-mode-hook 'olivetti-mode)
   (add-hook 'elfeed-search-update-hook 'olivetti-mode)
@@ -906,21 +762,10 @@
   (setq tab-bar-tab-name-function #'daf/name-tab-by-project-or-default)
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-new-button nil)
-;; (if (not (tab-bar-switch-to-next-tab))
-;; (set-face-attribute 'tab-bar-tab nil :foreground "#000000" )
-;; (setq tab-bar-mode t)
-;; (setq tab-bar-show nil)
   )
 
 (use-package rg :defer t)
 (use-package wgrep :defer t :config (setq wgrep-enable-key "T"))
-
-;; (use-package org-appear :defer t)
-(use-package org-bullets
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-  (setq org-ellipsis " ->")
-  (setq org-bullets-bullet-list '("•")))
 
 (use-package evil-org
   :after (evil org general)
@@ -1005,6 +850,7 @@
     "RET" 'org-open-at-point)
 
   :config
+  (setq org-ellipsis " ->")
   (setq org-hide-emphasis-markers t) ;; hide org markdown elemets like *bold*
   (setq org-agenda-files config--org-agenda-files) ;; location of agenda files
   (setq org-directory config--org-directory) ;; location of org directory
@@ -1038,7 +884,7 @@
     (org-map-entries
      (lambda () (org-archive-subtree)
        (setq org-map-continue-from
-	     (org-element-property :begin (org-element-at-point))))
+             (org-element-property :begin (org-element-at-point))))
      "/DONE" 'file)
     (org-save-all-org-buffers))
 
@@ -1195,8 +1041,7 @@
     (interactive)
     (select-frame-set-input-focus
      (make-frame '((name . "capture") (width . 120) (height . 15))))
-    (if (bound-and-true-p vertico-posframe-mode)
-        (vertico-posframe-mode -1))
+
     (org-capture))
 
 
@@ -1225,8 +1070,7 @@
     "Advise capture-destroy to close the frame"
     (if (equal "capture" (frame-parameter nil 'name))
         (progn (delete-frame)
-               (if (not (bound-and-true-p vertico-posframe-mode))
-                   (vertico-posframe-mode 1)))))
+               )))
 
   (defadvice org-capture-select-template (around delete-capture-frame activate)
     "Advise org-capture-select-template to close the frame on abort"
@@ -1235,27 +1079,23 @@
     (if (and
          (equal "q" ad-return-value)
          (equal "capture" (frame-parameter nil 'name)))
-        (progn (delete-frame) (if (not (bound-and-true-p vertico-posframe-mode))
-                                  (vertico-posframe-mode 1)))))
+        (progn (delete-frame) )))
 
   (defadvice org-capture-refile
       (after delete-capture-frame activate)
     "Advise org-refile to close the frame"
     (if (equal "capture" (frame-parameter nil 'name))
-        (progn (delete-frame)     (if (not (bound-and-true-p vertico-posframe-mode))
-                                      (vertico-posframe-mode 1)))))
+        (progn (delete-frame)     )))
 
   (defadvice org-capture-finalize
       (after delete-capture-frame activate)
     "Advise capture-finalize to close the frame"
     (when (and (equal "capture" (frame-parameter nil 'name))
                (not (eq this-command 'org-capture-refile)))
-      (progn (delete-frame)     (if (not (bound-and-true-p vertico-posframe-mode))
-                                    (vertico-posframe-mode 1)))))
+      (progn (delete-frame)     )))
 
   ;; Org babel
   ;; Run/highlight code using babel in org-mode
-
   (load-file (concat user-emacs-directory "ob-languages/ob-sh.el"))
 
   (org-babel-do-load-languages
@@ -1268,16 +1108,13 @@
   ;; Syntax highlight in #+BEGIN_SRC blocks
   (setq org-src-fontify-natively t)
   ;; Don't prompt before running code in org
-  (setq org-confirm-babel-evaluate nil)
-
-  )
+  (setq org-confirm-babel-evaluate nil))
 
 (use-package org-tempo :straight (:type built-in))
 
 ;; This is only used for lsp snippet expansion
 (use-package yasnippet :init (yas-global-mode))
 (use-package yasnippet-snippets)
-
 (use-package lsp-mode
   :after (yasnippet yasnippet-snippets)
   :init
@@ -1296,7 +1133,6 @@
 	 ;; (latex-mode . lsp)
 	 (lsp-mode . lsp-enable-which-key-integration))
   :general
-
   (daf/key-leader
     "i" 'consult-imenu-multi
     "I" 'consult-imenu
@@ -1341,16 +1177,14 @@
 	lsp-ui-imenu-enable nil
 	lsp-ui-doc-enable nil))
 
-(use-package go-mode   :mode "\\.go\\'")
+(use-package go-mode :mode "\\.go\\'")
 ;; (use-package html-mode
 ;;   :straight (:type built-in)
 ;;   :mode "\\.tmpl\\'"
 ;;   )
-(use-package json-mode  :mode "\\.json\\'")
-(use-package yaml-mode  :mode "\\.yaml\\'" "\\.yml\\'")
-(use-package web-mode
-  :mode "\\.tmpl\\'"
-  )
+(use-package json-mode :mode "\\.json\\'")
+(use-package yaml-mode :mode "\\.yaml\\'" "\\.yml\\'")
+(use-package web-mode :mode "\\.tmpl\\'")
 (use-package rjsx-mode
   :defer t
   :mode ("\\.js\\'" "\\.jsx\\'")
@@ -1362,7 +1196,6 @@
 
 (use-package emmet-mode :hook (html-mode . emmet-mode))
 (use-package restclient :defer t)
-
 (use-package pdf-tools
   ;; run pdf-tools-install on first use
   :config
@@ -1416,12 +1249,3 @@
 	      ("youtu\\.?be/watch.*" . daf/play)
 	      ("vid\\.puffyan\\.?us/watch.*" . daf/play)
 	      ("." . browse-url-default-browser))))
-
-(defun daf/filename ()
-  (interactive)
-  (message (dired-get-filename))
-  ;; cut file path
-  ;; underscore to space
-  ;; put in clipboard
-  ;; search youtube
-  )
