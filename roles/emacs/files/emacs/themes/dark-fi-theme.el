@@ -10,7 +10,13 @@
   "If you squint, it sort of works...")
 (let (
        (bakg          "#000000")
-       (forg          "#c4c4c4")
+       (forg          "#c8c9cc")
+
+       (gray          "#3a3a43")
+       (dark-gray     "#202026")
+       (darkest-gray  "#131316") ;; should only be used for multi-line elements like org-blocks
+       (medium-gray   "#686878")
+       (light-gray    "#e1e1e7")
 
        (red           "#E93C58")
        (green         "#1EF1A4")
@@ -21,13 +27,7 @@
        (black         "#000000")
        (white         "#ffffff")
 
-       (gray          "#2e2e3a")
-       (dark-gray     "#1e1f24")
-       (darkest-gray  "#07070b")
-       (medium-gray   "#6b6c83")
-       (light-gray    "#e9e9e9")
-
-       (notice-me     "#24a8b4")
+       (notice-me     "#E93C58")
 
        (git-hl-add    "#1EF1A4")
        (git-hl-change "#e8b179")
@@ -60,17 +60,17 @@
  `(font-lock-doc-face               ((t (:foreground, medium-gray ))))
 
  `(font-lock-function-name-face     ((t (           :foreground, forg ))))
- `(font-lock-builtin-face           ((t (:bold, nil :foreground, red))))
  `(font-lock-variable-name-face     ((t (           :foreground, forg ))))
  ;; `(font-lock-reference-face         ((t (           :foreground, forg ))))
  ;; `(font-lock-function               ((t (           :foreground, green ))))
  ;; `(font-lock-preprocessor-face      ((t (           :foreground, foreg ))))
  `(font-lock-type-face              ((t (:bold, nil :foreground, forg ))))
- `(font-lock-warning-face           ((t (:bold, nil :foreground, red))))
- ;; Prog color (red)
  `(font-lock-constant-face          ((t (           :foreground, forg ))))
  `(font-lock-number-face            ((t (           :foreground, forg ))))
+ ;; Prog color (red)
  `(font-lock-keyword-face           ((t (:bold, nil :foreground, red))))
+ `(font-lock-warning-face           ((t (:bold, nil :foreground, red))))
+ `(font-lock-builtin-face           ((t (:bold, nil :foreground, red))))
 
  ;; Emacs Interface
  `(fringe              ((t (:background, bakg :foreground, bakg ))))
@@ -91,7 +91,7 @@
  `(widget-field-face   ((t ( :foreground, red ))))
  `(tooltip             ((t (:foreground, gray ))))
 
- `(mode-line          ((t (:bold nil :background, bakg :foreground, white ))))
+ `(mode-line          ((t (:bold nil :background, bakg :foreground, forg ))))
  `(mode-line-inactive ((t (:bold nil :background, bakg :foreground, gray ))))
 
  ;; Search
@@ -110,7 +110,7 @@
  ;; Line highlighting
  `(hl-line                     ((t (:background, dark-gray :foreground, nil ))))
  ;; `(highlight                   ((t (:background, light-gray :foreground, bakg ))))
- `(region              ((t (:background, notice-me ))))
+ `(region              ((t (:background, gray ))))
 
  ;; what is this?
  ;; `(highlight-current-line-face ((t (:background, grayd :foreground nil ))))
@@ -152,20 +152,20 @@
  `(org-tag           ((t (:bold nil :foreground, gray :underline nil ))))
  `(org-code          ((t ( :background, darkest-gray :foreground, forg :underline nil ))))
  `(org-block         ((t (:background, darkest-gray :foreground, forg :underline nil ))))
- `(org-hide         ((t ( :foreground, bakg :underline nil ))))
  `(org-table          ((t (:background, darkest-gray :foreground, forg :underline nil ))))
+ `(org-hide         ((t ( :foreground, bakg :underline nil ))))
 
 
  ;; `(org-headline-todo ((t (:bold, t :foreground, grayll :underline, nil ))))
  ;; `(org-headline-done ((t (:bold, t :foreground, grayll :underline, nil ))))
  `(org-headline-done ((t (:bold nil :foreground, gray ))))
 
- `(org-level-1 ((t (:bold, t   :foreground, red :underline, nil ))))
- `(org-level-2 ((t (:bold, t   :foreground, yellow :underline, nil ))))
- `(org-level-3 ((t (:bold, t   :foreground, blue :underline, nil ))))
- `(org-level-4 ((t (:bold, t   :foreground, magenta :underline, nil ))))
- `(org-level-5 ((t (:bold, t   :foreground, green :underline, nil ))))
- `(org-level-6 ((t (:bold, t   :foreground, white :underline, nil ))))
+ `(org-level-1 ((t (:bold, t   :foreground, light-gray :underline, nil ))))
+ `(org-level-2 ((t (:bold, t   :foreground, light-gray :underline, nil ))))
+ `(org-level-3 ((t (:bold, t   :foreground, light-gray :underline, nil ))))
+ `(org-level-4 ((t (:bold, t   :foreground, light-gray :underline, nil ))))
+ `(org-level-5 ((t (:bold, t   :foreground, light-gray :underline, nil ))))
+ `(org-level-6 ((t (:bold, t   :foreground, light-gray :underline, nil ))))
 
  `(org-agenda-date-today     ((t (:foreground, blue :background, bakg ))))
  ;; `(org-agenda-calendar-event ((t (:foreground, red :background, backg ))))
@@ -232,9 +232,9 @@
 
  ;; Company
  `(company-tooltip-common               ((t (:bold nil :background, bakg :foreground, notice-me ))))
- `(company-tooltip-common-selection     ((t (:bold nil :background, dark-gray :foreground, white ))))
+ `(company-tooltip-common-selection     ((t (:bold nil :background, gray :foreground, white ))))
  `(company-tooltip                      ((t (:bold nil :background, bakg :foreground, gray ))))
- `(company-tooltip-selection            ((t (:bold nil :background, dark-gray :foreground, white ))))
+ `(company-tooltip-selection            ((t (:bold nil :background, gray :foreground, white ))))
  `(company-tooltip-annotation           ((t (:bold nil :foreground, gray ))))
  `(company-tooltip-annotation-selection ((t (:bold nil :foreground, gray ))))
  `(company-tooltip-scrollbar-thumb      ((t (:bold nil :background, bakg :foreground, bakg ))))
@@ -250,9 +250,9 @@
 ;; Magit
  ;; `(magit-header-line ((t (:bold t :background, bakg :foreground, fg ))))
  `(magit-section-heading             ((t (:bold nil :background, bakg :foreground, yellow ))))
- `(magit-section-highlight           ((t (:bold nil  :background, dark-gray  ))))
- `(magit-diff-context-highlight      ((t (:bold nil  :foreground, white :background, dark-gray  ))))
- `(magit-diff-context                ((t (:bold nil  :foreground, medium-gray :background, dark-gray  ))))
+ `(magit-section-highlight           ((t (:bold nil  :background, gray  ))))
+ `(magit-diff-context-highlight      ((t (:bold nil  :foreground, white :background, gray  ))))
+ `(magit-diff-context                ((t (:bold nil  :foreground, medium-gray :background, gray  ))))
  `(magit-diff-hunk-heading-highlight ((t (:bold nil :foreground, bakg  :background, light-gray  ))))
  `(magit-diff-file-heading           ((t (:bold nil :foreground, forg  :background, bakg  ))))
  `(magit-diff-hunk-heading           ((t (:bold nil :background, gray  ))))
@@ -281,11 +281,11 @@
  `(orderless-match-face-3 ((t (:foreground, white ))))
 
 ;; elfeed
- `(elfeed-search-date-face         ((t (:foreground, dark-gray ))))
+ `(elfeed-search-date-face         ((t (:foreground, gray ))))
  `(elfeed-search-title-face        ((t (:bold nil :foreground, gray ))))
  `(elfeed-search-feed-face         ((t (:foreground, forg ))))
  `(elfeed-search-tag-face          ((t (:foreground, gray ))))
- `(elfeed-search-unread-title-face ((t (:foreground, blue ))))
+ `(elfeed-search-unread-title-face ((t (:foreground, forg ))))
 
  ;; `(shr-text ((t ( :height, 120 ))))
  ;; `(shr-link ((t ( :height, 120 :foreground, blue ))))

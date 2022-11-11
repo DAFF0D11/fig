@@ -51,25 +51,25 @@
  `(error                           ((t (:foreground,red ))))
  `(cursor                           ((t (:background, notice-me))))
 
- `(font-lock-comment-face           ((t (:bold nil :foreground, yellow ))))
- `(font-lock-comment-delimiter-face ((t (:bold nil :foreground, yellow ))))
+ `(font-lock-comment-face           ((t (:bold nil :foreground, magenta ))))
+ `(font-lock-comment-delimiter-face ((t (:bold nil :foreground, magenta ))))
 
  `(font-lock-doc-string-face        ((t (:foreground, medium-gray ))))
  `(font-lock-string-face            ((t (:foreground, medium-gray ))))
  `(font-lock-doc-face               ((t (:foreground, medium-gray ))))
 
  `(font-lock-function-name-face     ((t (           :foreground, forg ))))
- `(font-lock-builtin-face           ((t (:bold, nil :foreground, red))))
  `(font-lock-variable-name-face     ((t (           :foreground, forg ))))
  ;; `(font-lock-reference-face         ((t (           :foreground, forg ))))
  ;; `(font-lock-function               ((t (           :foreground, green ))))
  `(font-lock-type-face              ((t (:bold, nil :foreground, forg ))))
  ;; `(font-lock-preprocessor-face      ((t (           :foreground, foreg ))))
- `(font-lock-warning-face           ((t (:bold, nil :foreground, red))))
- ;; Prog color (red)
  `(font-lock-number-face            ((t (           :foreground, forg ))))
  `(font-lock-constant-face          ((t (           :foreground, forg ))))
- `(font-lock-keyword-face           ((t (:bold, nil :foreground, red))))
+ ;; Prog color (red)
+ `(font-lock-builtin-face           ((t (:bold, t :foreground, cyan))))
+ `(font-lock-warning-face           ((t (:bold, t :foreground, cyan))))
+ `(font-lock-keyword-face           ((t (:bold, t :foreground, cyan))))
 
  ;; Emacs Interface
  `(fringe              ((t (:background, bakg :foreground, bakg ))))
@@ -142,7 +142,7 @@
  `(info-xref        ((t (:bold nil :foreground, gray ))))
 
  ;; Org
- `(org-ellipsis      ((t (:foreground, gray :underline nil ))))
+ `(org-ellipsis      ((t ( :bold t :foreground, black :underline nil ))))
  `(org-meta-line      ((t (:foreground, gray :underline nil ))))
  `(org-date-selected ((t (:foreground, red :background, bakg ))))
  `(org-todo          ((t (:foreground, green :background, bakg ))))
@@ -158,12 +158,12 @@
  ;; `(org-headline-done ((t (:bold, t :foreground, grayll :underline, nil ))))
  `(org-headline-done ((t (:bold nil :foreground, gray ))))
 
- `(org-level-1 ((t (:bold, t :foreground, red :underline, nil ))))
- `(org-level-2 ((t (:bold, t :foreground, yellow :underline, nil ))))
- `(org-level-3 ((t (:bold, t :foreground, blue :underline, nil ))))
- `(org-level-4 ((t (:bold, t :foreground, magenta :underline, nil ))))
- `(org-level-5 ((t (:bold, t :foreground, green :underline, nil ))))
- `(org-level-6 ((t (:bold, t :foreground, white :underline, nil ))))
+ `(org-level-1 ((t (:bold, t :foreground, black :underline, nil ))))
+ `(org-level-2 ((t (:bold, t :foreground, black :underline, nil ))))
+ `(org-level-3 ((t (:bold, t :foreground, black :underline, nil ))))
+ `(org-level-4 ((t (:bold, t :foreground, black :underline, nil ))))
+ `(org-level-5 ((t (:bold, t :foreground, black :underline, nil ))))
+ `(org-level-6 ((t (:bold, t :foreground, black :underline, nil ))))
 
  `(org-agenda-date-today     ((t (:foreground, blue :background, bakg ))))
  ;; `(org-agenda-calendar-event ((t (:foreground, red :background, backg ))))
@@ -279,11 +279,11 @@
  `(orderless-match-face-3 ((t (:foreground, white ))))
 
 ;; elfeed
- `(elfeed-search-date-face         ((t (:foreground, light-gray ))))
+ `(elfeed-search-date-face         ((t (:foreground, medium-gray ))))
  `(elfeed-search-title-face        ((t (:bold nil :foreground, medium-gray ))))
  `(elfeed-search-feed-face         ((t (:foreground, forg ))))
  `(elfeed-search-tag-face          ((t (:foreground, gray ))))
- `(elfeed-search-unread-title-face ((t (:foreground, red ))))
+ `(elfeed-search-unread-title-face ((t (:bold t :foreground, forg ))))
 
  ;; `(shr-text ((t ( :height, 120 ))))
  ;; `(shr-link ((t ( :height, 120 :foreground, blue ))))
