@@ -1,6 +1,6 @@
 [global]
     # font = Terminus 12
-    font = Fira Code 12
+    font = Jetbrains mono 12
 	# top-right
 	# bottom-center
 	# top-center
@@ -14,19 +14,19 @@
     separator_height = 10
 
 [urgency_low]
-    background = "#222222"
-    foreground = "#888888"
+    background = "#131316"
+    foreground = "#c8c9cc"
     # frame_color = "#000000"
     timeout = 5
 
 [urgency_normal]
-    background = "#2f2f3b"
-    foreground = "#f9f9f9"
+    background = "#131316"
+    foreground = "#c8c9cc"
     # frame_color = "#000000"
     timeout = 5
 
 [urgency_critical]
     background = "#900000"
-    foreground = "#ffffff"
+    foreground = "#c8c9cc"
     # frame_color = "#000000"
     timeout = 0
