@@ -21,6 +21,10 @@
 (add-to-list 'custom-theme-load-path config--themes)
 ;; (add-to-list 'default-frame-alist '(internal-border-width . 10))
 
+;; Change minibuffer default face
+  (defun my-minibuffer-faces () (face-remap-add-relative 'default '(:foreground "#686878" )))
+  (add-hook 'minibuffer-setup-hook 'my-minibuffer-faces)
+
 ;; Center modeline
  (defun mode-line-fill-right (face reserve)
    "Return empty space using FACE and leaving RESERVE space on the right.
