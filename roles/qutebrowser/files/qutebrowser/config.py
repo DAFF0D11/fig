@@ -28,7 +28,8 @@ config.set('content.cookies.accept', 'all', 'https://mailbox.org/*')
 config.set('content.cookies.accept', 'no-3rdparty', 'https://libreddit.spike.code/*')
 
 c.window.title_format = '{perc}{current_title}'
-c.fonts.default_family = ["Fira Code"]
+# c.fonts.default_family = ["Fira Code"]
+c.fonts.default_family = ["Jetbrains Mono"]
 c.fonts.default_size = "11pt"
 c.zoom.default = "110%"
 # config.set("statusbar.show","never")
@@ -110,8 +111,16 @@ config.bind('cc', 'open -t {primary}', mode='normal')
 config.bind('f', 'set-cmd-text -s :quickmark-load', mode='normal')
 config.bind('F', 'set-cmd-text -s :quickmark-load -t', mode='normal')
 
+# yank url formatted for rss (only vid.puffyan.us/channel)
+config.bind('<space>yr', ' spawn -d yank rss {url:pretty}', mode='normal')
+
 # Bookmarks
-config.bind('<space>b', 'spawn -d em book "{url}" "{title}"', mode='normal') # Download highest quality
+# config.bind('<space>B', 'spawn -d em book "{url}" "{title}"', mode='normal') # Download highest quality
+
+config.bind('<space>b', 'spawn -d em book "{url}" "{title}"', mode='normal')
+config.bind('<space>B', 'spawn -d em bookfinal "{url}" "{title}"', mode='normal')
+
+
 # config.bind('<space>B', 'spawn -d em booknote "{url}" "{title}"', mode='normal') # Download highest quality
 
 config.bind('<Ctrl-i>', 'hint inputs', mode='normal')
@@ -128,12 +137,12 @@ config.bind('<space>cs', 'config-source', mode='normal')
 config.bind('<space>cS', 'open -t qute://settings/', mode='normal')
 
 # Download
-config.bind('<space>dH', 'spawn -d download-ytdlp high {url}', mode='normal') # Download highest quality
-config.bind('<space>dL', 'spawn -d download-ytdlp low {url}', mode='normal') # Download low quality
-config.bind('<space>dh', 'hint links spawn -d download-ytdlp high {hint-url}', mode='normal') # Download highest quality hint
-config.bind('<space>dl', 'hint links spawn -d download-ytdlp low {hint-url}', mode='normal') # Download low quality hint
-config.bind('<space>dA', 'spawn -d download-ytdlp audio {url}', mode='normal') # Download audio (best)
-config.bind('<space>da', 'hint links spawn -d download-ytdlp audio {hint-url}', mode='normal') # Download audio (best) hint
+config.bind('<space>dH', 'spawn -d download high {url}', mode='normal') # Download highest quality
+config.bind('<space>dL', 'spawn -d download low {url}', mode='normal') # Download low quality
+config.bind('<space>dh', 'hint links spawn -d download high {hint-url}', mode='normal') # Download highest quality hint
+config.bind('<space>dl', 'hint links spawn -d download low {hint-url}', mode='normal') # Download low quality hint
+config.bind('<space>dA', 'spawn -d download audio {url}', mode='normal') # Download audio (best)
+config.bind('<space>da', 'hint links spawn -d download audio {hint-url}', mode='normal') # Download audio (best) hint
 
 # Play
 config.bind('<space>pp', 'hint links spawn -d play pause low {hint-url}', mode='normal')# Open play ff

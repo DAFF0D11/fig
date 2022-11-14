@@ -22,7 +22,7 @@
 ;; (add-to-list 'default-frame-alist '(internal-border-width . 10))
 
 ;; Change minibuffer default face
-  (defun my-minibuffer-faces () (face-remap-add-relative 'default '(:foreground "#686878" )))
+  (defun my-minibuffer-faces () (face-remap-add-relative 'default '(:inherit font-lock-string-face )))
   (add-hook 'minibuffer-setup-hook 'my-minibuffer-faces)
 
 ;; Center modeline
@@ -106,54 +106,46 @@
 
 (use-package general
   :config
-  ;; Just always...
-(define-key minibuffer-local-map (kbd "ESC") 'keyboard-escape-quit)
+  (define-key minibuffer-local-map (kbd "ESC") 'keyboard-escape-quit) ;; Just always...
 
-;; Narrowing confuses people and is
-;; disabled by default, this enables it.
-(put 'narrow-to-defun  'disabled nil)
-(put 'narrow-to-page   'disabled nil)
-(put 'narrow-to-region 'disabled nil)
-(defun narrow-or-widen-dwim (p)
-  "Widen if buffer is narrowed, narrow-dwim otherwise.
-   Dwim means: region, org-src-block, org-subtree, or
-   defun, whichever applies first. Narrowing to
-   org-src-block actually calls `org-edit-src-code'.
-   With prefix P, don't widen, just narrow even if buffer
-   is already narrowed."
-  (interactive "P")
-  (declare (interactive-only))
-  (cond ((and (buffer-narrowed-p) (not p)) (widen))
-	((region-active-p)
-	 (narrow-to-region (region-beginning)
-			   (region-end)))
-	((derived-mode-p 'org-mode)
-	 ;; `org-edit-src-code' is not a real narrowing
-	 ;; command. Remove this first conditional if
-	 ;; you don't want it.
-	 (cond ((ignore-errors (org-edit-src-code) t)
-		(delete-other-windows))
-	       ((ignore-errors (org-narrow-to-block) t))
-	       (t (org-narrow-to-subtree))))
-	((derived-mode-p 'latex-mode)
-	 (LaTeX-narrow-to-environment))
-	(t (narrow-to-defun))))
+  ;; Enable narrowing
+  (put 'narrow-to-defun  'disabled nil)
+  (put 'narrow-to-page   'disabled nil)
+  (put 'narrow-to-region 'disabled nil)
+  (defun narrow-or-widen-dwim (p)
+    (interactive "P")
+    (declare (interactive-only))
+    (cond ((and (buffer-narrowed-p) (not p)) (widen))
+          ((region-active-p)
+           (narrow-to-region (region-beginning)
+                             (region-end)))
+          ((derived-mode-p 'org-mode)
+           ;; `org-edit-src-code' is not a real narrowing
+           ;; command. Remove this first conditional if
+           ;; you don't want it.
+           (cond ((ignore-errors (org-edit-src-code) t)
+                  (delete-other-windows))
+                 ((ignore-errors (org-narrow-to-block) t))
+                 (t (org-narrow-to-subtree))))
+          ((derived-mode-p 'latex-mode)
+           (LaTeX-narrow-to-environment))
+          (t (narrow-to-defun))))
 
-(defun daf/toggle-line-numbering ()
-  "Toggle line numbering between absolute and relative."
-  (interactive)
-  (if (eq display-line-numbers 'relative)
-      (setq display-line-numbers 'nil)
-    (setq display-line-numbers 'relative)))
+  (defun daf/toggle-line-numbering ()
+    "Toggle line numbering between absolute and relative."
+    (interactive)
+    (if (eq display-line-numbers 'relative)
+        (setq display-line-numbers 'nil)
+      (setq display-line-numbers 'relative)))
 
-(defun toggle-maximize-buffer ()
+  (defun toggle-maximize-buffer ()
     (interactive)
     "Maximize buffer"
     (if (= 1 (length (window-list)))
-	(jump-to-register '_)
+        (jump-to-register '_)
       (progn
-	(window-configuration-to-register '_)
-	(delete-other-windows))))
+        (window-configuration-to-register '_)
+        (delete-other-windows))))
 
   (defun edit-emacs-configuration () (interactive) (find-file "~/.config/emacs/init.el"))
 
@@ -249,8 +241,8 @@
 
     "M-i" 'next-buffer
     "M-o" 'previous-buffer
-    "ZZ" 'nil
-    "ZQ" 'nil
+    ;; "ZZ" 'nil
+    ;; "ZQ" 'nil
     )
 
   (general-def
@@ -258,8 +250,8 @@
     "C-u" 'evil-scroll-up
     "C-d" 'evil-scroll-down
     "C-e" 'daf/flip-window
-    "t" 'evil-scroll-up
-    "s" 'evil-scroll-down
+    ;; "t" 'evil-scroll-up
+    ;; "s" 'evil-scroll-down
     "/" 'daf/evil-visual-search-replace)
   )
 
@@ -339,20 +331,6 @@
     "v" 'er/expand-region
     "V" 'er/contract-region))
 
-(use-package vertico
-  :init (vertico-mode)
-  :general
-  (general-def
-    :keymaps 'vertico-map
-    "C-j" 'vertico-next
-    "C-k" 'vertico-previous)
-  (general-def
-    :keymaps 'minibuffer-local-map
-    "ESC" 'keyboard-escape-quit
-    "C-w" 'backward-kill-word)
-  :config
-  (setq vertico-resize nil) ;; stop minibuffer from chaging size
-  )
 
 (use-package orderless
   :custom
@@ -368,6 +346,8 @@
   :init
   (use-package consult-project-extra :commands(consult-project-extra-find))
   :config
+
+
   (setq consult-preview-key (kbd "C-l"))
   (setq consult-buffer-filter   '("\\` .*\\'"
 				  "\\`\\*Completions\\*\\'"
@@ -388,6 +368,21 @@
 				  "\\`magit-.*\\'"
 				  "\\`magit:.*\\'"
 				  ))
+  )
+
+(use-package vertico
+  :init (vertico-mode)
+  :general
+  (general-def
+    :keymaps 'vertico-map
+    "C-j" 'vertico-next
+    "C-k" 'vertico-previous)
+  (general-def
+    :keymaps 'minibuffer-local-map
+    "ESC" 'keyboard-escape-quit
+    "C-w" 'backward-kill-word)
+  :config
+  (setq vertico-resize nil) ;; stop minibuffer from chaging size
   )
 
 (use-package company
@@ -635,9 +630,16 @@
   (multi-vterm)
   (multi-vterm-rename-buffer x))
 
+  ;; Modify buffer predicate to ignore multi-vterm-project terminal buffer
+  (defun daf/ignore-project-term-buffer-predicate (buffer)
+    (if (string-equal (multi-vterm-project-get-buffer-name) (buffer-name buffer))
+        nil
+      t))
+
   (defun daf/multi-vterm-project-toggle ()
     "Toggle current project terminal buffer"
     (interactive)
+  (set-frame-parameter nil 'buffer-predicate 'daf/ignore-project-term-buffer-predicate)
     (if (string-equal (buffer-name) (multi-vterm-project-get-buffer-name))
         (daf/flip-window)
       (if (get-buffer (multi-vterm-project-get-buffer-name))
@@ -653,12 +655,6 @@
   (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
   (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'daf/multi-vterm-project-toggle)
 
-  ;; Modify buffer predicate to ignore multi-vterm-project terminal buffer
-  (defun daf/ignore-project-term-buffer-predicate (buffer)
-    (if (string-equal (multi-vterm-project-get-buffer-name) (buffer-name buffer))
-        nil
-      t))
-  (set-frame-parameter nil 'buffer-predicate 'daf/ignore-project-term-buffer-predicate)
   )
 
 (use-package magit
@@ -854,7 +850,7 @@
     "RET" 'org-open-at-point)
 
   :config
-  (setq org-ellipsis " ->")
+  (setq org-ellipsis "->")
   (setq org-hide-emphasis-markers t) ;; hide org markdown elemets like *bold*
   (setq org-agenda-files config--org-agenda-files) ;; location of agenda files
   (setq org-directory config--org-directory) ;; location of org directory
@@ -866,22 +862,23 @@
 	(quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
 		(sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
 
-  (setq org-todo-state-tags-triggers
-	(quote (("CANCELLED" ("CANCELLED" . t))
-		("WAITING" ("WAITING" . t))
-		("HOLD" ("WAITING") ("HOLD" . t))
-		(done ("WAITING") ("HOLD"))
-		("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-		("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
-		("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+  ;; (setq org-todo-state-tags-triggers
+  ;;   (quote (("CANCELLED" ("CANCELLED" . t))
+  ;;   	("WAITING" ("WAITING" . t))
+  ;;   	("HOLD" ("WAITING") ("HOLD" . t))
+  ;;   	(done ("WAITING") ("HOLD"))
+  ;;   	("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+  ;;   	("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+  ;;   	("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 
-  ;; (setq org-todo-keyword-faces
-  ;;   (quote (("TODO"      :foreground "#24a8b4" :weight nil)
-  ;;   	    ("NEXT"      :foreground "#29d398" :weight nil)
-  ;;   	    ("DONE"      :foreground "#2e303d" :weight nil)
-  ;;   	    ("KILL"      :foreground "#E93C58" :weight nil)
-  ;;   	    ("MEETING"   :foreground "#ffaf87" :weight nil)
-  ;;   	    ("PHONE"     :foreground "#9d6eba" :weight nil))))
+  ;; there has the be a themeable way to do this
+  (setq org-todo-keyword-faces
+    (quote (("TODO"      :foreground "#24a8b4" :weight nil)
+    	    ("NEXT"      :foreground "#29d398" :weight nil)
+    	    ("DONE"      :foreground "#202026" :weight nil)
+    	    ("KILL"      :foreground "#E93C58" :weight nil)
+    	    ("MEETING"   :foreground "#ffaf87" :weight nil)
+    	    ("PHONE"     :foreground "#9d6eba" :weight nil))))
 
   (defun daf/org-archive-done-tasks ()
     (interactive)
@@ -1011,12 +1008,12 @@
   ;; CAPTURE
   (setq org-capture-templates
 	'(
-	  ("t" "TODO" entry (file+headline config--org-agenda-file "TASK")
-	   "* TODO %?\n")
+	  ("t" "TODO" entry (file+headline config--org-agenda-file "REFILE") "* TODO %?\n")
 	  ("w" "WATCH" entry (file+headline config--org-agenda-file "WATCH") "* TODO %?\n")
 	  ("f" "BUY" entry (file+headline config--org-agenda-file "BUY") "* TODO %?\n")
 	  ("R" "READ" entry (file+headline config--org-agenda-file "READ") "* TODO %?\n")
 	  ("n" "NOTE" entry (file+headline config--org-agenda-file "NOTE") "** %?\n")
+	  ("b" "book" entry (file config--bookmarks ) "* %?")
 	  ("h" "HABIT" entry (file+headline config--org-agenda-file "HABIT")
 	   "* NEXT %?\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
 	  ;; ("m" "MEETING" entry (file+headline config--org-agenda-file "Refile")
@@ -1045,15 +1042,12 @@
     (interactive)
     (select-frame-set-input-focus
      (make-frame '((name . "capture") (width . 120) (height . 15))))
-
     (org-capture))
-
 
 ;;; Testing...
   ;; (defun make-capture-frame-mini (list)
   ;;   "Testing dmenu replacement"
   ;;    ;; emacsclient -e '(make-capture-frame-mini (list "chill" "phonk"))'
-
   ;;   (interactive)
   ;;   (make-frame '((width . 120) (height . 15) (minibuffer . only) (name . "capture")))
   ;;   (select-frame-by-name "capture")
@@ -1073,8 +1067,7 @@
       (after delete-capture-frame activate)
     "Advise capture-destroy to close the frame"
     (if (equal "capture" (frame-parameter nil 'name))
-        (progn (delete-frame)
-               )))
+        (progn (delete-frame))))
 
   (defadvice org-capture-select-template (around delete-capture-frame activate)
     "Advise org-capture-select-template to close the frame on abort"
@@ -1083,20 +1076,20 @@
     (if (and
          (equal "q" ad-return-value)
          (equal "capture" (frame-parameter nil 'name)))
-        (progn (delete-frame) )))
+        (progn (delete-frame))))
 
   (defadvice org-capture-refile
       (after delete-capture-frame activate)
     "Advise org-refile to close the frame"
     (if (equal "capture" (frame-parameter nil 'name))
-        (progn (delete-frame)     )))
+        (progn (delete-frame))))
 
   (defadvice org-capture-finalize
       (after delete-capture-frame activate)
     "Advise capture-finalize to close the frame"
     (when (and (equal "capture" (frame-parameter nil 'name))
                (not (eq this-command 'org-capture-refile)))
-      (progn (delete-frame)     )))
+      (progn (delete-frame))))
 
   ;; Org babel
   ;; Run/highlight code using babel in org-mode
@@ -1115,6 +1108,7 @@
   (setq org-confirm-babel-evaluate nil))
 
 (use-package org-tempo :straight (:type built-in))
+(use-package org-appear)
 
 ;; This is only used for lsp snippet expansion
 (use-package yasnippet :init (yas-global-mode))
@@ -1249,7 +1243,37 @@
 ;; open regex url with handler function
 (setq browse-url-handlers
       (quote (("old.reddit\\.?com" . daf/redirect-spike-reddit)
-	      (".*reddit\\.?com" . daf/redirect-spike-reddit)
-	      ("youtu\\.?be/watch.*" . daf/play)
-	      ("vid\\.puffyan\\.?us/watch.*" . daf/play)
-	      ("." . browse-url-default-browser))))
+              (".*reddit\\.?com" . daf/redirect-spike-reddit)
+              ("youtu\\.?be/watch.*" . daf/play)
+              ("vid\\.puffyan\\.?us/watch.*" . daf/play)
+              ("." . browse-url-default-browser))))
+
+(defun make-qute-capture-frame (url title)
+  (interactive)
+  ;; check if url exists in bookmarks
+  (with-temp-buffer
+    (insert-file-contents config--bookmarks)
+    (unless  (re-search-forward url nil t)
+      (progn
+        ;; open capture frame
+        (select-frame-set-input-focus
+         (make-frame '((name . "capture") (width . 120) (height . 15))))
+        (org-capture-string "I dont know what this string is for" "b")
+        (ignore-errors)
+        (insert "[["url"]""["title"]]\n")
+        ))))
+
+(defun make-qute-capture-frame-finalize (url title)
+  (interactive)
+  ;; check if url exists in bookmarks
+  (with-temp-buffer
+    (insert-file-contents config--bookmarks)
+    (unless  (re-search-forward url nil t)
+      (progn
+        ;; open capture frame
+        (select-frame-set-input-focus
+         (make-frame '((name . "capture") (width . 120) (height . 15))))
+        (org-capture-string "I dont know what this string is for" "b")
+        (ignore-errors)
+        (insert "[["url"]""["title"]]\n")
+        (org-capture-finalize)))))

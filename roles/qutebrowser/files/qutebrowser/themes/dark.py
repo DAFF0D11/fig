@@ -1,6 +1,12 @@
 # Dark-fi
 bakg        = "#000000"
-forg        = "#d1d1d1"
+forg        = "#c8c9cc"
+
+gray       = "#3a3a43"
+darkgray   = "#202026"
+mediumgray = "#686878"
+lightgray  = "#e1e1e7"
+
 red         = "#E93C58"
 green       = "#1EF1A4"
 yellow      = "#e8b179"
@@ -9,12 +15,8 @@ magenta     = "#9f78ba"
 blue        = "#5f71a1"
 black       = "#000000"
 white       = "#ffffff"
-gray        = "#2e2e3a"
-darkgray   = "#111119"
-mediumgray = "#6b6c83"
-lightgray  = "#e9e9e9"
 
-noticeme   = "#24a8b4"
+noticeme   = "#E93C58"
 
 # Transparent
 tr  = "rgba(0, 0, 0, 0)"
@@ -22,6 +24,12 @@ tr  = "rgba(0, 0, 0, 0)"
 # Text color of the completion widget. May be a single color to use for
 # all columns or a list of three colors, one for each column.
 c.colors.completion.fg = mediumgray
+
+# Foreground color of the selected completion item.
+c.colors.completion.item.selected.fg = forg
+
+# Background color of the selected completion item. -> selected item bg
+c.colors.completion.item.selected.bg = bakg
 
 # Background color of the completion widget for odd rows.
 c.colors.completion.odd.bg = bakg
@@ -40,12 +48,6 @@ c.colors.completion.category.border.top = bakg
 
 # Bottom border color of the completion widget category headers.
 c.colors.completion.category.border.bottom = bakg
-
-# Foreground color of the selected completion item.
-c.colors.completion.item.selected.fg = white
-
-# Background color of the selected completion item. -> selected item bg
-c.colors.completion.item.selected.bg = gray
 
 # Top border color of the selected completion item.
 c.colors.completion.item.selected.border.top = bakg
@@ -250,13 +252,13 @@ c.colors.tabs.indicator.stop = bakg
 c.colors.tabs.indicator.error = red
 
 # Foreground color of unselected odd tabs.
-c.colors.tabs.odd.fg = mediumgray
+c.colors.tabs.odd.fg = gray
 
 # Background color of unselected odd tabs.
 c.colors.tabs.odd.bg = bakg
 
 # Foreground color of unselected even tabs.
-c.colors.tabs.even.fg = mediumgray
+c.colors.tabs.even.fg = gray
 
 # Background color of unselected even tabs.
 c.colors.tabs.even.bg = bakg
@@ -265,34 +267,34 @@ c.colors.tabs.even.bg = bakg
 c.colors.tabs.pinned.even.bg = bakg
 
 # Foreground color of pinned unselected even tabs.
-c.colors.tabs.pinned.even.fg = darkgray
+c.colors.tabs.pinned.even.fg = gray
 
 # Background color of pinned unselected odd tabs.
 c.colors.tabs.pinned.odd.bg = bakg
 
 # Foreground color of pinned unselected odd tabs.
-c.colors.tabs.pinned.odd.fg = darkgray
+c.colors.tabs.pinned.odd.fg = gray
 
 # Background color of pinned selected even tabs.
 c.colors.tabs.pinned.selected.even.bg = bakg
 
 # Foreground color of pinned selected even tabs.
-c.colors.tabs.pinned.selected.even.fg = yellow
+c.colors.tabs.pinned.selected.even.fg = forg
 
 # Background color of pinned selected odd tabs.
 c.colors.tabs.pinned.selected.odd.bg = bakg
 
 # Foreground color of pinned selected odd tabs.
-c.colors.tabs.pinned.selected.odd.fg = yellow
+c.colors.tabs.pinned.selected.odd.fg = forg
 
 # Foreground color of selected odd tabs.
-c.colors.tabs.selected.odd.fg = yellow
+c.colors.tabs.selected.odd.fg = forg
 
 # Background color of selected odd tabs.
 c.colors.tabs.selected.odd.bg = bakg
 
 # Foreground color of selected even tabs.
-c.colors.tabs.selected.even.fg = yellow
+c.colors.tabs.selected.even.fg = forg
 
 # Background color of selected even tabs.
 c.colors.tabs.selected.even.bg = bakg
