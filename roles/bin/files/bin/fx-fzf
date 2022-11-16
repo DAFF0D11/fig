@@ -1,0 +1,10 @@
+#!/bin/sh
+
+fzf_cmd(){
+  fzf --layout=reverse \
+      --exact \
+      --bind=ctrl-j:down \
+      --bind=ctrl-k:up
+}
+
+echo -e "$1" | fzf_cmd

@@ -5,11 +5,13 @@
 (let (
        (bakg          "#000000")
        (forg          "#c8c9cc")
+
        (gray          "#3a3a43")
        (dark-gray     "#202026")
        (darkest-gray  "#131316")
        (medium-gray   "#686878")
        (light-gray    "#e5e7ea")
+
        (red           "#E93C58")
        (green         "#1EF1A4")
        (yellow        "#e8b179")
@@ -20,6 +22,9 @@
        (white         "#ffffff")
 
        (notice-me     "#E93C58")
+
+       (prog          "#e8b179")
+       (comments      "#6c8aa1")
 
        (git-hl-add    "#1EF1A4")
        (git-hl-change "#e8b179")
@@ -36,56 +41,44 @@
 (custom-theme-set-faces
  'dark-fi
  ;; Standard font lock faces
- `(default                          ((t (:background, bakg :foreground, forg ))))
- `(bold                             ((t (:bold nil))))
- `(italic                           ((t (:bold nil))))
- `(underline                        ((t (:bold nil))))
+ `(default                          ((t (:background, bakg :foreground, forg))))
+ `(bold                             ((t (:bold, nil))))
+ `(italic                           ((t (:bold, nil))))
+ `(underline                        ((t (:bold, nil))))
  `(variable-pitch                   ((t (nil))))
- `(error                           ((t (:foreground,red ))))
+ `(error                            ((t (:foreground, red))))
  `(cursor                           ((t (:background, notice-me))))
-
- `(font-lock-comment-face           ((t (:bold nil :foreground, yellow ))))
- `(font-lock-comment-delimiter-face ((t (:bold nil :foreground, yellow ))))
-
- `(font-lock-doc-string-face        ((t (:foreground, medium-gray ))))
- `(font-lock-string-face            ((t (:foreground, medium-gray ))))
- `(font-lock-doc-face               ((t (:foreground, medium-gray ))))
-
- `(font-lock-function-name-face     ((t (           :foreground, nil ))))
- `(font-lock-variable-name-face     ((t (           :foreground, nil ))))
- ;; `(font-lock-reference-face         ((t (           :foreground, forg ))))
- ;; `(font-lock-function               ((t (           :foreground, green ))))
- ;; `(font-lock-preprocessor-face      ((t (           :foreground, foreg ))))
- `(font-lock-type-face              ((t (:bold, nil :foreground, nil ))))
- `(font-lock-constant-face          ((t (           :foreground, nil ))))
- `(font-lock-number-face            ((t (           :foreground, nil ))))
- ;; Prog color (red)
- `(font-lock-keyword-face           ((t (:bold, nil :foreground, red))))
- `(font-lock-warning-face           ((t (:bold, nil :foreground, red))))
- `(font-lock-builtin-face           ((t (:bold, nil :foreground, red))))
-
+ `(font-lock-comment-face           ((t (:bold, nil :foreground, comments))))
+ `(font-lock-comment-delimiter-face ((t (:bold, nil :foreground, comments))))
+ `(font-lock-doc-string-face        ((t (:bold, nil :foreground, medium-gray))))
+ `(font-lock-string-face            ((t (:bold, nil :foreground, medium-gray))))
+ `(font-lock-doc-face               ((t (:bold, nil :foreground, medium-gray))))
+ `(font-lock-function-name-face     ((t (:bold, nil :foreground, forg ))))
+ `(font-lock-variable-name-face     ((t (:bold, nil :foreground, forg ))))
+ `(font-lock-reference-face         ((t (:bold, nil :foreground, forg ))))
+ `(font-lock-function               ((t (:bold, nil :foreground, forg ))))
+ `(font-lock-preprocessor-face      ((t (:bold, nil :foreground, forg ))))
+ `(font-lock-type-face              ((t (:bold, nil :foreground, forg ))))
+ `(font-lock-constant-face          ((t (:bold, nil :foreground, forg ))))
+ `(font-lock-number-face            ((t (:bold, nil :foreground, forg ))))
+ `(font-lock-keyword-face           ((t (:bold, nil :foreground, prog))))
+ `(font-lock-warning-face           ((t (:bold, nil :foreground, prog))))
+ `(font-lock-builtin-face           ((t (:bold, nil :foreground, prog))))
  ;; Emacs Interface
- `(fringe              ((t (:background, bakg :foreground, bakg ))))
- ;; `(menu                ((t (:background, grayd :foreground, grayl ))))
- `(minibuffer-prompt   ((t (:foreground, notice-me ))))
- `(line-number   ((t (:foreground, bakg ))))
- `(line-number-current-line   ((t (:foreground, bakg ))))
-
- ;; split window color vertical border
- ;; `(vertical-border  ((t ( :foreground, forg  ))))
- `(vertical-border  ((t ( :foreground, bakg  ))))
-
  ;; `(secondary-selection ((t (:background, backg :foreground, grayll ))))
  ;; `(tool-bar            ((t (:background, grayd :foreground, grayd ))))
-
- ;; for mode-line
- `(widget-button-face  ((t ( :foreground, white ))))
- `(widget-field-face   ((t ( :foreground, red ))))
- `(tooltip             ((t (:foreground, gray ))))
-
- `(mode-line          ((t (:bold nil :background, bakg :foreground, forg ))))
- `(mode-line-inactive ((t (:bold nil :background, bakg :foreground, gray ))))
-
+ ;; `(menu                ((t (:background, grayd :foreground, grayl ))))
+ `(fringe                     ((t (:background, bakg :foreground, bakg))))
+ `(minibuffer-prompt          ((t (:foreground, notice-me))))
+ `(line-number                ((t (:foreground, bakg))))
+ `(line-number-current-line   ((t (:foreground, bakg))))
+ `(vertical-border            ((t (:foreground, bakg))))
+ ;; mode-line
+ `(widget-button-face         ((t (:foreground, white ))))
+ `(widget-field-face          ((t (:foreground, red ))))
+ `(tooltip                    ((t (:foreground, gray ))))
+ `(mode-line                  ((t (:bold nil :background, bakg :foreground, forg ))))
+ `(mode-line-inactive         ((t (:bold nil :background, bakg :foreground, gray ))))
  ;; Search
  `(isearch                     ((t (:foreground, notice-me :background, bakg ))))
  `(isearch-lazy-highlight-face ((t (:foreground, notice-me ))))
@@ -100,7 +93,7 @@
 
  ;; Line highlighting
  ;; `(hl-line                     ((t (:background, dark-gray :foreground, nil ))))
- `(highlight                   ((t (:background, bakg :foreground,forg ))))
+ `(highlight                   ((t (:background, dark-gray :foreground,forg ))))
  `(region              ((t (:background, gray ))))
 
  ;; Buttons
@@ -111,7 +104,8 @@
  `(holiday-face ((t (:background, bakg :foreground, red ))))
 
  ;; Dired
- `(dired-directory ((t (:bold nil :foreground, red ))))
+ `(dired-directory ((t (:bold nil :foreground, blue ))))
+ `(dired-marked ((t (:bold nil :foreground, notice-me ))))
  `(dired-symlink ((t (:foreground, medium-gray ))))
 
  ;; Dired subtree
@@ -143,17 +137,16 @@
  `(org-table          ((t (:background, darkest-gray :foreground, forg :underline nil ))))
  `(org-hide         ((t ( :foreground, bakg :underline nil ))))
 
-
  ;; `(org-headline-todo ((t (:bold, t :foreground, grayll :underline, nil ))))
  ;; `(org-headline-done ((t (:bold, t :foreground, grayll :underline, nil ))))
  `(org-headline-done ((t (:bold nil :foreground, gray ))))
 
- `(org-level-1 ((t (:bold, nil   :foreground, red :underline, nil ))))
- `(org-level-2 ((t (:bold, nil   :foreground, red :underline, nil ))))
- `(org-level-3 ((t (:bold, nil   :foreground, red :underline, nil ))))
- `(org-level-4 ((t (:bold, nil   :foreground, red :underline, nil ))))
- `(org-level-5 ((t (:bold, nil   :foreground, red :underline, nil ))))
- `(org-level-6 ((t (:bold, nil   :foreground, red :underline, nil ))))
+ `(org-level-1 ((t (:bold, t   :foreground, blue :underline, nil ))))
+ `(org-level-2 ((t (:bold, t   :foreground, blue :underline, nil ))))
+ `(org-level-3 ((t (:bold, t   :foreground, blue :underline, nil ))))
+ `(org-level-4 ((t (:bold, t   :foreground, blue :underline, nil ))))
+ `(org-level-5 ((t (:bold, t   :foreground, blue :underline, nil ))))
+ `(org-level-6 ((t (:bold, t   :foreground, blue :underline, nil ))))
 
  `(org-agenda-date-today     ((t (:foreground, blue :background, bakg ))))
  ;; `(org-agenda-calendar-event ((t (:foreground, red :background, backg ))))
@@ -161,8 +154,8 @@
 
  ;; `(org-ellipsis ((t (:background, bg :foreground, g8 :underline nil))))
 
- `(org-link ((t (:bold nil :foreground, cyan :underline nil ))))
- `(link     ((t (:bold nil :foreground, cyan :underline nil ))))
+ `(org-link ((t (:bold nil :foreground, cyan :underline t ))))
+ `(link     ((t (:bold nil :foreground, cyan :underline t ))))
 
  `(header-line           ((t (:background, bakg :foreground, red ))))
  `(header-line-highlight ((t (:background, bakg :foreground, forg ))))
@@ -193,8 +186,8 @@
  ;; `(consult-preview-match  ((t (:background, bakg :foreground, forg ))))
  ;; `(consult-preview-cursor ((t (:background, bakg :foreground, forg ))))
  `(consult-preview-match ((t (:foreground, notice-me ))))
- `(consult-help ((t (:foreground, forg ))))
- ;; `(consult-file ((t (:foreground, medium-gray ))))
+ `(consult-file ((t (:foreground, nil ))))
+ ;; `(consult-help ((t (:foreground, forg ))))
  ;; `(consult-narrow-indicator ((t (:background, bakg :foreground, cyan ))))
 
 
@@ -205,8 +198,8 @@
 
  ;; Vertico
  ;; `(vertico-current ((t (:background, dark-gray :foreground, forg ))))
- `(vertico-group-title ((t (:background, bakg :foreground, gray ))))
- `(vertico-group-separator ((t (:background, bakg :foreground, gray ))))
+ `(vertico-group-title ((t (:background, bakg :foreground,  forg ))))
+ `(vertico-group-separator ((t (:background, bakg :foreground, forg ))))
 
  ;; Vertico posframe
  ;; `(vertico-posframe-border ((t (:background, forg ))))
@@ -223,9 +216,9 @@
 
  ;; Company
  `(company-tooltip-common               ((t (:bold nil :background, bakg :foreground, notice-me ))))
- `(company-tooltip-common-selection     ((t (:bold nil :background, bakg :foreground, forg ))))
+ `(company-tooltip-common-selection     ((t (:bold nil :background, dark-gray :foreground, forg ))))
+ `(company-tooltip-selection            ((t (:bold nil :background, dark-gray :foreground, forg ))))
  `(company-tooltip                      ((t (:bold nil :background, bakg :foreground, medium-gray ))))
- `(company-tooltip-selection            ((t (:bold nil :background, bakg :foreground, forg ))))
  ;; `(company-tooltip-annotation           ((t (:bold nil :foreground, medium-gray ))))
  ;; `(company-tooltip-annotation-selection ((t (:bold nil :foreground, medium-gray ))))
  `(company-tooltip-scrollbar-thumb      ((t (:bold nil :background, bakg :foreground, bakg ))))

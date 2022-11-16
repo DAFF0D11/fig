@@ -40,6 +40,11 @@ main() {
     done
 }
 
+remove_trash_tags() {
+    # I just dont use these
+    grep -v "_theme\|_delete"
+}
+
 list_playlist() {
     cat "$PLAYLIST"
 }
@@ -147,9 +152,6 @@ list_uniq_minor_tags() {
         uniq
 }
 
-remove_trash_tags() {
-    grep -v "_theme\|_delete\|_meme"
-}
 
 list_music_files() {
     ls -d "$MUSIC_LOCATION/"*

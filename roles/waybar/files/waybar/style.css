@@ -11,7 +11,7 @@
 window#waybar {
     /* background: transparent; */
     background: black;
-    color: #2e2e3a;
+    color: #3a3a43;
 }
 
 #window {
@@ -29,12 +29,12 @@ window#waybar {
 #workspaces button {
     /* padding: 0 5px; */
     background: transparent;
-    color: #2e2e3a;
+    color: #3a3a43;
     /* border-top: 2px solid transparent; */
 }
 
 #workspaces button.focused {
-    color: #E93C58;
+    color: #c8c9cc;
     /* border-top: 2px solid #c9545d; */
 }
 
@@ -55,7 +55,7 @@ window#waybar {
 }
 
 #battery {
-    color: #2e2e3a;
+    color: #3a3a43;
 }
 
 #battery icon {
@@ -71,7 +71,7 @@ window#waybar {
 }
 
 #battery.discharging {
-    color:#2e2e3a;
+    color:#3a3a43;
 }
 /* States */
 /* #battery.good { */
@@ -81,7 +81,7 @@ window#waybar {
 
 @keyframes blink {
     to {
-        color: #2e2e3a;
+        color: #3a3a43;
     }
 }
 

@@ -29,7 +29,7 @@ c.colors.completion.fg = mediumgray
 c.colors.completion.item.selected.fg = forg
 
 # Background color of the selected completion item. -> selected item bg
-c.colors.completion.item.selected.bg = bakg
+c.colors.completion.item.selected.bg = darkgray
 
 # Background color of the completion widget for odd rows.
 c.colors.completion.odd.bg = bakg

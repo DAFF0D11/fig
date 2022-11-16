@@ -1,6 +1,5 @@
 set $mod Mod4
 set $term foot
-# font pango:Fira Code 10
 font pango:Jetbrains Mono Bold 11
 seat * hide_cursor when-typing enable
 # Escape the xorg
@@ -19,6 +18,11 @@ title_align center
 output "*" background "~/.cache/wallpaper" fill
 # output * bg ~/img/wallpaper/px-wallhaven-l3y8ql.jpg fill
 # output * bg "#000000" solid_color
+
+# make laptop screen higher scale
+# find displays with 'swaymsg -t get_outputs'
+output  HDMI-A-2 scale 1 position 0,0
+output  eDP-1 scale 1.2 position 0,1080
 
 input type:keyboard {
 repeat_delay 230
@@ -113,12 +117,12 @@ bindsym Mod4+Shift+t exec $term
 
 bindsym Mod4+r exec --no-startup-id         "fxmenu float 400x300 fx-launch"
 # bindsym Mod4+semicolon exec --no-startup-id "fxmenu float 400x200 fx-sway-switch"
-bindsym Control+semicolon exec              "fxmenu float 916x300 fx-search"
+bindsym Control+semicolon exec              "fxmenu float 930x300 fx-search"
 bindsym Mod4+c exec --no-startup-id         "em capture"
 bindsym Mod4+backslash exec --no-startup-id "em term"; workspace 3
 bindsym Control+Shift+m exec                "clipman clear --all"
-bindsym Control+m exec                      "fxmenu float 916x300 fx-clipman"
-bindsym Control+slash exec                  "fxmenu float 900x300 fx-shuffler"
+bindsym Control+m exec                      "fxmenu float 930x300 fx-clipman"
+bindsym Control+slash exec                  "fxmenu float 930x300 fx-shuffler"
 
 # Music Shuffler
 bindsym Control+Shift+h     exec "playerctl --player=mpv previous"
@@ -204,9 +208,9 @@ mode "$hotmenu" {
 bindsym F6 mode "$hotmenu"
 
 set $background #000000
-set $foreground #6b6c83
+set $foreground #3a3a43
 set $testground #E93C58
-set $selected   #e8b179
+set $selected   #c8c9cc
 
 # Status Bar:
 bar {

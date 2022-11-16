@@ -10,7 +10,13 @@
   "If you squint, it sort of works...")
 (let (
        (bakg          "#ffffff")
-       (forg          "#242426") ;; i need a less dark forg
+       (forg          "#131314")
+       (gray          "#3a3a43")
+       (dark-gray     "#202026")
+       (darkest-gray  "#131316")
+       (medium-gray   "#686878")
+       (light-gray    "#e5e7ea")
+       (lightest-gray "#f4f6f9")
 
        (red           "#E93C58")
        (green         "#1ad08d")
@@ -20,11 +26,6 @@
        (blue          "#394e7f")
        (black         "#000000")
        (white         "#ffffff")
-
-       (gray          "#2e2e3a")
-       (dark-gray     "#111119")
-       (medium-gray   "#6a6b7a")
-       (light-gray    "#e9e9e9")
 
        (notice-me     "#24a8b4")
 
@@ -44,39 +45,36 @@
  'light-fi
  ;; Standard font lock faces
  `(default                          ((t (:background, bakg :foreground, forg ))))
- `(bold                             ((t (:bold t))))
- `(italic                           ((t (:bold nil))))
- `(underline                        ((t (:bold nil))))
+ `(bold                             ((t (:bold, t))))
+ `(italic                           ((t (:bold, nil))))
+ `(underline                        ((t (:bold, nil))))
  `(variable-pitch                   ((t (nil))))
- `(error                           ((t (:foreground,red ))))
+ `(error                            ((t (:foreground,red ))))
  `(cursor                           ((t (:background, notice-me))))
-
- `(font-lock-comment-face           ((t (:bold nil :foreground, magenta ))))
- `(font-lock-comment-delimiter-face ((t (:bold nil :foreground, magenta ))))
-
- `(font-lock-doc-string-face        ((t (:foreground, medium-gray ))))
- `(font-lock-string-face            ((t (:foreground, medium-gray ))))
- `(font-lock-doc-face               ((t (:foreground, medium-gray ))))
-
- `(font-lock-function-name-face     ((t (           :foreground, forg ))))
- `(font-lock-variable-name-face     ((t (           :foreground, forg ))))
- ;; `(font-lock-reference-face         ((t (           :foreground, forg ))))
- ;; `(font-lock-function               ((t (           :foreground, green ))))
+ `(font-lock-comment-face           ((t (:bold, nil :foreground, yellow ))))
+ `(font-lock-comment-delimiter-face ((t (:bold, nil :foreground, yellow ))))
+ `(font-lock-doc-string-face        ((t (:bold, nil :foreground, medium-gray ))))
+ `(font-lock-string-face            ((t (:bold, nil :foreground, medium-gray ))))
+ `(font-lock-doc-face               ((t (:bold, nil :foreground, medium-gray ))))
+ `(font-lock-function-name-face     ((t (:bold, nil :foreground, forg ))))
+ `(font-lock-variable-name-face     ((t (:bold, nil :foreground, forg ))))
+ `(font-lock-reference-face         ((t (:bold, nil :foreground, forg ))))
+ `(font-lock-function               ((t (:bold, nil :foreground, forg ))))
+ `(font-lock-preprocessor-face      ((t (:bold, nil :foreground, forg ))))
  `(font-lock-type-face              ((t (:bold, nil :foreground, forg ))))
- ;; `(font-lock-preprocessor-face      ((t (           :foreground, foreg ))))
- `(font-lock-number-face            ((t (           :foreground, forg ))))
- `(font-lock-constant-face          ((t (           :foreground, forg ))))
+ `(font-lock-number-face            ((t (:bold, nil :foreground, forg ))))
+ `(font-lock-constant-face          ((t (:bold, nil :foreground, forg ))))
  ;; Prog color (red)
- `(font-lock-builtin-face           ((t (:bold, t :foreground, cyan))))
- `(font-lock-warning-face           ((t (:bold, t :foreground, cyan))))
- `(font-lock-keyword-face           ((t (:bold, t :foreground, cyan))))
+ `(font-lock-builtin-face           ((t (:bold, nil :foreground, red))))
+ `(font-lock-warning-face           ((t (:bold, nil :foreground, red))))
+ `(font-lock-keyword-face           ((t (:bold, nil :foreground, red))))
 
  ;; Emacs Interface
  `(fringe              ((t (:background, bakg :foreground, bakg ))))
  ;; `(menu                ((t (:background, grayd :foreground, grayl ))))
  `(minibuffer-prompt   ((t (:foreground, notice-me ))))
- `(line-number   ((t (:foreground, medium-gray ))))
- `(line-number-current-line   ((t (:foreground, dark-gray ))))
+ `(line-number   ((t (:foreground, bakg))))
+ `(line-number-current-line   ((t (:foreground, bakg ))))
 
  ;; split window color vertical border
  ;; `(vertical-border  ((t ( :foreground, forg  ))))
@@ -107,9 +105,9 @@
  `(sp-pair-overlay-face ((t (:foreground, forg :background, bakg ))))
 
  ;; Line highlighting
- `(hl-line                     ((t (:background, light-gray :foreground nil ))))
- ;; `(highlight                   ((t (:background, dark-gray :foreground nil ))))
- `(region              ((t (:background, notice-me  ))))
+ ;; `(hl-line                     ((t (:background, light-gray :foreground nil ))))
+ `(highlight        ((t (:background, nil :foreground, forg :background, light-gray ))))
+ `(region           ((t (:background, light-gray  ))))
 
  ;; what is this?
  ;; `(highlight-current-line-face ((t (:background, grayd :foreground nil ))))
@@ -122,7 +120,8 @@
  `(holiday-face ((t (:background, bakg :foreground, red ))))
 
  ;; Dired
- `(dired-directory ((t (:bold nil :foreground, red ))))
+ `(dired-directory ((t (:bold nil :foreground, blue ))))
+ `(dired-marked ((t (:bold nil :foreground, notice-me ))))
  `(dired-symlink ((t (:foreground, medium-gray ))))
 
  ;; Dired subtree
@@ -143,16 +142,16 @@
 
  ;; Org
  `(org-ellipsis      ((t ( :bold t :foreground, black :underline nil ))))
- `(org-meta-line      ((t (:foreground, gray :underline nil ))))
+ `(org-meta-line     ((t (:foreground, gray :underline nil ))))
  `(org-date-selected ((t (:foreground, red :background, bakg ))))
  `(org-todo          ((t (:foreground, green :background, bakg ))))
  `(org-drawer        ((t (:foreground, gray :underline nil ))))
  `(org-date          ((t (:foreground, gray :underline nil ))))
  `(org-tag           ((t (:bold nil :foreground, gray :underline nil ))))
- `(org-code          ((t ( :background, light-gray :foreground, forg :underline nil ))))
- `(org-block         ((t (:background, light-gray :foreground, forg :underline nil ))))
- `(org-hide         ((t ( :foreground, bakg :underline nil ))))
- `(org-table          ((t (:background, light-gray :foreground, forg :underline nil ))))
+ `(org-code          ((t ( :background, lightest-gray :foreground, forg :underline nil ))))
+ `(org-block         ((t (:background, lightest-gray :foreground, forg :underline nil ))))
+ `(org-hide          ((t ( :foreground, bakg :underline nil ))))
+ `(org-table         ((t (:background, lightest-gray :foreground, forg :underline nil ))))
 
  ;; `(org-headline-todo ((t (:bold, t :foreground, grayll :underline, nil ))))
  ;; `(org-headline-done ((t (:bold, t :foreground, grayll :underline, nil ))))
@@ -189,28 +188,30 @@
  `(org-scheduled-today ((t (:background, bakg :foreground, forg ))))
 
  ;; Avy
- `(avy-goto-char-timer-face ((t ( :bold t :background, bakg :foreground, notice-me ))))
- `(avy-background-face ((t ( :bold t :background, bakg :foreground, notice-me ))))
- `(avy-lead-face ((t ( :bold t :background, bakg :foreground, notice-me ))))
- `(avy-lead-face-0 ((t ( :bold t :background, bakg :foreground, notice-me ))))
- `(avy-lead-face-1 ((t (:bold t :background, bakg :foreground, notice-me ))))
- `(avy-lead-face-2 ((t (:bold t :background, bakg :foreground, notice-me ))))
+ `(avy-goto-char-timer-face ((t ( :bold t :background, nil :foreground, notice-me ))))
+ `(avy-background-face ((t ( :bold t :background, nil :foreground, notice-me ))))
+ `(avy-lead-face ((t ( :bold t :background, nil :foreground, notice-me ))))
+ `(avy-lead-face-0 ((t ( :bold t :background, nil :foreground, notice-me ))))
+ `(avy-lead-face-1 ((t (:bold t :background, nil :foreground, notice-me ))))
+ `(avy-lead-face-2 ((t (:bold t :background, nil :foreground, notice-me ))))
 
  ;; JavaScript
  `(js2-function-param ((t ( :foreground, forg ))))
 
  ;; Vertico
- `(vertico-current ((t (:background, light-gray :foreground, forg ))))
+ ;; `(vertico-current ((t (:background, dark-gray :foreground, forg ))))
+ `(vertico-group-title ((t (:background, bakg :foreground,  forg ))))
+ `(vertico-group-separator ((t (:background, bakg :foreground, forg ))))
+
 
  ;; Vertico posframe
- `(vertico-posframe-border ((t (:background, forg ))))
+ ;; `(vertico-posframe-border ((t (:background, forg ))))
 
  ;; Consult
- `(consult-preview-match  ((t (:background, bakg :foreground, forg ))))
- `(consult-preview-cursor ((t (:background, light-gray :foreground, forg ))))
- `(consult-file ((t (:foreground, medium-gray ))))
- `(consult-narrow-indicator ((t (:background, bakg :foreground, cyan ))))
  `(consult-preview-match ((t (:foreground, notice-me ))))
+
+ `(consult-file ((t (:foreground, nil ))))
+ ;; `(consult-help ((t (:foreground, forg ))))
 
  ;; Completion
  `(completions-common-part      ((t ( :foreground, notice-me ))))
@@ -220,21 +221,19 @@
  `(web-mode-html-tag-face    ((t ( :foreground, red ))))
  `(web-mode-variable-name-face   ((t ( :foreground, magenta ))))
 
-
  ;; tab-bar
  `(tab-bar              ((t (:background, bakg :foreground, gray ))))
  `(tab-bar-tab          ((t (:background, bakg :foreground, bakg ))))
  `(tab-bar-tab-ungrouped ((t (:background, bakg :foreground, gray ))))
  `(tab-bar-tab-inactive ((t (:background, bakg :foreground, gray ))))
 
-
  ;; Company
  `(company-tooltip-common               ((t (:bold nil :background, bakg :foreground, notice-me ))))
- `(company-tooltip-common-selection     ((t (:bold nil :background, light-gray :foreground, black ))))
+ `(company-tooltip-common-selection     ((t (:bold nil :background, light-gray :foreground, forg ))))
+ `(company-tooltip-selection            ((t (:bold nil :background, light-gray :foreground, forg ))))
  `(company-tooltip                      ((t (:bold nil :background, bakg :foreground, medium-gray ))))
- `(company-tooltip-selection            ((t (:bold nil :background, light-gray :foreground, black ))))
- `(company-tooltip-annotation           ((t (:bold nil :foreground, medium-gray ))))
- `(company-tooltip-annotation-selection ((t (:bold nil :foreground, medium-gray ))))
+ ;; `(company-tooltip-annotation           ((t (:bold nil :foreground, medium-gray ))))
+ ;; `(company-tooltip-annotation-selection ((t (:bold nil :foreground, medium-gray ))))
  `(company-tooltip-scrollbar-thumb      ((t (:bold nil :background, bakg :foreground, bakg ))))
  `(company-tooltip-scrollbar-track      ((t (:bold nil :background, bakg :foreground, bakg ))))
 
@@ -243,7 +242,6 @@
  `(diff-hl-change ((t ( :background, git-hl-change ))))
  `(diff-hl-delete ((t ( :background, git-hl-delete ))))
  `(diff-hl-insert ((t ( :background, git-hl-add ))))
-
 
 ;; Magit
  ;; `(magit-header-line ((t (:bold t :background, bakg :foreground, fg ))))
@@ -283,7 +281,7 @@
  `(elfeed-search-title-face        ((t (:bold nil :foreground, medium-gray ))))
  `(elfeed-search-feed-face         ((t (:foreground, forg ))))
  `(elfeed-search-tag-face          ((t (:foreground, gray ))))
- `(elfeed-search-unread-title-face ((t (:bold t :foreground, forg ))))
+ `(elfeed-search-unread-title-face ((t (:bold nil :foreground, blue ))))
 
  ;; `(shr-text ((t ( :height, 120 ))))
  ;; `(shr-link ((t ( :height, 120 :foreground, blue ))))

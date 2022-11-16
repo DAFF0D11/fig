@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Filename accepts title.ext, author, id, tags
+# and produces a file name in a specific format
+
+# INPUT: filename "title of the thing" "author of the thign" "id" "ext" "tag1 tag2 tag3"
+# OUTPUT: 20221027T190722__title_of_the_thing__author_of_the_thign__tag1_tag2_tag3__id.ext
+
+main(){
+    sep="_"
+    DATE=$(date "+%Y%m%dT%H%M%S")
+    TITLE=$(spcToUnd "$1")
+    AUTHOR=$(spcToUnd "$2")
+    TAGS=$(spcToUnd "${@:5}")
+    ID="$3"
+    EXT="$4"
+    echo "$DATE$sep$sep$TITLE$sep$sep$AUTHOR$sep$sep$TAGS$sep$sep$ID.$EXT"
+}
+
+spcToUnd(){
+    echo "$@" | tr " " "_"
+}
+
+
+main "$@"

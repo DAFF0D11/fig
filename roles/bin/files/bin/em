@@ -7,13 +7,14 @@ case $1 in
 	daemon) emacs --daemon;;
 	gui) emacsclient -c;;
 	solo) emacs;;
-    book) notify-send "org-Bookmarked: $2\n$3"
-          clean_title=$(echo "$3" | tr -d "\"")
+    book) clean_title=$(echo "$3" | tr -d "\"")
           emacsclient -e "(make-qute-capture-frame \"$2\" \"$clean_title\")"
+          notify-send "org-Bookmarked: $2\n$3"
           ;;
-    bookfinal) notify-send "org-Bookmarked: $2\n$3"
+    bookfinal)
           clean_title=$(echo "$3" | tr -d "\"")
           emacsclient -e "(make-qute-capture-frame-finalize \"$2\" \"$clean_title\")"
+          notify-send "org-Bookmarked: $2\n$3"
           ;;
 	*) emacsclient "$@";;
 esac

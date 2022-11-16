@@ -858,18 +858,52 @@
   (setq org-use-tag-inheritance t) ;; tags will apply to lower headings (for agenda filtering)
   (setq org-agenda-use-tag-inheritance t) ;; make tags apply to lower items as well
 
-  (setq org-todo-keywords
-	(quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-		(sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+  (defun org-summary-todo (n-done n-not-done)
+    "Switch entry to DONE when all subentries are done, to TODO otherwise."
+    (let (org-log-done org-log-states)   ; turn off logging
+      (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
 
-  ;; (setq org-todo-state-tags-triggers
-  ;;   (quote (("CANCELLED" ("CANCELLED" . t))
-  ;;   	("WAITING" ("WAITING" . t))
-  ;;   	("HOLD" ("WAITING") ("HOLD" . t))
-  ;;   	(done ("WAITING") ("HOLD"))
-  ;;   	("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-  ;;   	("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
-  ;;   	("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+  (add-hook 'org-after-todo-statistics-hook #'org-summary-todo)
+
+  (defun org-todo-if-needed (state)
+    "Change header state to STATE unless the current item is in STATE already."
+    (unless (string-equal (org-get-todo-state) state)
+      (org-todo state)))
+
+  (defun ct/org-summary-checkbox-cookie ()
+    "Switch header state to DONE when all checkboxes are ticked, to TODO when none are ticked, and to DOING otherwise"
+    ;; https://forum.zettelkasten.de/discussion/1682/emacs-org-mode-auto-update-todo-item-states-to-represent-checkbox-progress
+    (let (beg end)
+      (unless (not (org-get-todo-state))
+        (save-excursion
+          (org-back-to-heading t)
+          (setq beg (point))
+          (end-of-line)
+          (setq end (point))
+          (goto-char beg)
+          ;; Regex group 1: %-based cookie
+          ;; Regex group 2 and 3: x/y cookie
+          (if (re-search-forward "\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]"
+                                 end t)
+              (if (match-end 1)
+                  ;; [xx%] cookie support
+                  (cond ((equal (match-string 1) "100%")
+                         (org-todo-if-needed "DONE"))
+                        ((equal (match-string 1) "0%")
+                         (org-todo-if-needed "TODO"))
+                        (t
+                         (org-todo-if-needed "DOING")))
+                ;; [x/y] cookie support
+                (if (> (match-end 2) (match-beginning 2)) ; = if not empty
+                    (cond ((equal (match-string 2) (match-string 3))
+                           (org-todo-if-needed "DONE"))
+                          ((or (equal (string-trim (match-string 2)) "")
+                               (equal (match-string 2) "0"))
+                           (org-todo-if-needed "TODO"))
+                          (t
+                           (org-todo-if-needed "TODO")))
+                  (org-todo-if-needed "TODO"))))))))
+  (add-hook 'org-checkbox-statistics-hook #'ct/org-summary-checkbox-cookie)
 
   ;; there has the be a themeable way to do this
   (setq org-todo-keyword-faces
@@ -1213,7 +1247,7 @@
 (defun daf/play (url &rest args)
   "Play link under point with 'play pause low' command"
   (interactive)
-  (start-process "play" nil "play" "pause" "high" url)
+  (start-process "play" nil "play" "pause" "low" url)
   (message "Playing..."))
 
 (defun daf/play-checkbox ()

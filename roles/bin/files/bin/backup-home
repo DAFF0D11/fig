@@ -2,9 +2,6 @@
 # Just run backup-home
 # backup-home (untar) from in the backup directory
 
-# Delete me
-# HOME=$HOME/tmp/newhome
-
 # hostnamectl is something from systemd
 pcname=$(hostnamectl | grep "Hardware Model:" | cut -d " " -f5- | tr " " "_")
 backup_date=$(date "+%g-%b-%d" | tr 'A-Z' 'a-z')

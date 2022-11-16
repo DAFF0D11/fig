@@ -104,10 +104,10 @@ export FZF_CTRL_R_OPTS='--no-sort --exact'
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
  --no-bold
  --layout=reverse
- --color=fg:#6b6c83,hl:#1EF1A4
- --color=fg+:#ffffff,bg+:#000000,hl+:#1EF1A4
- --color=info:#ffffff,prompt:#ffffff,pointer:#1EF1A4
- --color=marker:#E93C58,spinner:#6b6c83,header:#ffffff'
+ --color=fg:#686878,hl:#E93C58
+ --color=fg+:#c8c9cc,bg+:#000000,hl+:#E93C58
+ --color=info:#202026,prompt:#c8c9cc,pointer:#E93C58
+ --color=marker:#E93C58,spinner:#202026,header:#202026'
 
 source ~/.config/zsh/zsh-autosuggestions.zsh
 source ~/.config/zsh/completion.zsh
